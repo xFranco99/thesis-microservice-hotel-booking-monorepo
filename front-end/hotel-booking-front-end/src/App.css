@@ -1,0 +1,25 @@
+html, body {
+  margin: 0;
+  height: 100%;
+}
+
+.button {
+  background-color: #04aa6d; /* Green */
+  border: none;
+  color: white;
+  padding: 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+}
+
+.btn-rounded:focus {
+  background-color: #118f61;
+}
+
+.btn-rounded {
+  border-radius: 100%;
+}
