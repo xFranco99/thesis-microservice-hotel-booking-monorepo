@@ -1,20 +1,38 @@
 import { useState } from "react";
-import reactLogo from "./assets/react.svg";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./App.css";
 import NavBar from "./components/NavBar";
-import LogInCard from "./components/LogIn/LogInCard";
-import { Fragment } from "react";
 import Footer from "./components/Footer";
+import Home from "./components/Home";
+import LogInCard from "./components/LogIn/LogInCard";
+import SignInForm from "./components/LogIn/SignInForm";
+import SignUpForm from "./components/LogIn/SignUpForm";
 
 function App() {
-  const [count, setCount] = useState(0);
-
   return (
-    <Fragment>
-      <NavBar name="Hotel"></NavBar>
-      <LogInCard></LogInCard>
+    <Router>
+      <NavBar name="Hotel" account="Sign-In"></NavBar>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route
+          path="/logIn"
+          element={
+            <LogInCard>
+              <SignInForm></SignInForm>
+            </LogInCard>
+          }
+        />
+        <Route
+          path="/signUp"
+          element={
+            <LogInCard>
+              <SignUpForm></SignUpForm>
+            </LogInCard>
+          }
+        />
+      </Routes>
       <Footer></Footer>
-    </Fragment>
+    </Router>
   );
 }
 

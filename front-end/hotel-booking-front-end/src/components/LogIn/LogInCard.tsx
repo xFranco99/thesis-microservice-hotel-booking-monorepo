@@ -1,13 +1,11 @@
 import React from "react";
+import { ReactNode } from "react";
 
-interface Props {
-  name: string;
+interface Props{
+  children: ReactNode
 }
 
-function LogInCard() {
-  const logInImage =
-    "https://images.pexels.com/photos/271639/pexels-photo-271639.jpeg?auto=compress&cs=tinysrgb&w=600";
-
+function LogInCard({children}: Props) {
   const logInDivClass = {
     display: "flex",
     justifyContent: "center",
@@ -21,70 +19,19 @@ function LogInCard() {
 
   return (
     <div style={logInDivClass}>
-      <div
-        className="card text-white"
-        style={{
-          width: "25rem",
-          padding: "25px",
-          backgroundColor: "rgba(33, 37, 41, .7)",
-        }}
-      >
-        <div className="card-body">
-          <h1>Sign In</h1>
-          <form style={{ paddingTop: "20px" }}>
-            <div className="mb-3">
-              <input
-                type="email"
-                className="form-control"
-                id="exampleInputEmail1"
-                aria-describedby="emailHelp"
-                placeholder="Email or Username"
-              />
-            </div>
-            <div className="mb-3">
-              <input
-                type="password"
-                className="form-control"
-                id="exampleInputPassword1"
-                placeholder="Password"
-              />
-            </div>
-            <div className="mb-3" style={{ display: "grid" }}>
-              <button type="submit" className="btn btn-danger">
-                Sign In
-              </button>
-            </div>
-            <h3 style={{ display: "flex", justifyContent: "center" }}>OR</h3>
-            <div className="mb-3" style={{ display: "grid" }}>
-              <button type="submit" className="btn btn-outline-light">
-                Use a Sign-In Code
-              </button>
-            </div>
-            <div className="mb-3">
-              <p style={{ display: "flex", justifyContent: "center" }}>
-                <a className="text-white" href="#">Forgot password?</a>
-              </p>
-            </div>
-            <div className="mb-3 form-check">
-              <input
-                type="checkbox"
-                className="form-check-input"
-                id="exampleCheck1"
-              />
-              <label className="form-check-label" htmlFor="exampleCheck1">
-                Remember me
-              </label>
-            </div>
-            <div className="mb-3">
-              <p>
-                You don't have an account?&nbsp;
-                <a className="text-white" href="#">Sign Up</a>
-              </p>
-            </div>
-          </form>
+        <div
+          className="card text-white"
+          style={{
+            width: "25rem",
+            padding: "25px",
+            backgroundColor: "rgba(33, 37, 41, .7)",
+          }}
+        >
+          <div className="card-body">
+            {children}
+          </div>
         </div>
       </div>
-    </div>
   );
 }
 
