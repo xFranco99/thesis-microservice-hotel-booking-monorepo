@@ -10,7 +10,7 @@ function SignInForm() {
           <input
             type="email"
             className="form-control"
-            id="exampleInputEmail1"
+            id="InputEmailUser"
             aria-describedby="emailHelp"
             placeholder="Email or Username"
           />
@@ -19,20 +19,24 @@ function SignInForm() {
           <input
             type="password"
             className="form-control"
-            id="exampleInputPassword1"
+            id="InputPassword"
             placeholder="Password"
           />
         </div>
         <div className="mb-3" style={{ display: "grid" }}>
-          <button type="submit" className="btn btn-danger">
+          <button type="submit" className="btn btn-danger" id="SignInButton">
             Sign In
           </button>
         </div>
         <h3 style={{ display: "flex", justifyContent: "center" }}>OR</h3>
         <div className="mb-3" style={{ display: "grid" }}>
-          <button type="submit" className="btn btn-outline-light">
+          <Link
+            to="/signInCode"
+            className="btn btn-outline-light"
+            id="SignInCodeButton"
+          >
             Use a Sign-In Code
-          </button>
+          </Link>
         </div>
         <div className="mb-3">
           <p style={{ display: "flex", justifyContent: "center" }}>

@@ -11,7 +11,7 @@ function SignUpForm() {
             <input
               type="text"
               className="form-control"
-              id="exampleInputEmail1"
+              id="FirstName"
               aria-describedby="emailHelp"
               placeholder="First Name"
             />
@@ -20,7 +20,7 @@ function SignUpForm() {
             <input
               type="text"
               className="form-control"
-              id="exampleInputEmail1"
+              id="LastName"
               aria-describedby="emailHelp"
               placeholder="Last Name"
             />
@@ -31,7 +31,7 @@ function SignUpForm() {
             <input
               type="text"
               className="form-control"
-              id="exampleInputEmail1"
+              id="Prefix"
               aria-describedby="emailHelp"
               placeholder="Prefix"
             />
@@ -40,7 +40,7 @@ function SignUpForm() {
             <input
               type="text"
               className="form-control"
-              id="exampleInputEmail1"
+              id="PhoneNumber"
               aria-describedby="emailHelp"
               placeholder="Phone Number"
             />
@@ -50,7 +50,7 @@ function SignUpForm() {
           <input
             type="text"
             className="form-control"
-            id="exampleInputPassword1"
+            id="Username"
             placeholder="Username"
           />
         </div>
@@ -58,7 +58,7 @@ function SignUpForm() {
           <input
             type="password"
             className="form-control"
-            id="exampleInputPassword1"
+            id="Password"
             placeholder="Password"
           />
         </div>
@@ -66,13 +66,13 @@ function SignUpForm() {
           <input
             type="email"
             className="form-control"
-            id="exampleInputEmail1"
+            id="Email"
             aria-describedby="emailHelp"
             placeholder="email@example.com"
           />
         </div>
         <div className="mb-3" style={{ display: "grid" }}>
-          <button type="submit" className="btn btn-danger">
+          <button type="submit" className="btn btn-danger" id="SignUpButton">
             Sign Up
           </button>
         </div>

@@ -7,6 +7,7 @@ import Home from "./components/Home";
 import LogInCard from "./components/LogIn/LogInCard";
 import SignInForm from "./components/LogIn/SignInForm";
 import SignUpForm from "./components/LogIn/SignUpForm";
+import SignInCode from "./components/LogIn/SignInCodeForm";
 
 function App() {
   return (
@@ -27,6 +28,14 @@ function App() {
           element={
             <LogInCard>
               <SignUpForm></SignUpForm>
+            </LogInCard>
+          }
+        />
+        <Route
+          path="/signInCode"
+          element={
+            <LogInCard>
+              <SignInCode></SignInCode>
             </LogInCard>
           }
         />
