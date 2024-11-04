@@ -11,10 +11,12 @@ class UserAuthService:
 
     def create(self, data: UserInput) -> UserOutput:
         try:
-            user = self.repository.create(data)
-            return UserOutput(**user.model_dump(exclude_none=True))
+            return self.repository.create(data)
         except:
             raise HTTPException(status_code=400, detail="user already exist")
 
     def get_all(self) -> List[UserOutput]:
         return self.repository.get_all()
+
+    def find_by_username_or_mail(self, user_or_mail: str):
+        return self.repository.find_by_username_or_mail(user_or_mail)

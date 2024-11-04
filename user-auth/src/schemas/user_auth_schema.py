@@ -41,7 +41,7 @@ class UserOutput(BaseModel):
     email: str
     role: Role
 
-class UserAuth(BaseModel):
+class UserAuthComplete(BaseModel):
     id_user: int
     username: str
     password: str

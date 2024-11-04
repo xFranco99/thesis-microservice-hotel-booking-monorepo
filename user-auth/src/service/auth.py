@@ -4,13 +4,17 @@ from typing import Annotated
 from fastapi import HTTPException, Depends
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jwt import InvalidTokenError
-from passlib.context import CryptContext
 from pydantic import BaseModel
 from datetime import datetime, timedelta, timezone
 import jwt
 from starlette import status
+from sqlalchemy.orm import Session
+from config.database import get_db
 
-import repo
+from service.user_auth_service import UserAuthService
+
+session = Annotated[Session, Depends(get_db)]
+_service = UserAuthService(session)
 
 SECRET_KEY = os.environ['SECRET_KEY'] #openssl rand -hex 32
 ALGORITHM = os.environ['ALGORITHM']
@@ -24,17 +28,10 @@ class Token(BaseModel):
 class TokenData(BaseModel):
     username: str | None = None
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
-def verify_password(plain_password, hashed_password):
-    return pwd_context.verify(plain_password, hashed_password)
-
-def get_password_hash(password):
-    return pwd_context.hash(password)
-
 def authenticate_user(username: str, password: str):
-    user = repo.retrive_user(username)
+    user = _service.find_by_username_or_mail(username)
     if not user:
         return False
     if not verify_password(password, user.password):
