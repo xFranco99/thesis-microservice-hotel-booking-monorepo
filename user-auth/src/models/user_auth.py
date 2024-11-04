@@ -1,6 +1,9 @@
+import sys
+sys.path.append("..")
+
 import enum
 from sqlalchemy import Column, Integer, Enum, String, DateTime
-from database import Base
+from config.database import Base
 
 class Role(enum.Enum):
     USER = 'USER'
@@ -13,7 +16,7 @@ class State(enum.Enum):
     SUSPEND = 'SUSPEND'
     DELETED = 'DELETED'
 
-class User(Base):
+class UserAuth(Base):
     __tablename__ = 'user'
     id_user = Column(Integer, primary_key=True)
     username = Column(String)
