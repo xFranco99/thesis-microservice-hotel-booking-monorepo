@@ -6,6 +6,7 @@ from schemas.user_auth_schema import UserInput, UserOutput, UserAuthComplete
 from typing import List, Optional, Type
 import utils.password_util as psw_util
 from pydantic import UUID4
+from sqlalchemy import or_, and_
 
 class UserAuthRepository:
     def __init__(self, session: Session):
@@ -30,9 +31,26 @@ class UserAuthRepository:
         users = self.session.query(UserAuth).all()
         return [UserOutput(**user.__dict__) for user in users]
 
-    def find_by_username_or_mail(self, user_or_mail: str) -> UserAuthComplete:
-        user = (self.session.query(UserAuth)
-                .filter(UserAuth.username == user_or_mail | UserAuth.email == user_or_mail)
-                .first())
-
+    def find_by_id(self, id: UUID4) -> UserAuthComplete:
+        user = self.session.query(UserAuth).filter(UserAuth.id_user == id).first()
         return UserAuthComplete(**user.__dict__)
+
+    def find_by_username_or_email(self, logic_id: str) -> Optional[UserAuthComplete]:
+        user = (
+            self.session.query(UserAuth)
+            .filter(
+                or_(
+                    UserAuth.username == logic_id,
+                    UserAuth.email == logic_id
+                )
+            )
+            .filter(
+                and_(
+                    UserAuth.state != State.DELETED,
+                    UserAuth.state != State.CREATED
+                )
+            )
+            .first()
+        )
+
+        return UserAuthComplete(**user.__dict__) if user else None

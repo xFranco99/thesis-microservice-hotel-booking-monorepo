@@ -1,84 +1,60 @@
 import os
+from datetime import datetime, timedelta, timezone
 from typing import Annotated
 
-from fastapi import HTTPException, Depends
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from jwt import InvalidTokenError
-from pydantic import BaseModel
-from datetime import datetime, timedelta, timezone
 import jwt
-from starlette import status
+from fastapi import Depends
+from fastapi.security import OAuth2PasswordBearer
+from jwt import InvalidTokenError
+from pydantic.v1 import UUID4
 from sqlalchemy.orm import Session
-from config.database import get_db
 
+from exceptions.unauthorized_exception import UnauthorizedException
+from repository.user_auth_repository import UserAuthRepository
+from schemas.user_auth_schema import Token, UserAuthComplete, UserOutput
 from service.user_auth_service import UserAuthService
-
-session = Annotated[Session, Depends(get_db)]
-_service = UserAuthService(session)
+from utils.date_util import convert_datetime_to_timestamp
 
 SECRET_KEY = os.environ['SECRET_KEY'] #openssl rand -hex 32
 ALGORITHM = os.environ['ALGORITHM']
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
-class Token(BaseModel):
-    access_token: str
-    token_type: str
-
-
-class TokenData(BaseModel):
-    username: str | None = None
-
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
-
-def authenticate_user(username: str, password: str):
-    user = _service.find_by_username_or_mail(username)
-    if not user:
-        return False
-    if not verify_password(password, user.password):
-        return False
-    return user
-
 def create_access_token(data: dict, expires_delta: timedelta | None = None):
-    to_encode = data.copy()
+    to_encode = convert_datetime_to_timestamp(data.copy())
+
     if expires_delta:
         expire = datetime.now(timezone.utc) + expires_delta
     else:
         expire = datetime.now(timezone.utc) + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    to_encode.update({"exp": expire})
+
+    to_encode.update({"exp": expire.timestamp()})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
-async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
-    credentials_exception = HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Could not validate credentials",
-        headers={"WWW-Authenticate": "Bearer"},
-    )
-    try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        username: str = payload.get("sub")
-        if username is None:
-            raise credentials_exception
-        token_data = TokenData(username=username)
-    except InvalidTokenError:
-        raise credentials_exception
-    user = repo.retrive_user(token_data.username)
-    if user is None:
-        raise credentials_exception
-    return user
-
-def get_token_from_login(
-    form_data: Annotated[OAuth2PasswordRequestForm, Depends()]
-):
-    user = authenticate_user(form_data.username, form_data.password)
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect username or password",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
+def get_token_from_login(user: UserOutput):
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
-        data={"sub": user.username}, expires_delta=access_token_expires
+        data=user.__dict__, expires_delta=access_token_expires
     )
     return Token(access_token=access_token, token_type="bearer")
+
+class TokenService:
+    def __init__(self, session: Session):
+        self.repository = UserAuthRepository(session)
+
+    def get_current_user(self, token: Annotated[str, Depends(OAuth2PasswordBearer(tokenUrl="token"))]):
+        credentials_exception = UnauthorizedException("Could not validate credentials")
+
+        try:
+            payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+            id_user: UUID4 = payload.get("id_user")
+            if id_user is None:
+                raise credentials_exception
+        except InvalidTokenError:
+            raise credentials_exception
+
+        user = self.repository.find_by_id(id_user)
+
+        if user is None:
+            raise credentials_exception
+        return user

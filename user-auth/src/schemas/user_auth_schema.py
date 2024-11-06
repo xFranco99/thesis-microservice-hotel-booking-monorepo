@@ -2,7 +2,6 @@ from datetime import datetime
 from enum import Enum
 from pydantic import BaseModel
 
-
 class Role(str, Enum):
     USER = 'USER'
     ADMIN = 'ADMIN'
@@ -53,6 +52,14 @@ class UserAuthComplete(BaseModel):
     insert_date: datetime
     update_date: datetime
     state: State
-    tmp_access_code: str
-    tmp_access_code_expiration: datetime
-    suspend_end_date: datetime
+    tmp_access_code: str | None
+    tmp_access_code_expiration: datetime | None
+    suspend_end_date: datetime | None
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+
+class TokenData(BaseModel):
+    username: str | None = None
