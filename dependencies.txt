@@ -9,3 +9,4 @@ pip install uvicorn
 pip install passlib[bcrypt]
 pip install PyJWT
 pip install python-multipart
+pip install fastapi-mail

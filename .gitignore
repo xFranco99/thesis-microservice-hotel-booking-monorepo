@@ -6,3 +6,4 @@ back-end\user-auth\enviroment.env
 back-end\mail_service\enviroment.env
 *.env
 *__pycache__
+mail-template
