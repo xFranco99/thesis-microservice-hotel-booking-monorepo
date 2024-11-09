@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, Response, status
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 from config.database import get_db
-from schemas.user_auth_schema import UserOutput, UserInput, UserAuthComplete, Token
+from schemas.user_auth_schema import UserOutput, UserInput, UserAuthComplete, Token, UserOtpOutput, VerifyCode
 from service.auth import TokenService
 from service.user_auth_service import UserAuthService
 from fastapi.encoders import jsonable_encoder
@@ -23,7 +23,7 @@ def sign_up(
         session: Session = Depends(get_db)
 ) -> Response:
     user = UserAuthService(session).create(data)
-    token = _auth.get_token_from_login(user)
+    token = _auth.generate_token(user)
 
     response = Response(
         content=json.dumps(token),
@@ -39,8 +39,26 @@ def sign_in(session: Session = Depends(get_db), user: str = "", pswd: str = "") 
     _token_service = TokenService(session)
 
     user = _service.find_by_username_and_password(user, pswd)
+    user_otp_out = UserOtpOutput(**user.__dict__)
+    token = _auth.generate_token(user_otp_out)
 
-    token = _auth.get_token_from_login(user)
+    return Response(
+        content=json.dumps(jsonable_encoder(token)),
+        media_type="application/json",
+        status_code=status.HTTP_201_CREATED
+    )
+
+@router.post("/validate-otp")
+def validate_otp(verify_code: VerifyCode, session: Session = Depends(get_db)) -> Response:
+    _service = UserAuthService(session)
+    _token_service = TokenService(session)
+
+    user = _token_service.verify_code(verify_code.otp.lstrip().upper(), verify_code.token)
+
+    user_output = UserOutput(**user.__dict__)
+    user_output.access = True
+
+    token = _auth.generate_token(user_output)
 
     return Response(
         content=json.dumps(jsonable_encoder(token)),

@@ -3,7 +3,7 @@ from datetime import datetime
 from sqlalchemy.orm import Session
 from models.user_auth import UserAuth, Role, State
 from schemas.user_auth_schema import UserInput, UserOutput, UserAuthComplete
-from typing import List, Optional, Type
+from typing import List, Optional
 import utils.password_util as psw_util
 from pydantic import UUID4
 from sqlalchemy import or_, and_
@@ -26,6 +26,24 @@ class UserAuthRepository:
         self.session.commit()
         self.session.refresh(user)
         return UserOutput(**user.__dict__)
+
+    def update_otp(self, data: UserAuthComplete):
+        row_updated = (self.session.query(UserAuth)
+            .filter_by(id_user=data.id_user)
+            .update(
+               dict(
+                   tmp_access_code=data.tmp_access_code,
+                   tmp_access_code_expiration=data.tmp_access_code_expiration
+               )
+           )
+        )
+
+        if row_updated == 1:
+            self.session.commit()
+        else:
+            self.session.close()
+
+        return row_updated
 
     def get_all(self) -> List[Optional[UserOutput]]:
         users = self.session.query(UserAuth).all()

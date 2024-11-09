@@ -39,6 +39,12 @@ class UserOutput(BaseModel):
     phone_number: str
     email: str
     role: Role
+    access: bool = False
+
+class UserOtpOutput(BaseModel):
+    id_user: int
+    email: str
+    access: bool = False
 
 class UserAuthComplete(BaseModel):
     id_user: int
@@ -56,10 +62,21 @@ class UserAuthComplete(BaseModel):
     tmp_access_code_expiration: datetime | None
     suspend_end_date: datetime | None
 
+class VerifyCode(BaseModel):
+    token: str
+    otp: str
+
 class Token(BaseModel):
     access_token: str
     token_type: str
 
-
 class TokenData(BaseModel):
     username: str | None = None
+
+class MailInput(BaseModel):
+    subject: str | None = None
+    email_to: str | None = None
+    username: str | None = None
+    otp_code: str | None = None
+    caller: str | None = None
+    call_date: datetime = datetime.now()
