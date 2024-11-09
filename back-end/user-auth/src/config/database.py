@@ -1,9 +1,9 @@
-import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
+from config.env_var import EnvVar
 
-DATABASE_URL = os.environ['DB_URL']
+DATABASE_URL = EnvVar.DATABASE_URL
 
 engine = create_engine(DATABASE_URL)
 

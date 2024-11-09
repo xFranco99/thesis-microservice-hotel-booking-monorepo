@@ -14,9 +14,11 @@ from repository.user_auth_repository import UserAuthRepository
 from schemas.user_auth_schema import Token, UserAuthComplete, UserOutput
 from service.user_auth_service import UserAuthService
 from utils.date_util import convert_datetime_to_timestamp
+from config.env_var import EnvVar
 
-SECRET_KEY = os.environ['SECRET_KEY'] #openssl rand -hex 32
-ALGORITHM = os.environ['ALGORITHM']
+SECRET_KEY = EnvVar.SECRET_KEY
+ALGORITHM = EnvVar.ALGORITHM
+
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 def create_access_token(data: dict, expires_delta: timedelta | None = None):

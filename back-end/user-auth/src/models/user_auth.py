@@ -1,6 +1,3 @@
-import sys
-sys.path.append("..")
-
 import enum
 from sqlalchemy import Column, Integer, Enum, String, DateTime
 from config.database import Base

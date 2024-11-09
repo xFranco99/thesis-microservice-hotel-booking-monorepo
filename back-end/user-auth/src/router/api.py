@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from exceptions import user_auth_router
+from router.v1 import user_auth_router
 
 router = APIRouter(
     prefix="/api/v1"
