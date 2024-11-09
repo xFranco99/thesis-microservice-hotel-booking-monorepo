@@ -1,3 +1,4 @@
 # Ignored files
 .idea
+back-end\user-auth\.idea
 enviroment.env
