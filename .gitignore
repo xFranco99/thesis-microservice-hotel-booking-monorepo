@@ -3,3 +3,5 @@
 back-end\user-auth\.idea
 back-end\mail_service\.idea
 enviroment.env
+mail-template
+*__pycache__
