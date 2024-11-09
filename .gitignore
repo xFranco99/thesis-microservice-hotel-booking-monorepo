@@ -5,3 +5,4 @@ back-end\mail_service\.idea
 back-end\user-auth\enviroment.env
 back-end\mail_service\enviroment.env
 *.env
+*__pycache__
