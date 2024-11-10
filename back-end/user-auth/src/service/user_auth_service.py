@@ -1,9 +1,8 @@
 import random
 import string
-from http import HTTPStatus
-
-import clients.client as _client
 from datetime import datetime, timedelta
+from http import HTTPStatus
+from http.client import responses
 from typing import List, Annotated
 
 import bcrypt
@@ -11,9 +10,11 @@ from fastapi import HTTPException, Depends
 from pydantic import UUID4
 from sqlalchemy.orm import Session
 
+import service.auth as _auth
+import clients.client as _client
 from exceptions.unauthorized_exception import UnauthorizedException
 from repository.user_auth_repository import UserAuthRepository
-from schemas.user_auth_schema import UserInput, UserOutput, UserAuthComplete, MailInput
+from schemas.user_auth_schema import UserInput, UserOutput, UserAuthComplete, MailInput, UserOtpOutput
 from utils.password_util import get_password_hash
 
 _get_password_hash = Annotated[str, Depends(get_password_hash)]
@@ -22,11 +23,28 @@ class UserAuthService:
     def __init__(self, session: Session):
         self.repository = UserAuthRepository(session)
 
-    def create(self, data: UserInput) -> UserOutput:
+    def create(self, data: UserInput):
         try:
-            return self.repository.create(data)
+            user =  self.repository.create(data)
         except:
-            raise HTTPException(status_code=400, detail="user already exist")
+            raise HTTPException(status_code=HTTPStatus.CONFLICT, detail="user already exist")
+
+        user_otp_out = UserOtpOutput(**user.__dict__)
+        token = _auth.generate_token(user_otp_out)
+
+        mail_input = MailInput()
+        mail_input.subject = "Confirm your e-mail"
+        mail_input.mail_to = data.email
+        mail_input.username = data.username
+        mail_input.token = token.access_token
+        mail_input.caller_service = "user_auth_sign_up"
+        mail_input.call_date = datetime.now()
+
+        response = _client.confirm_mail_client(mail_input)
+
+        if response.status_code != HTTPStatus.OK:
+            self.repository.remove_by_id(user.id_user)
+            raise HTTPException(status_code=response.status_code, detail=response.text)
 
     def get_all(self) -> List[UserOutput]:
         return self.repository.get_all()
@@ -56,14 +74,14 @@ class UserAuthService:
 
         mail_input = MailInput()
         mail_input.subject = "OTP LogIn HotelBooking"
-        mail_input.email_to = user.email
+        mail_input.mail_to = user.email
         mail_input.username = user.username
         mail_input.otp_code = user.tmp_access_code
-        mail_input.caller = "user_auth_sign_in"
+        mail_input.caller_service = "user_auth_sign_in"
         mail_input.call_date = datetime.now()
 
 
-        response = _client.mail_client(mail_input)
+        response = _client.otp_mail_client(mail_input)
 
         if response.status_code != HTTPStatus.OK:
             raise HTTPException(status_code=response.status_code, detail="Mail Error")

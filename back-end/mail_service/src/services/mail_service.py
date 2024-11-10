@@ -4,7 +4,7 @@ from fastapi_mail import FastMail, MessageSchema
 from sqlalchemy.orm import Session
 
 from config.mail_config import conf
-from costants.costant import MAIL_OTP_TEMPLATE_NAME
+from costants.costant import MAIL_OTP_TEMPLATE_NAME, MAIL_CONFIRMATION_TEMPLATE_NAME, URL_CONFIRM_MAIL
 from exceptions.mail_history_exception import CanNotStoreHistoryException
 from repositories.mail_hisory_repository import MailHistoryRepository
 from repositories.template_repository import TemplateRepository
@@ -30,14 +30,14 @@ class TemplateService:
     def create_template(self, template_input: TemplateInput):
         self.template_repository.create_template(template_input)
 
-    def send_email_background(
+    def send_background_email(
             self,
             background_tasks: BackgroundTasks,
-            mail_info: MailInput
+            mail_info: MailInput,
+            template_data: dict,
+            template_name: str
     ):
-        template_data = {'username': mail_info.username, 'code': mail_info.otp_code}
-
-        template = self.template_repository.find_by_template_name(MAIL_OTP_TEMPLATE_NAME)
+        template = self.template_repository.find_by_template_name(template_name)
 
         html_body = jinja2.Template(template.template)
         email_body = html_body.render(**template_data)
@@ -58,3 +58,23 @@ class TemplateService:
 
         background_tasks.add_task(
             fm.send_message, message, None)
+
+    def send_email_otp_background(
+            self,
+            background_tasks: BackgroundTasks,
+            mail_info: MailInput
+    ):
+        template_data = {'username': mail_info.username, 'code': mail_info.otp_code}
+
+        self.send_background_email(background_tasks, mail_info, template_data, MAIL_OTP_TEMPLATE_NAME)
+
+
+    def send_email_confirm_mail_background(
+            self,
+            background_tasks: BackgroundTasks,
+            mail_info: MailInput
+    ):
+        url = URL_CONFIRM_MAIL + mail_info.token
+        template_data = {'username': mail_info.username, 'url': url}
+
+        self.send_background_email(background_tasks, mail_info, template_data, MAIL_CONFIRMATION_TEMPLATE_NAME)

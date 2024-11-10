@@ -20,7 +20,7 @@ class UserAuthRepository:
         user.insert_date = datetime.now()
         user.update_date = user.insert_date
 
-        user.state = State.CREATED if Role.USER == user.role else State.ACTIVE
+        user.state = State.CREATED if str(Role.USER) == str(user.role) else State.ACTIVE
 
         self.session.add(user)
         self.session.commit()
@@ -44,6 +44,20 @@ class UserAuthRepository:
             self.session.close()
 
         return row_updated
+
+    def update_state(self, id_user: UUID4):
+        row_updated = self.session.query(UserAuth).filter_by(id_user=id_user).update(dict(state=State.ACTIVE))
+
+        if row_updated == 1:
+            self.session.commit()
+        else:
+            self.session.close()
+
+        return row_updated
+
+    def remove_by_id(self, id_user: UUID4):
+        self.session.query(UserAuth).filter_by(id_user=id_user).delete()
+        self.session.commit()
 
     def get_all(self) -> List[Optional[UserOutput]]:
         users = self.session.query(UserAuth).all()

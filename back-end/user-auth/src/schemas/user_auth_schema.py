@@ -75,8 +75,9 @@ class TokenData(BaseModel):
 
 class MailInput(BaseModel):
     subject: str | None = None
-    email_to: str | None = None
+    mail_to: str | None = None
     username: str | None = None
     otp_code: str | None = None
-    caller: str | None = None
+    token: str | None = None
+    caller_service: str | None = None
     call_date: datetime = datetime.now()

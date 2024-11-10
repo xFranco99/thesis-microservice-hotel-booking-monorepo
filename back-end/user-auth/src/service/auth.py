@@ -77,3 +77,15 @@ class TokenService:
         if user is None:
             raise credentials_exception
         return user
+
+    def activate_user(self, token: Annotated[str, Depends(OAuth2PasswordBearer(tokenUrl="token"))]):
+        credentials_exception = UnauthorizedException("Could not validate credentials")
+        try:
+            payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+            id_user: UUID4 = payload.get("id_user")
+            if id_user is None:
+                raise credentials_exception
+        except InvalidTokenError:
+            raise credentials_exception
+
+        self.repository.update_state(id_user)

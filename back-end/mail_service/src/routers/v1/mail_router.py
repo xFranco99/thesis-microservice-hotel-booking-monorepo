@@ -10,8 +10,8 @@ from schemas.mail_schema import MailInput, TemplateInput
 from services.mail_service import TemplateService
 
 router = APIRouter(
-    prefix="/auth",
-    tags=["auth"]
+    prefix="/mail",
+    tags=["mail"]
 )
 
 OTP_LOGIN = ""
@@ -34,7 +34,22 @@ def otp_login_mail(
 ) -> Response:
     _template_service = TemplateService(session)
 
-    _template_service.send_email_background(
+    _template_service.send_email_otp_background(
+        background_tasks,
+        mail_info
+    )
+
+    return Response(status_code=HTTPStatus.OK)
+
+@router.post("/send-confirmation-mail")
+def send_confirmation_mail(
+        background_tasks: BackgroundTasks,
+        mail_info: MailInput,
+        session: Session = Depends(get_db)
+) -> Response:
+    _template_service = TemplateService(session)
+
+    _template_service.send_email_confirm_mail_background(
         background_tasks,
         mail_info
     )

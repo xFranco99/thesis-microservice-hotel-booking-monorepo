@@ -1,16 +1,15 @@
-from typing import Annotated
+import json
+from http import HTTPStatus
 
 from fastapi import APIRouter, Depends, Response, status
-from fastapi.security import OAuth2PasswordBearer
-from sqlalchemy.orm import Session
-from config.database import get_db
-from schemas.user_auth_schema import UserOutput, UserInput, UserAuthComplete, Token, UserOtpOutput, VerifyCode
-from service.auth import TokenService
-from service.user_auth_service import UserAuthService
 from fastapi.encoders import jsonable_encoder
-import json
+from sqlalchemy.orm import Session
 
 import service.auth as _auth
+from config.database import get_db
+from schemas.user_auth_schema import UserOutput, UserInput, Token, UserOtpOutput, VerifyCode
+from service.auth import TokenService
+from service.user_auth_service import UserAuthService
 
 router = APIRouter(
     prefix="/auth",
@@ -22,16 +21,18 @@ def sign_up(
         data: UserInput,
         session: Session = Depends(get_db)
 ) -> Response:
-    user = UserAuthService(session).create(data)
-    token = _auth.generate_token(user)
+    UserAuthService(session).create(data)
 
-    response = Response(
-        content=json.dumps(token),
-        media_type="application/json",
-        status_code=status.HTTP_201_CREATED
-    )
+    response = Response(status_code=status.HTTP_201_CREATED)
 
     return response
+
+@router.get("/confirm-mail/{token}")
+async def confirm_mail(token: str, session: Session = Depends(get_db)) -> Response:
+    _token_service = TokenService(session)
+    _token_service.activate_user(token)
+
+    return Response(status_code=HTTPStatus.OK)
 
 @router.get("/sign-in")
 def sign_in(session: Session = Depends(get_db), user: str = "", pswd: str = "") -> Response:

@@ -6,7 +6,8 @@ class MailInput(BaseModel):
     subject: str
     mail_to: str
     username: str
-    otp_code: str
+    otp_code: str | None
+    token: str | None
     caller_service: str
     call_date: datetime
 

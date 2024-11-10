@@ -11,7 +11,7 @@ class MailHistoryRepository:
         self.session = session
 
     def create_history(self, mail_info: MailInput, id_template: int) -> bool:
-        mail = MailHistory(**mail_info.model_dump(exclude_none=True, exclude={"username", "otp_code"}))
+        mail = MailHistory(**mail_info.model_dump(exclude_none=True, exclude={"username", "otp_code", "token"}))
 
         mail.id_template = id_template
         mail.send_date = datetime.now()
