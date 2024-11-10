@@ -10,6 +10,5 @@ conf = ConnectionConfig(
     MAIL_FROM_NAME=EnvVar.MAIL_FROM_NAME,
     MAIL_SSL_TLS=True,
     MAIL_STARTTLS=False,
-    USE_CREDENTIALS=True,
-    TEMPLATE_FOLDER=r'G:\fork\thesis-microservice-hotel-booking-monorepo\back-end\mail_service\templates\email'
+    USE_CREDENTIALS=True
 )

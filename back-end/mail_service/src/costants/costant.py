@@ -1,0 +1,1 @@
+MAIL_OTP_TEMPLATE_NAME = 'otp_email'
