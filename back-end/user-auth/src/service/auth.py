@@ -9,7 +9,7 @@ from pydantic.v1 import UUID4
 from sqlalchemy.orm import Session
 
 from config.env_var import EnvVar
-from exceptions.unauthorized_exception import UnauthorizedException
+from exceptions.unauthorized_exception import UnauthorizedException, OtpExpiredException
 from repository.user_auth_repository import UserAuthRepository
 from schemas.user_auth_schema import Token
 from utils.date_util import convert_datetime_to_timestamp
@@ -54,7 +54,10 @@ class TokenService:
 
         user = self.repository.find_by_id(id_user)
 
-        if user.tmp_access_code_expiration > datetime.now() and user.tmp_access_code == code:
+        if user.tmp_access_code_expiration < datetime.now():
+            raise OtpExpiredException
+
+        if user.tmp_access_code == code:
             return user
 
         raise credentials_exception

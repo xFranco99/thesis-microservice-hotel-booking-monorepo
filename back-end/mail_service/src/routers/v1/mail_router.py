@@ -26,7 +26,7 @@ def save_template(
 
     return Response(status_code=HTTPStatus.OK)
 
-@router.post("/otp-login-mail")
+@router.post("/otp-mail")
 def otp_login_mail(
         background_tasks: BackgroundTasks,
         mail_info: MailInput,

@@ -7,7 +7,8 @@ from sqlalchemy.orm import Session
 
 import service.auth as _auth
 from config.database import get_db
-from schemas.user_auth_schema import UserOutput, UserInput, Token, UserOtpOutput, VerifyCode
+from schemas.user_auth_schema import UserOutput, UserInput, Token, VerifyCode, SignInInput, UserOtpOutput, \
+    ResetPasswordInput
 from service.auth import TokenService
 from service.user_auth_service import UserAuthService
 
@@ -35,20 +36,37 @@ async def confirm_mail(token: str, session: Session = Depends(get_db)) -> Respon
     return Response(status_code=HTTPStatus.OK)
 
 @router.get("/sign-in")
-def sign_in(session: Session = Depends(get_db), user: str = "", pswd: str = "") -> Response:
+def sign_in(log_in_form: SignInInput, session: Session = Depends(get_db)) -> Response:
     _service = UserAuthService(session)
     _token_service = TokenService(session)
 
-    user = _service.find_by_username_and_password(user, pswd)
+    user = _service.find_by_username_and_password(log_in_form.user, log_in_form.pswd)
+    user.access = True
+    token = _auth.generate_token(user)
+
+    return Response(
+        content=json.dumps(jsonable_encoder(token)),
+        media_type="application/json",
+        status_code=HTTPStatus.OK
+    )
+
+# FORGOT PASSWORD STEPS
+# 1. generate the otp for reset password
+@router.post("/forgot-password")
+def forgot_password(email: str, session: Session = Depends(get_db)) -> Response:
+    _service = UserAuthService(session)
+
+    user = _service.forgot_password(email)
     user_otp_out = UserOtpOutput(**user.__dict__)
     token = _auth.generate_token(user_otp_out)
 
     return Response(
         content=json.dumps(jsonable_encoder(token)),
         media_type="application/json",
-        status_code=status.HTTP_201_CREATED
+        status_code=HTTPStatus.OK
     )
 
+# 2. validate the otp
 @router.post("/validate-otp")
 def validate_otp(verify_code: VerifyCode, session: Session = Depends(get_db)) -> Response:
     _service = UserAuthService(session)
@@ -65,6 +83,19 @@ def validate_otp(verify_code: VerifyCode, session: Session = Depends(get_db)) ->
         content=json.dumps(jsonable_encoder(token)),
         media_type="application/json",
         status_code=status.HTTP_201_CREATED
+    )
+
+# 3. change password
+@router.put("/reset-password")
+def password_reset(data: ResetPasswordInput, session: Session = Depends(get_db)) -> Response:
+    _service = UserAuthService(session)
+
+    _service.reset_password(data)
+
+    return Response(
+        content=json.dumps({"message": "Password changed successfully"}),
+        media_type="application/json",
+        status_code=HTTPStatus.OK
     )
 
 @router.post("/get-info-from-token", response_model=UserOutput)

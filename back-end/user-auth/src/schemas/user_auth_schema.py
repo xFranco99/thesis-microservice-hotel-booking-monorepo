@@ -31,6 +31,10 @@ class UserInput(BaseModel):
     email: str
     role: Role
 
+class SignInInput(BaseModel):
+    username: str
+    password: str
+
 class UserOutput(BaseModel):
     id_user: int
     username: str
@@ -61,6 +65,10 @@ class UserAuthComplete(BaseModel):
     tmp_access_code: str | None
     tmp_access_code_expiration: datetime | None
     suspend_end_date: datetime | None
+
+class ResetPasswordInput(BaseModel):
+    id_user: int
+    new_password: str
 
 class VerifyCode(BaseModel):
     token: str

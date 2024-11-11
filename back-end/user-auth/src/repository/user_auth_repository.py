@@ -27,6 +27,20 @@ class UserAuthRepository:
         self.session.refresh(user)
         return UserOutput(**user.__dict__)
 
+    def update_password(self, id_user: UUID4, new_password: str):
+        row_updated = (
+            self.session.query(UserAuth)
+            .filter_by(id_user=id_user)
+            .update(dict(password=new_password))
+        )
+
+        if row_updated == 1:
+            self.session.commit()
+        else:
+            self.session.close()
+
+        return row_updated
+
     def update_otp(self, data: UserAuthComplete):
         row_updated = (self.session.query(UserAuth)
             .filter_by(id_user=data.id_user)
