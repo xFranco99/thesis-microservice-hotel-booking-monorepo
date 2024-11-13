@@ -35,12 +35,12 @@ async def confirm_mail(token: str, session: Session = Depends(get_db)) -> Respon
 
     return Response(status_code=HTTPStatus.OK)
 
-@router.get("/sign-in")
+@router.post("/sign-in")
 def sign_in(log_in_form: SignInInput, session: Session = Depends(get_db)) -> Response:
     _service = UserAuthService(session)
     _token_service = TokenService(session)
 
-    user = _service.find_by_username_and_password(log_in_form.user, log_in_form.pswd)
+    user = _service.find_by_username_and_password(log_in_form.username, log_in_form.password)
     user.access = True
     token = _auth.generate_token(user)
 
@@ -58,6 +58,8 @@ def forgot_password(email: str, session: Session = Depends(get_db)) -> Response:
 
     user = _service.forgot_password(email)
     user_otp_out = UserOtpOutput(**user.__dict__)
+    user_otp_out.id_user = None
+
     token = _auth.generate_token(user_otp_out)
 
     return Response(
