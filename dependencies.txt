@@ -1,0 +1,13 @@
+pip install pyjwt
+pip install PyMySQL
+pip install fastapi
+pip install SQLAlchemy
+pip install starlette
+pip install pydantic
+pip install typing
+pip install uvicorn
+pip install passlib[bcrypt]
+pip install PyJWT
+pip install python-multipart
+pip install fastapi-mail
+pip install httpx
