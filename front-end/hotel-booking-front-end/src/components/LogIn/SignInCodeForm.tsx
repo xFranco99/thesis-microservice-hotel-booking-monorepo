@@ -13,7 +13,8 @@ function SignInCodeForm() {
 
   return (
     <Fragment>
-      <h1>Sign In Code</h1>
+      <h1>Access by Code</h1>
+      <p>Use your e-mail to recieve the access code</p>
       <OtpVerifyCode></OtpVerifyCode>
     </Fragment>
   );

@@ -40,7 +40,7 @@ function SignInForm() {
         </div>
         <div className="mb-3">
           <p style={{ display: "flex", justifyContent: "center" }}>
-            <a className="text-white" href="#">
+            <a className="text-white" href="/signInCode">
               Forgot password?
             </a>
           </p>

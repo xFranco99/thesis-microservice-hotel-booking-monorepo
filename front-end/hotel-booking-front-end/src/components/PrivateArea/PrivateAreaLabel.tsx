@@ -6,7 +6,8 @@ import { Routes, Route } from "react-router-dom";
 import PrivateAreaMenu from "./PrivateAreaMenu";
 
 const personalDetails: PersonalDetails = {
-  name: "John Doe",
+  firstName: "John",
+  secondName: "Doe",
   username: "John",
   email: "johndoe@example.com",
   phoneNumber: "+1234567890",

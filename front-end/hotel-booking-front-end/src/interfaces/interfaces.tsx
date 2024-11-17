@@ -17,7 +17,8 @@ interface Room {
   }
 
   interface PersonalDetails {
-    name: string;
+    firstName: string;
+    secondName: string;
     username?: string;
     email: string;
     phoneNumber?: string;

@@ -5,11 +5,14 @@ interface Props {
   id?: string;
   ariaDescribedby?: string;
   placeholder?: string;
+  label?: string
+  forGroup?: string
 }
 
-function InputText({ className = 'form-control', id, ariaDescribedby, placeholder }: Props) {
+function InputText({ className = 'form-control', id, ariaDescribedby, placeholder, label, forGroup }: Props) {
   return (
     <Fragment>
+      <label className="" htmlFor={forGroup}>{label}</label>
       <input
         type="text"
         className={className}
