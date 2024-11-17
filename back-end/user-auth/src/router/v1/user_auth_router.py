@@ -1,9 +1,11 @@
 import json
 from http import HTTPStatus
+from typing import Annotated
 
-from fastapi import APIRouter, Depends, Response, status
+from fastapi import APIRouter, Depends, Response, status, Header
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
+from starlette.responses import HTMLResponse
 
 import service.auth as _auth
 from config.database import get_db
@@ -28,12 +30,12 @@ def sign_up(
 
     return response
 
-@router.get("/confirm-mail/{token}")
-async def confirm_mail(token: str, session: Session = Depends(get_db)) -> Response:
+@router.get("/confirm-mail/{token}", response_class=HTMLResponse)
+async def confirm_mail(token: str, session: Session = Depends(get_db)):
     _token_service = TokenService(session)
-    _token_service.activate_user(token)
+    html = _token_service.activate_user(token)
 
-    return Response(status_code=HTTPStatus.OK)
+    return html
 
 @router.post("/sign-in")
 def sign_in(log_in_form: SignInInput, session: Session = Depends(get_db)) -> Response:
@@ -100,14 +102,14 @@ def password_reset(data: ResetPasswordInput, session: Session = Depends(get_db))
         status_code=HTTPStatus.OK
     )
 
-@router.post("/get-info-from-token", response_model=UserOutput)
+@router.get("/get-info-from-token", response_model=UserOutput)
 def get_info_from_token(
-        token: Token,
+        authorization: Annotated[str | None, Header()] = None,
         session: Session = Depends(get_db)
 ) -> Response:
     _token_service = TokenService(session)
 
-    user_complete = _token_service.get_current_user(token.access_token)
+    user_complete = _token_service.get_current_user(authorization)
 
     user_output = UserOutput(**user_complete.__dict__)
 

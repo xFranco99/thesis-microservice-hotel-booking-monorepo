@@ -1,3 +1,4 @@
+import json
 from datetime import datetime, timedelta, timezone
 from typing import Annotated
 
@@ -13,6 +14,7 @@ from exceptions.unauthorized_exception import UnauthorizedException, OtpExpiredE
 from repository.user_auth_repository import UserAuthRepository
 from schemas.user_auth_schema import Token
 from utils.date_util import convert_datetime_to_timestamp
+import clients.client as _client
 
 SECRET_KEY = EnvVar.SECRET_KEY
 ALGORITHM = EnvVar.ALGORITHM
@@ -81,7 +83,7 @@ class TokenService:
             raise credentials_exception
         return user
 
-    def activate_user(self, token: Annotated[str, Depends(OAuth2PasswordBearer(tokenUrl="token"))]):
+    def activate_user(self, token: Annotated[str, Depends(OAuth2PasswordBearer(tokenUrl="token"))]) -> str:
         credentials_exception = UnauthorizedException("Could not validate credentials")
         try:
             payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
@@ -92,3 +94,8 @@ class TokenService:
             raise credentials_exception
 
         self.repository.update_state(id_user)
+
+        html_json = _client.get_confirmation_mail()
+        html = json.load(html_json)['html']
+
+        return html

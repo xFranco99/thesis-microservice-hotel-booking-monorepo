@@ -1,0 +1,1 @@
+CONFIRMED_TEMPLATE_NAME = 'email_confirmed'
