@@ -3,6 +3,7 @@ from fastapi import BackgroundTasks
 from fastapi_mail import FastMail, MessageSchema
 from sqlalchemy.orm import Session
 
+from config.env_var import EnvVar
 from config.mail_config import conf
 from costants.costant import MAIL_OTP_TEMPLATE_NAME, MAIL_CONFIRMATION_TEMPLATE_NAME, URL_CONFIRM_MAIL
 from exceptions.mail_history_exception import CanNotStoreHistoryException
@@ -78,3 +79,13 @@ class TemplateService:
         template_data = {'username': mail_info.username, 'url': url}
 
         self.send_background_email(background_tasks, mail_info, template_data, MAIL_CONFIRMATION_TEMPLATE_NAME)
+
+    def find_template_by_name(self, template_name: str) -> str:
+        template = self.template_repository.find_by_template_name(template_name)
+
+        html_body = jinja2.Template(template.template)
+        template_data = {'url': EnvVar.FRONT_END_LOG_IN_URL}
+
+        email_body = html_body.render(**template_data)
+
+        return email_body

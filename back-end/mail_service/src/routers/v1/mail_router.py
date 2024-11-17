@@ -1,10 +1,10 @@
+import json
 from http import HTTPStatus
 
 from fastapi import APIRouter, BackgroundTasks, Depends
 from sqlalchemy.orm import Session
 from starlette.responses import Response
 
-import services.mail_service as _services
 from config.database import get_db
 from schemas.mail_schema import MailInput, TemplateInput
 from services.mail_service import TemplateService
@@ -55,3 +55,18 @@ def send_confirmation_mail(
     )
 
     return Response(status_code=HTTPStatus.OK)
+
+@router.get("/get-template-by-name/{template_name}")
+def get_template_by_name(
+        template_name: str,
+        session: Session = Depends(get_db)
+) -> Response:
+    _template_service = TemplateService(session)
+
+    html = _template_service.find_template_by_name(template_name)
+
+    return Response(
+        content=json.dumps({"html": html}),
+        media_type="application/json",
+        status_code=HTTPStatus.OK
+    )

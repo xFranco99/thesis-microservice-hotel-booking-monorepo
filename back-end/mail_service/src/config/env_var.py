@@ -6,6 +6,7 @@ class EnvVar:
 
     # Services Base Urls
     AUTH_SERVICE_BASE_URL = os.environ['AUTH_SERVICE_BASE_URL']
+    FRONT_END_LOG_IN_URL = os.environ['FRONT_END_LOG_IN_URL']
 
     # Mail Settings
     MAIL_USERNAME = os.getenv('MAIL_USERNAME')
