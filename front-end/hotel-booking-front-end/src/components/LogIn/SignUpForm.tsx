@@ -1,11 +1,53 @@
 import { Link } from "react-router-dom";
 import { Fragment } from "react/jsx-runtime";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../state/AuthProvider";
+import { useState } from "react";
+import axios from "axios";
 
 function SignUpForm() {
+
+  const { setAuth } = useAuth();
+  const navigate = useNavigate();
+
+  const [signUpFormData, setSignInFormData] = useState<User>({
+    username: "",
+    password: "",
+    first_name: "",
+    last_name: "",
+    phone_number: "",
+    email: "",
+    role: "USER",
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setSignInFormData((prevData) => ({ ...prevData, [name]: value }));
+  };
+
+  const handleSubmit = async (e: React.ChangeEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/api/v1/auth/sign-up",
+        signUpFormData
+      );
+      const token: Token = response.data;
+
+      localStorage.setItem("jwtToken", token.access_token);
+
+      setAuth(true);
+      navigate("/");
+    } catch (error) {
+      console.error(error);
+      setAuth(false);
+    }
+  };
+
   return (
     <Fragment>
       <h1>Sign Up</h1>
-      <form style={{ paddingTop: "20px" }}>
+      <form onSubmit={handleSubmit} style={{ paddingTop: "20px" }}>
         <div className="row mb-4">
           <div className="col">
             <input
@@ -14,6 +56,8 @@ function SignUpForm() {
               id="FirstName"
               aria-describedby="emailHelp"
               placeholder="First Name"
+              onChange={handleChange}
+              name="first_name"
             />
           </div>
           <div className="col">
@@ -23,26 +67,8 @@ function SignUpForm() {
               id="LastName"
               aria-describedby="emailHelp"
               placeholder="Last Name"
-            />
-          </div>
-        </div>
-        <div className="row mb-4">
-          <div className="col-4">
-            <input
-              type="text"
-              className="form-control"
-              id="Prefix"
-              aria-describedby="emailHelp"
-              placeholder="Prefix"
-            />
-          </div>
-          <div className="col-8">
-            <input
-              type="text"
-              className="form-control"
-              id="PhoneNumber"
-              aria-describedby="emailHelp"
-              placeholder="Phone Number"
+              onChange={handleChange}
+              name="last_name"
             />
           </div>
         </div>
@@ -50,8 +76,21 @@ function SignUpForm() {
           <input
             type="text"
             className="form-control"
+            id="PhoneNumber"
+            aria-describedby="emailHelp"
+            placeholder="Phone Number"
+            onChange={handleChange}
+            name="phone_number"
+          />
+        </div>
+        <div className="mb-3">
+          <input
+            type="text"
+            className="form-control"
             id="Username"
             placeholder="Username"
+            onChange={handleChange}
+            name="username"
           />
         </div>
         <div className="mb-3">
@@ -60,6 +99,8 @@ function SignUpForm() {
             className="form-control"
             id="Password"
             placeholder="Password"
+            onChange={handleChange}
+            name="password"
           />
         </div>
         <div className="mb-3">
@@ -69,6 +110,8 @@ function SignUpForm() {
             id="Email"
             aria-describedby="emailHelp"
             placeholder="email@example.com"
+            onChange={handleChange}
+            name="email"
           />
         </div>
         <div className="mb-3" style={{ display: "grid" }}>

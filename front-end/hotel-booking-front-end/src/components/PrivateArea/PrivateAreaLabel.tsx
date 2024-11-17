@@ -1,9 +1,11 @@
 import RoomList from "../Booking/RoomList";
-import AccountManaging from "../common/AccountManaging";
+import AccountManaging from "./AccountManaging";
 import CommonLabel from "../common/CommonLabel";
 import ReviewList from "../common/ReviewList";
 import { Routes, Route } from "react-router-dom";
 import PrivateAreaMenu from "./PrivateAreaMenu";
+import { Navigate } from "react-router-dom";
+import { useAuth } from "../../state/AuthProvider";
 
 const personalDetails: PersonalDetails = {
   firstName: "John",
@@ -51,6 +53,13 @@ const roomsListMock: Room[] = [
 ];
 
 function PrivateAreaLabel() {
+  const { auth } = useAuth();
+
+  if (!auth) {
+    // If user is not authenticated, redirect to login page
+    return <Navigate to="/logIn" />;
+  }
+
   const handleEdit = (field: keyof PersonalDetails) => {
     console.log(`Editing ${field}`);
     // Implement your edit logic here
@@ -61,10 +70,15 @@ function PrivateAreaLabel() {
       <div className="row padding-td">
         <PrivateAreaMenu></PrivateAreaMenu>
         <div className="col col-8">
-        <Routes>
+          <Routes>
             <Route
               path="accountManaging"
-              element={<AccountManaging details={personalDetails} onEdit={handleEdit} />}
+              element={
+                <AccountManaging
+                  details={personalDetails}
+                  onEdit={handleEdit}
+                />
+              }
             />
             <Route
               path="roomList"

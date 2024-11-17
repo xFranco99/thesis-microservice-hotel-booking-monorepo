@@ -1,18 +1,57 @@
+import { SyntheticEvent, useState } from "react";
 import { Link } from "react-router-dom";
 import { Fragment } from "react/jsx-runtime";
+import axios from "axios";
+import { useAuth } from "../../state/AuthProvider";
+import { useNavigate } from "react-router-dom";
 
 function SignInForm() {
+  const { setAuth } = useAuth();
+  const navigate = useNavigate();
+
+  const [signInFormData, setSignInFormData] = useState<SignInInput>({
+    username: "",
+    password: "",
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setSignInFormData((prevData) => ({ ...prevData, [name]: value }));
+  };
+
+  const handleSubmit = async (e: React.ChangeEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/api/v1/auth/sign-in",
+        signInFormData
+      );
+      const token: Token = response.data;
+
+      localStorage.setItem("jwtToken", token.access_token);
+
+      setAuth(true);
+      navigate("/");
+    } catch (error) {
+      console.error(error);
+      setAuth(false);
+    }
+  };
+
   return (
     <Fragment>
       <h1>Sign In</h1>
-      <form style={{ paddingTop: "20px" }}>
+      <form onSubmit={handleSubmit} style={{ paddingTop: "20px" }}>
         <div className="mb-3">
           <input
-            type="email"
+            type="text"
             className="form-control"
             id="InputEmailUser"
+            name="username"
             aria-describedby="emailHelp"
             placeholder="Email or Username"
+            onChange={handleChange}
+            value={signInFormData.username}
           />
         </div>
         <div className="mb-3">
@@ -20,7 +59,10 @@ function SignInForm() {
             type="password"
             className="form-control"
             id="InputPassword"
+            name="password"
             placeholder="Password"
+            onChange={handleChange}
+            value={signInFormData.password}
           />
         </div>
         <div className="mb-3" style={{ display: "grid" }}>

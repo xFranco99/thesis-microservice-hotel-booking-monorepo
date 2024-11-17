@@ -1,7 +1,17 @@
 import { Fragment } from "react/jsx-runtime";
 import ButtonLink from "../common/ButtonLink";
+import { useAuth } from "../../state/AuthProvider";
+import { useNavigate } from "react-router-dom";
 
 function PrivateAreaMenu() {
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogOut = () => {
+    logout();
+    navigate("/");
+  };
+
   return (
     <Fragment>
       <div className="col col-4>">
@@ -30,6 +40,13 @@ function PrivateAreaMenu() {
           >
             <h2 className="h5 mb-0">My Reviews</h2>
           </ButtonLink>
+          <br></br>
+          <button
+            className="btn btn-outline-dark btn-delete-border"
+            onClick={handleLogOut}
+          >
+            <h2 className="h5 mb-0">Log Out</h2>
+          </button>
         </div>
       </div>
     </Fragment>
