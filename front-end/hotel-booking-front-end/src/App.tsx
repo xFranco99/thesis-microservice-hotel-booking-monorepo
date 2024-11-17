@@ -7,7 +7,10 @@ import Home from "./components/Home";
 import LogInCard from "./components/LogIn/LogInCard";
 import SignInForm from "./components/LogIn/SignInForm";
 import SignUpForm from "./components/LogIn/SignUpForm";
-import SignInCode from "./components/LogIn/SignInCodeForm";
+import SignInCodeForm from "./components/LogIn/SignInCodeForm";
+import BookingLabel from "./components/Booking/BookingLabel";
+import RoomDetail from "./components/Booking/RoomDetail";
+import PrivateAreaLabel from "./components/PrivateArea/PrivateAreaLabel";
 
 function App() {
   return (
@@ -35,9 +38,15 @@ function App() {
           path="/signInCode"
           element={
             <LogInCard>
-              <SignInCode></SignInCode>
+              <SignInCodeForm></SignInCodeForm>
             </LogInCard>
           }
+        />
+        <Route path="/bookingLabel" element={<BookingLabel></BookingLabel>} />
+        <Route path="/roomDetail" element={<RoomDetail></RoomDetail>} />
+        <Route
+          path="/privateArea/*"
+          element={<PrivateAreaLabel></PrivateAreaLabel>}
         />
       </Routes>
       <Footer></Footer>

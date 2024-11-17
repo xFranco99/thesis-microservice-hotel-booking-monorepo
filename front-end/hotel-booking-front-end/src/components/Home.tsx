@@ -1,3 +1,7 @@
+import Modal from "./common/Modal";
+import OtpCode from "./common/OtpCode";
+import SendCode from "./LogIn/OtpVerifyCode";
+
 function Home() {
   const logInDivClass = {
     display: "flex",
@@ -10,7 +14,11 @@ function Home() {
     backgroundPosition: "center",
   };
 
-  return <div style={logInDivClass}></div>;
+  return (
+    <div style={logInDivClass}>
+      <Modal></Modal>
+    </div>
+  );
 }
 
 export default Home;

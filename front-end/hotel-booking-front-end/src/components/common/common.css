@@ -1,0 +1,38 @@
+.padding-td {
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+
+.padding-lr {
+  padding-left: 6px;
+  padding-right: 6px;
+}
+
+.carousel-img-size {
+  max-width: 934px;
+  max-height: 525px;
+}
+
+.card-detail-padding {
+  padding: 20px;
+}
+
+.bkg-color-tansparent-black {
+  background-color: rgba(33, 37, 41, 0.7) !important;
+}
+
+.btn-delete-border {
+  --bs-btn-border-color: "none" !important;
+}
+
+.input-outline-light {
+  background-color: transparent  !important;
+  border-color: rgba(255, 255, 255, 1)  !important;
+  color: rgba(255, 255, 255, 1)  !important;
+}
+
+.input-outline-dark {
+  background-color: transparent  !important;
+  border-color: rgba(0, 0, 0, 1)  !important;
+  color: rgba(0, 0, 0, 1)  !important;
+}
