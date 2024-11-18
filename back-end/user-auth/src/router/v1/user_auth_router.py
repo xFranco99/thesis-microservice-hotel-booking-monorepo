@@ -43,7 +43,6 @@ def sign_in(log_in_form: SignInInput, session: Session = Depends(get_db)) -> Res
     _token_service = TokenService(session)
 
     user = _service.find_by_username_and_password(log_in_form.username, log_in_form.password)
-    user.access = True
     token = _auth.generate_token(user)
 
     return Response(
@@ -54,8 +53,8 @@ def sign_in(log_in_form: SignInInput, session: Session = Depends(get_db)) -> Res
 
 # FORGOT PASSWORD STEPS
 # 1. generate the otp for reset password
-@router.post("/forgot-password")
-def forgot_password(email: str, session: Session = Depends(get_db)) -> Response:
+@router.post("/access-with-code")
+def access_with_code(email: str, session: Session = Depends(get_db)) -> Response:
     _service = UserAuthService(session)
 
     user = _service.forgot_password(email)
@@ -72,14 +71,17 @@ def forgot_password(email: str, session: Session = Depends(get_db)) -> Response:
 
 # 2. validate the otp
 @router.post("/validate-otp")
-def validate_otp(verify_code: VerifyCode, session: Session = Depends(get_db)) -> Response:
+def validate_otp(
+        verify_code: VerifyCode,
+        authorization: Annotated[str | None, Header()] = None,
+        session: Session = Depends(get_db)
+) -> Response:
     _service = UserAuthService(session)
     _token_service = TokenService(session)
 
-    user = _token_service.verify_code(verify_code.otp.lstrip().upper(), verify_code.token)
+    user = _token_service.verify_code(verify_code.otp.lstrip().upper(), authorization)
 
     user_output = UserOutput(**user.__dict__)
-    user_output.access = True
 
     token = _auth.generate_token(user_output)
 
@@ -91,10 +93,16 @@ def validate_otp(verify_code: VerifyCode, session: Session = Depends(get_db)) ->
 
 # 3. change password
 @router.put("/reset-password")
-def password_reset(data: ResetPasswordInput, session: Session = Depends(get_db)) -> Response:
+def password_reset(
+        data: ResetPasswordInput,
+        authorization: Annotated[str | None, Header()] = None,
+        session: Session = Depends(get_db)
+) -> Response:
     _service = UserAuthService(session)
+    _token_service = TokenService(session)
 
-    _service.reset_password(data)
+    user = _token_service.get_current_user(authorization)
+    _service.reset_password(data, user.id_user)
 
     return Response(
         content=json.dumps({"message": "Password changed successfully"}),

@@ -43,7 +43,6 @@ class UserOutput(BaseModel):
     phone_number: str
     email: str
     role: Role
-    access: bool = False
 
 class UserOtpOutput(BaseModel):
     id_user: int
@@ -67,11 +66,9 @@ class UserAuthComplete(BaseModel):
     suspend_end_date: datetime | None
 
 class ResetPasswordInput(BaseModel):
-    id_user: int
     new_password: str
 
 class VerifyCode(BaseModel):
-    token: str
     otp: str
 
 class Token(BaseModel):

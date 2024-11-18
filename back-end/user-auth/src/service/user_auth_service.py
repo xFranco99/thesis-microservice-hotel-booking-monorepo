@@ -52,8 +52,8 @@ class UserAuthService:
     def find_by_id(self, id: UUID4) -> UserAuthComplete:
         return self.repository.find_by_id(id)
 
-    def reset_password(self, data: ResetPasswordInput):
-        rows_updated = self.repository.update_password(data.id_user, data.new_password)
+    def reset_password(self, data: ResetPasswordInput, id_user: int):
+        rows_updated = self.repository.update_password(id_user, data.new_password)
 
         if rows_updated < 1:
             raise HTTPException(status_code=HTTPStatus.INTERNAL_SERVER_ERROR, detail="Update failed")

@@ -48,13 +48,13 @@ class TokenService:
         credentials_exception = UnauthorizedException("Could not validate otp")
         try:
             payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-            id_user: UUID4 = payload.get("id_user")
-            if id_user is None:
+            email: str = payload.get("email")
+            if email is None:
                 raise credentials_exception
         except InvalidTokenError:
             raise credentials_exception
 
-        user = self.repository.find_by_id(id_user)
+        user = self.repository.find_by_username_or_email(email)
 
         if user.tmp_access_code_expiration < datetime.now():
             raise OtpExpiredException
@@ -68,9 +68,6 @@ class TokenService:
         credentials_exception = UnauthorizedException("Could not validate credentials")
         try:
             payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-            access: str = payload.get("access")
-            if access is None or access == False:
-                raise credentials_exception
             id_user: UUID4 = payload.get("id_user")
             if id_user is None:
                 raise credentials_exception
