@@ -13,7 +13,7 @@ import clients.client as _client
 from exceptions.unauthorized_exception import UnauthorizedException
 from repository.user_auth_repository import UserAuthRepository
 from schemas.user_auth_schema import UserInput, UserOutput, UserAuthComplete, MailInput, UserOtpOutput, \
-    ResetPasswordInput
+    ResetPasswordInput, UserInputUpdate
 from utils.password_util import get_password_hash
 from utils.otp_util import generate_otp_code as otp_gen
 
@@ -54,6 +54,12 @@ class UserAuthService:
 
     def reset_password(self, data: ResetPasswordInput, id_user: int):
         rows_updated = self.repository.update_password(id_user, data.new_password)
+
+        if rows_updated < 1:
+            raise HTTPException(status_code=HTTPStatus.INTERNAL_SERVER_ERROR, detail="Update failed")
+
+    def update_user(self, id_user: int, user: UserInputUpdate):
+        rows_updated = self.repository.update_user(id_user, user)
 
         if rows_updated < 1:
             raise HTTPException(status_code=HTTPStatus.INTERNAL_SERVER_ERROR, detail="Update failed")

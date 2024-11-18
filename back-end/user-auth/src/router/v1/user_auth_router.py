@@ -10,7 +10,7 @@ from starlette.responses import HTMLResponse
 import service.auth as _auth
 from config.database import get_db
 from schemas.user_auth_schema import UserOutput, UserInput, Token, VerifyCode, SignInInput, UserOtpOutput, \
-    ResetPasswordInput
+    ResetPasswordInput, UserInputUpdate
 from service.auth import TokenService
 from service.user_auth_service import UserAuthService
 
@@ -127,4 +127,20 @@ def get_info_from_token(
         status_code=status.HTTP_201_CREATED
     )
 
+@router.patch("/edit-user")
+def edit_user(
+        data: UserInputUpdate,
+        authorization: Annotated[str | None, Header()] = None,
+        session: Session = Depends(get_db)
+) -> Response:
+    _service = UserAuthService(session)
+    _token_service = TokenService(session)
 
+    user_complete = _token_service.get_current_user(authorization)
+    _service.update_user(user_complete.id_user, data)
+
+    return Response(
+        content=json.dumps({"message": "User updated successfully"}),
+        media_type="application/json",
+        status_code=HTTPStatus.OK
+    )

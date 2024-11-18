@@ -2,7 +2,7 @@ from datetime import datetime
 
 from sqlalchemy.orm import Session
 from models.user_auth import UserAuth, Role, State
-from schemas.user_auth_schema import UserInput, UserOutput, UserAuthComplete
+from schemas.user_auth_schema import UserInput, UserOutput, UserAuthComplete, UserInputUpdate
 from typing import List, Optional
 import utils.password_util as psw_util
 from pydantic import UUID4
@@ -38,6 +38,24 @@ class UserAuthRepository:
                     update_date=datetime.now()
                 )
             )
+        )
+
+        if row_updated == 1:
+            self.session.commit()
+        else:
+            self.session.close()
+
+        return row_updated
+
+    def update_user(self, id_user: UUID4, data: UserInputUpdate):
+        user = UserAuth(**data.model_dump(exclude_none=True))
+        update_data = {key: value for key, value in user.__dict__.items() if
+                       value not in (None, '') and key != '_sa_instance_state'}
+
+        row_updated = (
+            self.session.query(UserAuth)
+            .filter_by(id_user=id_user)
+            .update(update_data)
         )
 
         if row_updated == 1:

@@ -1,6 +1,9 @@
 from datetime import datetime
+from email.policy import default
 from enum import Enum
-from pydantic import BaseModel
+from typing import Optional
+
+from pydantic import BaseModel, Field
 
 class Role(str, Enum):
     USER = 'USER'
@@ -30,6 +33,15 @@ class UserInput(BaseModel):
     phone_number: str
     email: str
     role: Role
+
+class UserInputUpdate(BaseModel):
+    username: Optional[str] = Field(default=None)
+    password: Optional[str] = Field(default=None)
+    first_name: Optional[str] = Field(default=None)
+    last_name: Optional[str] = Field(default=None)
+    phone_number: Optional[str] = Field(default=None)
+    email: Optional[str] = Field(default=None)
+    role:  Optional[Role] = Field(default=None)
 
 class SignInInput(BaseModel):
     username: str
