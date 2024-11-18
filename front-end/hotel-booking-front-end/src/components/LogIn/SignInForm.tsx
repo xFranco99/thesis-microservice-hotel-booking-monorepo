@@ -22,10 +22,10 @@ function SignInForm() {
   const handleSubmit = async (e: React.ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const response = await axios.post(
-        "http://localhost:8080/api/v1/auth/sign-in",
-        signInFormData
-      );
+      const apiBaseUrl = import.meta.env.VITE_AUTH_SERVICE_BASE_URL;
+      const url = apiBaseUrl + "/api/v1/auth/sign-in";
+
+      const response = await axios.post(url, signInFormData);
       const token: Token = response.data;
 
       localStorage.setItem("jwtToken", token.access_token);
@@ -82,9 +82,14 @@ function SignInForm() {
         </div>
         <div className="mb-3">
           <p style={{ display: "flex", justifyContent: "center" }}>
-            <a className="text-white" href="/signInCode">
+            <Link
+              to="/signInCode"
+              state={{ isForgotPassword: true }}
+              className="text-white"
+              id="ForgotPassword"
+            >
               Forgot password?
-            </a>
+            </Link>
           </p>
         </div>
         <div className="mb-3 form-check">

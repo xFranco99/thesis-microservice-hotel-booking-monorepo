@@ -6,7 +6,6 @@ import { useState } from "react";
 import axios from "axios";
 
 function SignUpForm() {
-
   const { setAuth } = useAuth();
   const navigate = useNavigate();
 
@@ -28,10 +27,10 @@ function SignUpForm() {
   const handleSubmit = async (e: React.ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const response = await axios.post(
-        "http://localhost:8080/api/v1/auth/sign-up",
-        signUpFormData
-      );
+      const apiBaseUrl = import.meta.env.VITE_AUTH_SERVICE_BASE_URL;
+      const url = apiBaseUrl + "/api/v1/auth/sign-up";
+
+      const response = await axios.post(url, signUpFormData);
       const token: Token = response.data;
 
       localStorage.setItem("jwtToken", token.access_token);

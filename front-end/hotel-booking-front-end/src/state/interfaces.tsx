@@ -43,6 +43,7 @@ interface SignInInput {
 }
 
 interface User {
+  id_user?: number
   username: string;
   password: string;
   first_name: string;

@@ -42,17 +42,16 @@ function AuthProvider({ children }: AuthProviderProps) {
           return;
         }
 
-        // Richiesta con il token JWT nell'header Authorization
-        const res = await axios.get(
-          "http://localhost:8080/api/v1/auth/get-info-from-token",
-          {
-            headers: {
-              Authorization: `${token}`, // Aggiunta del token nell'header
-            },
-          }
-        );
+        const apiBaseUrl = import.meta.env.VITE_AUTH_SERVICE_BASE_URL;
+        const url = apiBaseUrl + "/api/v1/auth/get-info-from-token";
 
-        console.log(res.data);
+        // Richiesta con il token JWT nell'header Authorization
+        const res = await axios.get(url, {
+          headers: {
+            Authorization: `${token}`, // Aggiunta del token nell'header
+          },
+        });
+
         setUser(res.data); // Aggiorna i dati dell'utente
         setAuth(true); // Indica che l'utente è autenticato
       } catch (error) {
