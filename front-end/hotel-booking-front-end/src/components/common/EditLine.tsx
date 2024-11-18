@@ -1,16 +1,29 @@
 import React, { Fragment, useState } from "react";
 import InputText from "./InputText";
+import axios from "axios";
 
 interface Props {
   fieldName: string;
   value?: string;
+  valueInput: string;
+  name: string;
 }
 
-function EditLine({ fieldName, value }: Props) {
+function EditLine({
+  fieldName,
+  value,
+  valueInput,
+  name,
+  onChange,
+}: Props & { onChange: (name: string, value: string) => void }) {
   const [showInput, setShowInput] = useState(false);
 
   const handleInput = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setShowInput(true);
+    setShowInput(!showInput);
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onChange(e.target.name, e.target.value);
   };
 
   return (
@@ -28,12 +41,14 @@ function EditLine({ fieldName, value }: Props) {
       {showInput && (
         <div className="row d-flex align-items-center">
           <div className="col d-flex align-items-center padding-td">
-            <InputText></InputText>
-          </div>
-          <div className="col-1">
-            <button className="btn btn-outline-success" type="submit">
-              Edit
-            </button>
+            <input
+              type="text"
+              className="form-control"
+              id={fieldName}
+              name={name}
+              value={valueInput}
+              onChange={handleChange}
+            />
           </div>
         </div>
       )}

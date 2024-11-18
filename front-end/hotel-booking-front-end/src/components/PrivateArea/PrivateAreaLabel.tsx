@@ -6,19 +6,7 @@ import { Routes, Route } from "react-router-dom";
 import PrivateAreaMenu from "./PrivateAreaMenu";
 import { Navigate } from "react-router-dom";
 import { useAuth } from "../../state/AuthProvider";
-
-const personalDetails: PersonalDetails = {
-  firstName: "John",
-  secondName: "Doe",
-  username: "John",
-  email: "johndoe@example.com",
-  phoneNumber: "+1234567890",
-  dateOfBirth: "1990-01-01",
-  nationality: "USA",
-  gender: "Male",
-  address: "123 Main St, Anytown, CA 12345",
-  passportDetails: "Passport Number: ABC123456, Expiry: 2025-12-31",
-};
+import OtpVerifyCode from "../LogIn/OtpVerifyCode";
 
 const reviews: Review[] = [
   {
@@ -71,15 +59,7 @@ function PrivateAreaLabel() {
         <PrivateAreaMenu></PrivateAreaMenu>
         <div className="col col-8">
           <Routes>
-            <Route
-              path="accountManaging"
-              element={
-                <AccountManaging
-                  details={personalDetails}
-                  onEdit={handleEdit}
-                />
-              }
-            />
+            <Route path="accountManaging" element={<AccountManaging />} />
             <Route
               path="roomList"
               element={<RoomList rooms={roomsListMock} />}
@@ -87,6 +67,12 @@ function PrivateAreaLabel() {
             <Route
               path="reviewList"
               element={<ReviewList reviews={reviews} isPersonalArea={true} />}
+            />
+            <Route
+              path="resetPasswordFromAccount"
+              element={
+                <OtpVerifyCode isForgotPassword={true} fromAccount={true} />
+              }
             />
           </Routes>
         </div>

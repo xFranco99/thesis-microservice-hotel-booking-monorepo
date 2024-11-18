@@ -28,6 +28,14 @@ function PrivateAreaMenu() {
           <ButtonLink
             className="btn btn-outline-dark btn-delete-border"
             text=""
+            to="resetPasswordFromAccount"
+          >
+            <h2 className="h5 mb-0">Reset Password</h2>
+          </ButtonLink>
+          <br></br>
+          <ButtonLink
+            className="btn btn-outline-dark btn-delete-border"
+            text=""
             to="roomList"
           >
             <h2 className="h5 mb-0">Reservation</h2>

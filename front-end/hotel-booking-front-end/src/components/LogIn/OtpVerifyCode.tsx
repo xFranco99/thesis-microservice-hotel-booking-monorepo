@@ -1,17 +1,19 @@
 import { Link } from "react-router-dom";
-import { Fragment } from "react/jsx-runtime";
-import InputText from "../common/InputText";
 import OtpCode from "../common/OtpCode";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import axios from "axios";
 import { useAuth } from "../../state/AuthProvider";
 import { useNavigate } from "react-router-dom";
 
 interface Props {
   isForgotPassword?: boolean;
+  fromAccount?: boolean;
 }
 
-function OtpVerifyCode({ isForgotPassword = false }: Props) {
+function OtpVerifyCode({
+  isForgotPassword = false,
+  fromAccount = false,
+}: Props) {
   const { setAuth } = useAuth();
   const navigate = useNavigate();
 
@@ -143,26 +145,45 @@ function OtpVerifyCode({ isForgotPassword = false }: Props) {
           </div>
         </form>
       ) : (
-        <form onSubmit={handleCheckCode}>
+        <Fragment>
+          <form onSubmit={handleCheckCode}>
+            <div className="mb-3">
+              <p>Insert the code sended at</p>
+              <OtpCode length={6} onChange={(code) => setOtpCode(code)} />
+            </div>
+            <div className="mb-3" style={{ display: "grid" }}>
+              <button
+                type="submit"
+                className="btn btn-danger"
+                id="SignInButton"
+              >
+                Verify
+              </button>
+            </div>
+          </form>
           <div className="mb-3">
-            <p>Insert the code sended at</p>
-            <OtpCode length={6} onChange={(code) => setOtpCode(code)} />
+            <p style={{margin: 0}}>
+              You dont see your email code? 
+            </p>
+            <p>
+              Check your spam folder or&nbsp;
+              <a className="text-white" onClick={() => window.location.reload()}>Retry</a>
+            </p>
           </div>
-          <div className="mb-3" style={{ display: "grid" }}>
-            <button type="submit" className="btn btn-danger" id="SignInButton">
-              Verify
-            </button>
-          </div>
-        </form>
+        </Fragment>
       )}
-      <div className="mb-3">
-        <p>
-          You don't have an account?&nbsp;
-          <Link className="text-white" to="/signUp">
-            Sign Up
-          </Link>
-        </p>
-      </div>
+      {!showOtpInput && (
+        <div className="mb-3">
+          {!fromAccount && (
+            <p>
+              You don't have an account?&nbsp;
+              <Link className="text-white" to="/signUp">
+                Sign Up
+              </Link>
+            </p>
+          )}
+        </div>
+      )}
     </div>
   );
 }

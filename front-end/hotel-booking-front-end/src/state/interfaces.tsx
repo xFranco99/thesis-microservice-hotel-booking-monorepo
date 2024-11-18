@@ -50,8 +50,7 @@ interface User {
   last_name: string;
   phone_number: string;
   email: string;
-  role: "USER" | "ADMIN";
-  access?: boolean;
+  role?: "USER" | "ADMIN";
 }
 
 interface Token {
