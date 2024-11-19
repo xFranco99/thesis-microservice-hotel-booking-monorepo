@@ -1,3 +1,4 @@
+from decimal import Decimal
 from http import HTTPStatus
 
 from fastapi import HTTPException
@@ -12,14 +13,17 @@ class BookingService:
     def __init__(self, session: Session):
         self.repository = BookingRepository(session)
 
-    def create_booking(self, data: BookingCreate):
+    def create_booking(self, data: BookingCreate, total_price: Decimal):
         try:
-            return self.repository.create_booking(data)
+            return self.repository.create_booking(data, total_price)
         except SQLAlchemyError as e:
             raise HTTPException(
                 HTTPStatus.INTERNAL_SERVER_ERROR,
                 detail=f"Error: {e} while creating hotel"
             )
+
+    def find_booking_by_id(self, booking_id: int):
+        return self.repository.find_booking_by_id(booking_id)
 
     def find_bookings_not_expired_by_user_id(self, id_user: int):
         return self.repository.find_bookings_not_expired_by_user_id(id_user)
@@ -27,5 +31,5 @@ class BookingService:
     def find_bookings_expired_by_user_id(self, id_user: int):
         return self.repository.find_bookings_expired_by_user_id(id_user)
 
-    def revoke_reservation(self, booking_id: int):
-        pass
+    def mark_booking_as_cancelled(self, booking_id: int, refund: bool):
+        return self.repository.mark_booking_as_cancelled(booking_id, refund)

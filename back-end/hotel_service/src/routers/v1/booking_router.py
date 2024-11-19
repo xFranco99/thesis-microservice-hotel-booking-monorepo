@@ -17,9 +17,9 @@ router = APIRouter(
 
 @router.post("/book-an-hotel")
 def book_an_hotel(data: BookingCreate, session: Session = Depends(get_db)) -> Response:
-    _booking_service = BookingService(session)
+    _cross_service = CrossServices(session)
 
-    booking = _booking_service.create_booking(data)
+    booking = _cross_service.create_booking(data)
 
     return Response(
         content=json.dumps(jsonable_encoder(booking)),
@@ -48,5 +48,15 @@ def get_expired_user_bookings(id_user: int, session: Session = Depends(get_db)) 
     return Response(
         content=json.dumps(jsonable_encoder(bookings)),
         media_type="application/json",
+        status_code=HTTPStatus.OK
+    )
+
+@router.put("/reservation-revoke")
+def reservation_revoke(booking_id: int, session: Session = Depends(get_db)) -> Response:
+    _cross_service = CrossServices(session)
+
+    _cross_service.revoke_reservation(booking_id)
+
+    return Response(
         status_code=HTTPStatus.OK
     )

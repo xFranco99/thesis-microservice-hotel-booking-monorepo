@@ -127,18 +127,14 @@ class HotelOut(HotelBase):
 
 class BookingOut(BookingBase):
     hotel: Optional[HotelOut] = None
+    payment_amount:  Optional[Decimal] = None
 
     class Config:
         orm_mode = True
 
 class BookingRoomOut(BookingBase):
     room: Optional[RoomOut] = None
-
-    class Config:
-        orm_mode = True
-
-class HotelOutWithBookings(HotelOut):
-    bookings: List[BookingOut] = []
+    payment_amount: Optional[Decimal] = None
 
     class Config:
         orm_mode = True

@@ -48,16 +48,18 @@ class RoomRepository:
                     # Match city and guest capacity
                     Hotel.hotel_city == city,
                     Room.bed_number >= total_guests,
-                    # Include rooms that are either:
+
                     or_(
-                        # 1. Not booked at all
+                        # Not booked
                         Room.room_number.notin_(
                             self.session.query(Booking.room_number).subquery()
                         ),
-                        # 2. Booked but outside the desired period
+
+                        # Booked outside the given period
                         Booking.booked_to < date_from,
                         Booking.booked_from > date_to,
-                        # 3. Booked within the period but cancelled
+
+                        # Booked but cancelled
                         and_(
                             or_(
                                 and_(

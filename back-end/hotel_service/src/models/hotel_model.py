@@ -52,6 +52,7 @@ class Booking(Base):
     date_payment = Column(DateTime, nullable=True)
     date_refound = Column(DateTime, nullable=True)
     cancelled = Column(Boolean, default=False)
+    payment_amount = Column(DECIMAL(7, 2), nullable=True)
 
     room = relationship('Room', back_populates='bookings')
     hotel = relationship('Hotel', back_populates='bookings')

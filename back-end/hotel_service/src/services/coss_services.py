@@ -5,12 +5,13 @@ from fastapi import HTTPException
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
-from schemas.hotel_schema import RoomOut, HotelOut
+from schemas.hotel_schema import RoomOut, HotelOut, BookingCreate
 from services.booking_service import BookingService
 from services.hotel_service import HotelService
 from services.photo_service import PhotoService
 from services.room_service import RoomServiceLogic
 from services.service_service import ServiceServiceLogic
+#from clients.client import send_refund_mail
 
 ''' This class was created to avoid import circulation'''
 class CrossServices:
@@ -20,7 +21,18 @@ class CrossServices:
         self.photos_service = PhotoService(session)
         self.hotel_service = HotelService(session)
         self.booking_service = BookingService(session)
-        
+
+    def create_booking(self, data: BookingCreate):
+        try:
+            room = self.room_service.find_room_by_room_number(data.room_number)
+            total_price = (
+                    (room.price_per_night_children * data.children_no) +
+                    (room.price_per_night_adults * data.adult_no)
+            )
+            return self.booking_service.create_booking(data, total_price)
+        except SQLAlchemyError as e:
+            raise HTTPException(HTTPStatus.INTERNAL_SERVER_ERROR, data=f"{e}")
+
     def find_room_by_room_number(self, room_number: int):
         room = self.room_service.find_room_by_room_number(room_number)
         services =  self.services_service.find_all_services_by_room_id(room_number)
@@ -104,3 +116,19 @@ class CrossServices:
             room.hotel = hotel
 
         return rooms
+
+    def revoke_reservation(self, booking_id: int):
+
+        try:
+            hotel = self.booking_service.find_booking_by_id(booking_id)
+            if not hotel.cancelled:
+                hotel_id = hotel.hotel_id
+                refund = self.hotel_service.find_hotel_by_id(hotel_id).refundable
+
+                #if refund:
+                #    send_refund_mail(None)
+
+                self.booking_service.mark_booking_as_cancelled(booking_id, refund)
+        except SQLAlchemyError as e:
+            raise HTTPException(HTTPStatus.INTERNAL_SERVER_ERROR, detail=f"{e}")
+
