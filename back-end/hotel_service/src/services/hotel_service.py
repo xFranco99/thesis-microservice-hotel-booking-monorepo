@@ -33,3 +33,6 @@ class HotelService:
 
     def find_hotel_by_id(self, hotel_id: int):
         return self.repository.find_hotel_by_id(hotel_id)
+
+    def find_city_by_name(self, city_name: str, limit: int):
+        return self.repository.find_city_by_name(city_name, limit)

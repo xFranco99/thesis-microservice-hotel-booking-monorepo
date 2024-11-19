@@ -30,3 +30,15 @@ class BookingRepository:
             ).all()
         )
         return [BookingRoomOut(**booking.__dict__) for booking in bookings]
+
+    def find_bookings_expired_by_user_id(self, id_user: int):
+        bookings = (
+            self.session.query(Booking)
+            .filter(
+                and_(
+                    Booking.user_id==id_user,
+                    Booking.booked_to < datetime.now()
+                )
+            ).all()
+        )
+        return [BookingRoomOut(**booking.__dict__) for booking in bookings]

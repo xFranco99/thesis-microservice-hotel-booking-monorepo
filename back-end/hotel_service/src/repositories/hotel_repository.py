@@ -18,3 +18,11 @@ class HotelRepository:
 
     def find_hotel_by_id(self, hotel_id: int) -> Hotel:
         return self.session.query(Hotel).filter(Hotel.hotel_id==hotel_id).first()
+
+    def find_city_by_name(self, city_name: str, limit: int):
+        hotels = (
+            self.session.query(Hotel)
+            .filter(Hotel.hotel_city.like(f"{city_name}%"))
+            .limit(limit).all()
+        )
+        return [hotel.hotel_city for hotel in hotels]

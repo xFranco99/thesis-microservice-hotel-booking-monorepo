@@ -1,7 +1,8 @@
 import json
+from datetime import datetime
 from http import HTTPStatus
 
-from fastapi import APIRouter, Depends, Response
+from fastapi import APIRouter, Depends, Response, Query
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
 
@@ -48,6 +49,26 @@ def get_room_by_room_number(room_number: int, session: Session = Depends(get_db)
 
     return Response(
         content=json.dumps(jsonable_encoder(room)),
+        media_type="application/json",
+        status_code=HTTPStatus.OK
+    )
+
+@router.get("/search-room")
+def search_a_room(
+        city: str,
+        date_from: datetime,
+        date_to: datetime,
+        total_guests: int,
+        page: int = Query(1, ge=1),
+        page_size: int = Query(10, ge=1, le=100),
+        session: Session = Depends(get_db)
+) -> Response:
+    _cross_service = CrossServices(session)
+
+    response = _cross_service.search_a_room(city, date_from, date_to, total_guests, page, page_size)
+
+    return Response(
+        content=json.dumps(jsonable_encoder(response)),
         media_type="application/json",
         status_code=HTTPStatus.OK
     )

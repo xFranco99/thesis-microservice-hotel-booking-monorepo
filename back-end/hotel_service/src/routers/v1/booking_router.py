@@ -38,3 +38,15 @@ def get_active_user_bookings(id_user: int, session: Session = Depends(get_db)) -
         media_type="application/json",
         status_code=HTTPStatus.OK
     )
+
+@router.get("/get-expired-user-booking/{id_user}")
+def get_expired_user_bookings(id_user: int, session: Session = Depends(get_db)) -> Response:
+    _cross_service = CrossServices(session)
+
+    bookings = _cross_service.find_expired_booking_by_id_user(id_user)
+
+    return Response(
+        content=json.dumps(jsonable_encoder(bookings)),
+        media_type="application/json",
+        status_code=HTTPStatus.OK
+    )

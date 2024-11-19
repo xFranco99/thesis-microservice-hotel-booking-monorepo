@@ -39,3 +39,15 @@ def create_hotel(hotel_id: int, session: Session = Depends(get_db)) -> Response:
         media_type="application/json",
         status_code=HTTPStatus.OK
     )
+
+@router.get("/available-city")
+def get_city(city_name: str = "", limit: int = 3, session: Session = Depends(get_db)) -> Response:
+    _hotel_service = HotelService(session)
+
+    response = _hotel_service.find_city_by_name(city_name, limit)
+
+    return Response(
+        content=json.dumps(jsonable_encoder(response)),
+        media_type="application/json",
+        status_code=HTTPStatus.OK
+    )

@@ -1,3 +1,4 @@
+from datetime import datetime
 from http import HTTPStatus
 
 from fastapi import HTTPException
@@ -72,3 +73,34 @@ class CrossServices:
             booking.room = room
 
         return bookings
+
+    def find_expired_booking_by_id_user(self, id_user: int):
+        bookings = self.booking_service.find_bookings_expired_by_user_id(id_user)
+
+        for booking in bookings:
+            room = self.find_room_by_room_number(booking.room_number)
+            booking.room = room
+
+        return bookings
+
+    def search_a_room(
+            self,
+            city: str,
+            date_from: datetime,
+            date_to: datetime,
+            total_guests: int,
+            page: int,
+            page_size: int
+    ):
+        rooms = self.room_service.search_room_not_booked(city, date_from, date_to, total_guests, page, page_size)
+
+        for room in rooms:
+            services = self.services_service.find_all_services_by_room_id(room.room_number)
+            photos = self.photos_service.find_photos_by_room_id(room.room_number)
+            hotel = self.hotel_service.get_hotel_from_room(room.hotel_id)
+
+            room.room_services = services
+            room.photos = photos
+            room.hotel = hotel
+
+        return rooms

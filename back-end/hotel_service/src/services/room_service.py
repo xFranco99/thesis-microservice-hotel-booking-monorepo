@@ -1,3 +1,4 @@
+from datetime import datetime
 from http import HTTPStatus
 
 from fastapi import HTTPException
@@ -44,5 +45,16 @@ class RoomServiceLogic:
     def find_room_by_room_number(self, room_number: int):
         return self.repository.find_room_by_room_number(room_number)
 
-    def find_room_by_hotel_id(self, hotel_id):
+    def find_room_by_hotel_id(self, hotel_id: int):
         return self.repository.find_room_by_hotel_id(hotel_id)
+
+    def search_room_not_booked(
+            self,
+            city: str,
+            date_from: datetime,
+            date_to: datetime,
+            total_guests: int,
+            page: int,
+            page_size: int
+    ):
+        return self.repository.search_room_not_booked(city, date_from, date_to, total_guests, page, page_size)
