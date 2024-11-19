@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 from starlette.responses import Response
 
 from config.database import get_db
-from schemas.mail_schema import MailInput, TemplateInput
+from schemas.mail_schema import MailInput, TemplateInput, RefundMailInput
 from services.mail_service import TemplateService
 
 router = APIRouter(
@@ -70,3 +70,18 @@ def get_template_by_name(
         media_type="application/json",
         status_code=HTTPStatus.OK
     )
+
+@router.post("/send-confirmed-refund-mail")
+def get_template_by_name(
+        mail_info: RefundMailInput,
+        background_tasks: BackgroundTasks,
+        session: Session = Depends(get_db)
+) -> Response:
+    _template_service = TemplateService(session)
+
+    _template_service.send_confirmed_refund_mail(
+        background_tasks,
+        mail_info
+    )
+
+    return Response(status_code=HTTPStatus.OK)

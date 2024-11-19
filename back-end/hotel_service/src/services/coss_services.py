@@ -1,4 +1,5 @@
 from datetime import datetime
+from decimal import Decimal
 from http import HTTPStatus
 
 from fastapi import HTTPException
@@ -6,12 +7,13 @@ from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
 from schemas.hotel_schema import RoomOut, HotelOut, BookingCreate
+from schemas.mail_schema import RefundMailInput
 from services.booking_service import BookingService
 from services.hotel_service import HotelService
 from services.photo_service import PhotoService
 from services.room_service import RoomServiceLogic
 from services.service_service import ServiceServiceLogic
-#from clients.client import send_refund_mail
+from clients.client import send_refund_mail, get_user_from_id
 
 ''' This class was created to avoid import circulation'''
 class CrossServices:
@@ -120,13 +122,28 @@ class CrossServices:
     def revoke_reservation(self, booking_id: int):
 
         try:
-            hotel = self.booking_service.find_booking_by_id(booking_id)
-            if not hotel.cancelled:
-                hotel_id = hotel.hotel_id
+            booking = self.booking_service.find_booking_by_id(booking_id)
+            if not booking.cancelled:
+                hotel_id = booking.hotel_id
                 refund = self.hotel_service.find_hotel_by_id(hotel_id).refundable
 
-                #if refund:
-                #    send_refund_mail(None)
+                if refund:
+                    user_info = get_user_from_id(booking.user_id)
+                    refund_amount = Decimal(
+                        str(booking.payment_amount)) if booking.payment_amount is not None else Decimal('0.00')
+
+                    mail_object = {
+                        "subject": "Refund confirmed - Hotel",
+                        "mail_to": user_info.email,
+                        "username": user_info.username,
+                        "booking_id": booking_id,
+                        "refund_amount": refund_amount,
+                        "call_date": datetime.now(),
+                        "caller_service": "hotel_service"
+                    }
+                    mail_info = RefundMailInput(**mail_object)
+
+                    send_refund_mail(mail_info)
 
                 self.booking_service.mark_booking_as_cancelled(booking_id, refund)
         except SQLAlchemyError as e:

@@ -5,11 +5,12 @@ from sqlalchemy.orm import Session
 
 from config.env_var import EnvVar
 from config.mail_config import conf
-from costants.costant import MAIL_OTP_TEMPLATE_NAME, MAIL_CONFIRMATION_TEMPLATE_NAME, URL_CONFIRM_MAIL
+from costants.costant import MAIL_OTP_TEMPLATE_NAME, MAIL_CONFIRMATION_TEMPLATE_NAME, URL_CONFIRM_MAIL, \
+    MAIL_CONFIRMED_REFUND
 from exceptions.mail_history_exception import CanNotStoreHistoryException
 from repositories.mail_hisory_repository import MailHistoryRepository
 from repositories.template_repository import TemplateRepository
-from schemas.mail_schema import TemplateInput, MailInput
+from schemas.mail_schema import TemplateInput, MailInput, RefundMailInput
 
 
 async def send_email_async(subject: str, email_to: str, body: dict):
@@ -79,6 +80,20 @@ class TemplateService:
         template_data = {'username': mail_info.username, 'url': url}
 
         self.send_background_email(background_tasks, mail_info, template_data, MAIL_CONFIRMATION_TEMPLATE_NAME)
+
+    def send_confirmed_refund_mail(
+            self,
+            background_tasks: BackgroundTasks,
+            mail_info: RefundMailInput
+    ):
+        template_data = {
+            'booking_id': mail_info.booking_id,
+            'refund_amount': mail_info.refund_amount
+        }
+
+        mail_info_fixed = MailInput(**mail_info.__dict__)
+
+        self.send_background_email(background_tasks, mail_info_fixed, template_data, MAIL_CONFIRMED_REFUND)
 
     def find_template_by_name(self, template_name: str) -> str:
         template = self.template_repository.find_by_template_name(template_name)

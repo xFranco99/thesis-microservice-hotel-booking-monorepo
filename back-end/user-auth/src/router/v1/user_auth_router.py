@@ -127,7 +127,7 @@ def get_info_from_token(
         status_code=status.HTTP_201_CREATED
     )
 
-@router.get("/get-info-from-id/{user_id}", response_model=UserOutput)
+@router.get("/get-info-from-id", response_model=UserOutput)
 def get_info_from_token(
         user_id: int,
         session: Session = Depends(get_db)
