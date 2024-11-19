@@ -5,9 +5,9 @@ from typing import List, Optional
 from pydantic import BaseModel
 
 class RoomBase(BaseModel):
+    room_number: int
     hotel_id: Optional[int] = None
     bed_number: Optional[int] = None
-    room_amount: Optional[int] = None
     room_type: Optional[str] = None
     price_per_night_adults: Optional[Decimal] = None
     price_per_night_children: Optional[Decimal] = None
@@ -16,13 +16,12 @@ class RoomBase(BaseModel):
 class RoomCreate(RoomBase):
     pass
 
-class RoomOut(RoomBase):
-    room_number: int #TODO: change in room id
-    photos: List[str] = []
-    room_services: List[str] = []
+class RoomCreateList(BaseModel):
+    room_list: List[RoomCreate]
 
-    class Config:
-        orm_mode = True
+class RoomCreateListOut(BaseModel):
+    rooms_created: List[RoomBase] = []
+    rooms_not_created: List[RoomBase] = []
 
 class HotelBase(BaseModel):
     hotel_name: Optional[str] = None
@@ -34,12 +33,6 @@ class HotelBase(BaseModel):
 
 class HotelCreate(HotelBase):
     pass
-
-class HotelOut(HotelBase):
-    rooms: List[RoomOut] = []
-
-    class Config:
-        orm_mode = True
 
 class BookingBase(BaseModel):
     room_number: int
@@ -55,12 +48,6 @@ class BookingBase(BaseModel):
 
 class BookingCreate(BookingBase):
     pass
-
-class BookingOut(BookingBase):
-    hotel: Optional[HotelOut] = None
-
-    class Config:
-        orm_mode = True
 
 class PhotoBase(BaseModel):
     photo_url: Optional[str] = None
@@ -118,15 +105,36 @@ class RoomServiceOut(RoomServiceBase):
     class Config:
         orm_mode = True
 
+class AssociateRoomWithServices(BaseModel):
+    room_id: int
+    services: List[int]
+
+class RoomOut(RoomBase):
+    photos: List[str] = []
+    room_services: List[ServiceBase] = []
+    hotel: Optional[HotelBase] = None
+
+    class Config:
+        orm_mode = True
+
+class HotelOut(HotelBase):
+    hotel_id: int
+    rooms: List[RoomOut] = []
+
+    class Config:
+        orm_mode = True
+
+class BookingOut(BookingBase):
+    hotel: Optional[HotelOut] = None
+
+    class Config:
+        orm_mode = True
+
 class HotelOutWithBookings(HotelOut):
     bookings: List[BookingOut] = []
 
     class Config:
         orm_mode = True
-
-class AssociateRoomWithServices(BaseModel):
-    room_id: int
-    services: List[int]
 
 class AssociateRoomWithServicesOut(BaseModel):
     associated_services: List[int] = []

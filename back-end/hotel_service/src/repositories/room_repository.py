@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 
 from models.hotel_model import Room
-from schemas.hotel_schema import RoomCreate, RoomOut
+from schemas.hotel_schema import RoomCreate, RoomOut, RoomBase
 
 
 class RoomRepository:
@@ -16,3 +16,11 @@ class RoomRepository:
         self.session.refresh(room)
 
         return RoomOut(**room.__dict__)
+
+    def find_room_by_room_number(self, room_number: int):
+        room = self.session.query(Room).filter(Room.room_number == room_number).first()
+        return RoomOut(**room.__dict__)
+
+    def find_room_by_hotel_id(self, hotel_id: int):
+        rooms = self.session.query(Room).filter(Room.hotel_id == hotel_id).all()
+        return [RoomBase(**room.__dict__) for room in rooms]

@@ -15,3 +15,6 @@ class HotelRepository:
         self.session.commit()
         self.session.refresh(hotel)
         return HotelOut(**hotel.__dict__)
+
+    def find_hotel_by_id(self, hotel_id: int) -> Hotel:
+        return self.session.query(Hotel).filter(Hotel.hotel_id==hotel_id).first()
