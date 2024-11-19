@@ -54,6 +54,20 @@ def associate_room_to_service(
         status_code=HTTPStatus.OK
     )
 
+@router.delete("/remove-service-from-room/{room_number}/{service_id}")
+def remove_service_from_room(
+        room_number: int,
+        service_id: int,
+        session: Session = Depends(get_db)
+) -> Response:
+    _service_service_logic = ServiceServiceLogic(session)
+
+    _service_service_logic.remove_service_from_room(room_number, service_id)
+
+    return Response(
+        status_code=HTTPStatus.OK
+    )
+
 @router.get("/get-all-services")
 def get_all_services(session: Session = Depends(get_db)) -> Response:
     _service_service_logic = ServiceServiceLogic(session)

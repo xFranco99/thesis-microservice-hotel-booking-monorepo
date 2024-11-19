@@ -1,7 +1,8 @@
+from sqlalchemy import and_
 from sqlalchemy.orm import Session, joinedload
 
 from models.hotel_model import Service, RoomService
-from schemas.hotel_schema import ServiceBase, ServiceOut, ServiceListOut
+from schemas.hotel_schema import ServiceBase, ServiceListOut, ServiceOut
 
 
 class ServiceRepository:
@@ -29,7 +30,7 @@ class ServiceRepository:
     def find_all_services(self):
         services = self.session.query(Service).all()
         result = ServiceListOut()
-        result.services = [ServiceBase(**service.__dict__) for service in services]
+        result.services = [ServiceOut(**service.__dict__) for service in services]
         return result
 
     def find_all_services_by_room_id(self, room_id: int):
@@ -43,3 +44,13 @@ class ServiceRepository:
         result = ServiceListOut()
         result.services = [ServiceBase(**service.__dict__) for service in services]
         return result
+
+    def remove_service_from_room(self, room_number: int, service_id: int):
+        self.session.query(RoomService).filter(
+            and_(
+                RoomService.room_id==room_number,
+                RoomService.service_id==service_id
+            )
+        ).delete()
+
+        self.session.commit()

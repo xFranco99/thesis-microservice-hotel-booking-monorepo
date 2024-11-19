@@ -48,3 +48,6 @@ class ServiceServiceLogic:
     def find_all_services_by_room_id(self, room_id: int):
         services = self.repository.find_all_services_by_room_id(room_id)
         return services
+
+    def remove_service_from_room(self, room_number: int, service_id: int):
+        self.repository.remove_service_from_room(room_number, service_id)

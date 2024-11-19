@@ -76,13 +76,13 @@ class ServiceCreate(BaseModel):
         orm_mode = True
 
 class ServiceOut(ServiceBase):
-    room_services: List[str] = []
+    service_id: int
 
     class Config:
         orm_mode = True
 
 class ServiceListOut(BaseModel):
-    services: List[ServiceBase] = []
+    services: List[ServiceOut] = []
 
     class Config:
         orm_mode = True
