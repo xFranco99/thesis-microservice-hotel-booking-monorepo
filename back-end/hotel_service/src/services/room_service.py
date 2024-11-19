@@ -57,4 +57,5 @@ class RoomServiceLogic:
             page: int,
             page_size: int
     ):
+
         return self.repository.search_room_not_booked(city, date_from, date_to, total_guests, page, page_size)

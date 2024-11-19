@@ -26,3 +26,6 @@ class BookingService:
 
     def find_bookings_expired_by_user_id(self, id_user: int):
         return self.repository.find_bookings_expired_by_user_id(id_user)
+
+    def revoke_reservation(self, booking_id: int):
+        pass

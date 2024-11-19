@@ -25,7 +25,8 @@ class BookingRepository:
             .filter(
                 and_(
                     Booking.user_id==id_user,
-                    Booking.booked_from >= datetime.now()
+                    Booking.booked_from >= datetime.now(),
+                    Booking.cancelled == False
                 )
             ).all()
         )

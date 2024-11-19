@@ -1,6 +1,5 @@
 import json
 from http import HTTPStatus
-from http.client import responses
 
 from fastapi import APIRouter, Depends, Response
 from fastapi.encoders import jsonable_encoder

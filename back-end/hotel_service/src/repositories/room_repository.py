@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import and_
+from sqlalchemy import and_, or_
 from sqlalchemy.orm import Session
 
 from models.hotel_model import Room, Booking, Hotel
@@ -38,15 +38,40 @@ class RoomRepository:
             page_size: int
     ):
         offset_value = (page - 1) * page_size
+
         rooms = (
             self.session.query(Room)
-            .join(Booking, Room.room_number == Booking.room_number)
             .join(Hotel, Room.hotel_id == Hotel.hotel_id)
+            .outerjoin(Booking, Room.room_number == Booking.room_number)  # Outer join to include rooms without bookings
             .filter(
                 and_(
-                    (Booking.booked_to <= date_from) | (Booking.booked_from >= date_to),
+                    # Match city and guest capacity
                     Hotel.hotel_city == city,
-                    Room.bed_number >= total_guests
+                    Room.bed_number >= total_guests,
+                    # Include rooms that are either:
+                    or_(
+                        # 1. Not booked at all
+                        Room.room_number.notin_(
+                            self.session.query(Booking.room_number).subquery()
+                        ),
+                        # 2. Booked but outside the desired period
+                        Booking.booked_to < date_from,
+                        Booking.booked_from > date_to,
+                        # 3. Booked within the period but cancelled
+                        and_(
+                            or_(
+                                and_(
+                                    Booking.booked_from >= date_from,
+                                    Booking.booked_from <= date_to
+                                ),
+                                and_(
+                                    Booking.booked_to >= date_from,
+                                    Booking.booked_to <= date_to
+                                )
+                            ),
+                            Booking.cancelled.is_(True)
+                        )
+                    )
                 )
             )
             .offset(offset_value)

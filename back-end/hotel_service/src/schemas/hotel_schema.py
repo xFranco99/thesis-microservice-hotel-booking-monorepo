@@ -45,6 +45,7 @@ class BookingBase(BaseModel):
     credit_card_no: Optional[str] = None
     date_payment: Optional[datetime] = None
     date_refound: Optional[datetime] = None
+    cancelled: Optional[bool] = False
 
 class BookingCreate(BookingBase):
     pass
