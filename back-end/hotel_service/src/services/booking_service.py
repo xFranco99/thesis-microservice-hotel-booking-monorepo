@@ -21,11 +21,5 @@ class BookingService:
                 detail=f"Error: {e} while creating hotel"
             )
 
-    def get_user_booking(self, id_user: int):
-        try:
-            return self.repository.find_bookings_by_user_id(id_user)
-        except SQLAlchemyError as e:
-            raise HTTPException(
-                HTTPStatus.INTERNAL_SERVER_ERROR,
-                detail=f"Error: {e} while creating hotel"
-            )
+    def find_bookings_not_expired_by_user_id(self, id_user: int):
+        return self.repository.find_bookings_not_expired_by_user_id(id_user)

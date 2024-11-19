@@ -5,18 +5,20 @@ from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
 from schemas.hotel_schema import RoomOut, HotelOut
+from services.booking_service import BookingService
 from services.hotel_service import HotelService
 from services.photo_service import PhotoService
 from services.room_service import RoomServiceLogic
 from services.service_service import ServiceServiceLogic
 
-
+''' This class was created to avoid import circulation'''
 class CrossServices:
     def __init__(self, session: Session):
         self.room_service = RoomServiceLogic(session)
         self.services_service = ServiceServiceLogic(session)
         self.photos_service = PhotoService(session)
         self.hotel_service = HotelService(session)
+        self.booking_service = BookingService(session)
         
     def find_room_by_room_number(self, room_number: int):
         room = self.room_service.find_room_by_room_number(room_number)
@@ -61,3 +63,12 @@ class CrossServices:
                 status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
                 detail=f"Error: {e} while creating hotel"
             )
+
+    def find_active_booking_by_id_user(self, id_user: int):
+        bookings = self.booking_service.find_bookings_not_expired_by_user_id(id_user)
+
+        for booking in bookings:
+            room = self.find_room_by_room_number(booking.room_number)
+            booking.room = room
+
+        return bookings

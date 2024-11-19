@@ -1,7 +1,10 @@
-from sqlalchemy.orm import Session, joinedload
+from datetime import datetime
 
-from models.hotel_model import Booking, Room, RoomService
-from schemas.hotel_schema import BookingCreate, BookingOut
+from sqlalchemy import and_
+from sqlalchemy.orm import Session
+
+from models.hotel_model import Booking
+from schemas.hotel_schema import BookingCreate, BookingOut, BookingRoomOut
 
 
 class BookingRepository:
@@ -16,16 +19,14 @@ class BookingRepository:
         self.session.refresh(booking)
         return BookingOut(**booking.__dict__)
 
-    def find_bookings_by_user_id(self, id_user: int):
+    def find_bookings_not_expired_by_user_id(self, id_user: int):
         bookings = (
             self.session.query(Booking)
-            .filter(Booking.user_id == id_user)
-            .options(
-                joinedload(Booking.hotel),  # Eager load associated hotel
-                joinedload(Booking.room).joinedload(Room.photos),  # Eager load room and its photos
-                joinedload(Booking.room).joinedload(Room.roomservices).joinedload(RoomService.service),
-                # Eager load room services and associated service details
-            )
-            .first()
+            .filter(
+                and_(
+                    Booking.user_id==id_user,
+                    Booking.booked_from >= datetime.now()
+                )
+            ).all()
         )
-        return BookingOut(**bookings.__dict__)
+        return [BookingRoomOut(**booking.__dict__) for booking in bookings]
