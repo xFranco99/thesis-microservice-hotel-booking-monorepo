@@ -25,8 +25,8 @@ class Room(Base):
     hotel_id = Column(Integer, ForeignKey('hotel.hotel_id'), nullable=True)
     bed_number = Column(Integer, nullable=True)
     room_type = Column(String(45), nullable=True)
-    price_per_night_adults = Column(DECIMAL(3, 2), nullable=True)
-    price_per_night_children = Column(DECIMAL(3, 2), nullable=True)
+    price_per_night_adults = Column(DECIMAL(5, 2), nullable=True)
+    price_per_night_children = Column(DECIMAL(5, 2), nullable=True)
     description = Column(String(1000), nullable=True)
 
     hotel = relationship('Hotel', back_populates='rooms')
