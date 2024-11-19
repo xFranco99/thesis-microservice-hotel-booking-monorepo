@@ -1,3 +1,5 @@
+from email.policy import default
+
 from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, DECIMAL, Boolean
 from sqlalchemy.orm import relationship
 from config.database import Base
@@ -49,6 +51,7 @@ class Booking(Base):
     credit_card_no = Column(String(45), nullable=True)
     date_payment = Column(DateTime, nullable=True)
     date_refound = Column(DateTime, nullable=True)
+    cancelled = Column(Boolean, default=False)
 
     room = relationship('Room', back_populates='bookings')
     hotel = relationship('Hotel', back_populates='bookings')
