@@ -127,6 +127,23 @@ def get_info_from_token(
         status_code=status.HTTP_201_CREATED
     )
 
+@router.get("/get-info-from-id/{user_id}", response_model=UserOutput)
+def get_info_from_token(
+        user_id: int,
+        session: Session = Depends(get_db)
+) -> Response:
+    _token_service = TokenService(session)
+
+    user_complete = _token_service.find_user_by_id(user_id)
+
+    user_output = UserOutput(**user_complete.__dict__)
+
+    return Response(
+        content=json.dumps(jsonable_encoder(user_output)),
+        media_type="application/json",
+        status_code=status.HTTP_201_CREATED
+    )
+
 @router.patch("/edit-user")
 def edit_user(
         data: UserInputUpdate,

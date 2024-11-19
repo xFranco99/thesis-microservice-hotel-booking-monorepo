@@ -1,9 +1,10 @@
 import json
 from datetime import datetime, timedelta, timezone
+from http import HTTPStatus
 from typing import Annotated
 
 import jwt
-from fastapi import Depends
+from fastapi import Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer
 from jwt import InvalidTokenError
 from pydantic.v1 import UUID4
@@ -78,6 +79,13 @@ class TokenService:
 
         if user is None:
             raise credentials_exception
+        return user
+
+    def find_user_by_id(self, id_user: int):
+        user = self.repository.find_by_id(id_user)
+
+        if user is None:
+            raise HTTPException(HTTPStatus.NOT_FOUND, detail=f"User with id {id_user} not found")
         return user
 
     def activate_user(self, token: Annotated[str, Depends(OAuth2PasswordBearer(tokenUrl="token"))]) -> str:
