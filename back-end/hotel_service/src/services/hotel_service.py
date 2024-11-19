@@ -31,16 +31,5 @@ class HotelService:
                 detail=f"Error: {e} while creating hotel"
             )
 
-    #def find_hotel_by_hotel_id(self, hotel_id: int):
-    #    try:
-    #        hotel_model = self.repository.find_hotel_by_id(hotel_id)
-    #        hotel = HotelOut(**hotel_model.__dict__)
-    #
-    #        hotel.rooms = self.room_service.find_all_rooms_by_hotel_id(hotel.hotel_id)
-    #
-    #    except SQLAlchemyError as e:
-    #        raise HTTPException(
-    #            status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
-    #            detail=f"Error: {e} while creating hotel"
-    #        )
-#
+    def find_hotel_by_id(self, hotel_id: int):
+        return self.repository.find_hotel_by_id(hotel_id)

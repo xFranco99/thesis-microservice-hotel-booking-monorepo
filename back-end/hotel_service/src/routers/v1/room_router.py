@@ -7,6 +7,7 @@ from sqlalchemy.orm import Session
 
 from config.database import get_db
 from schemas.hotel_schema import RoomCreate, RoomCreateList
+from services.coss_services import CrossServices
 from services.room_service import RoomServiceLogic
 
 router = APIRouter(
@@ -41,9 +42,9 @@ def create_room(data: RoomCreateList, session: Session = Depends(get_db)) -> Res
 @router.get("/get-room-by-room-number/{room_number}")
 def get_room_by_room_number(room_number: int, session: Session = Depends(get_db)) -> Response:
 
-    _room_service = RoomServiceLogic(session)
+    _cross_service = CrossServices(session)
 
-    room = _room_service.find_room_by_room_number(room_number)
+    room = _cross_service.find_room_by_room_number(room_number)
 
     return Response(
         content=json.dumps(jsonable_encoder(room)),
