@@ -11,3 +11,5 @@ pip install PyJWT
 pip install python-multipart
 pip install fastapi-mail
 pip install httpx
+pip install canvas
+pip install reportlab
