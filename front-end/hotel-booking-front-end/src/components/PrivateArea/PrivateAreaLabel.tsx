@@ -2,11 +2,14 @@ import RoomList from "../Booking/RoomList";
 import AccountManaging from "./AccountManaging";
 import CommonLabel from "../common/CommonLabel";
 import ReviewList from "../common/ReviewList";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import PrivateAreaMenu from "./PrivateAreaMenu";
 import { Navigate } from "react-router-dom";
 import { useAuth } from "../../state/AuthProvider";
 import OtpVerifyCode from "../LogIn/OtpVerifyCode";
+import ChatBot from "./ChatBot";
+import axios from "axios";
+import { useEffect, useState } from "react";
 
 const reviews: Review[] = [
   {
@@ -19,7 +22,7 @@ const reviews: Review[] = [
   },
 ];
 
-const roomsListMock: Room[] = [
+/*const roomsListMock: Room[] = [
   {
     roomId: 1001,
     hotelName: "Grand Plaza Hotel",
@@ -38,20 +41,61 @@ const roomsListMock: Room[] = [
     reservedFrom: "2024-11-27",
     reservedTo: "2024-12-05",
   },
-];
+];*/
 
 function PrivateAreaLabel() {
-  const { auth } = useAuth();
+  const { auth, user } = useAuth();
+  const navigate = useNavigate();
 
-  if (!auth) {
-    // If user is not authenticated, redirect to login page
-    return <Navigate to="/logIn" />;
+  const [bookings, setBookings] = useState<BookingRoomOut[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchBookingList() {
+      if (!auth || !user) {
+        setLoading(false); // Ensure loading ends even if auth fails
+        return;
+      }
+
+      try {
+        console.log(user);
+        const apiBaseUrl = import.meta.env.VITE_HOTEL_SERVICE_BASE_URL;
+        const url =
+          apiBaseUrl +
+          "/api/v1/booking/get-active-user-booking/" +
+          user?.id_user;
+        const response = await axios.get(url);
+
+        console.log("test - 2");
+        if (response.data) {
+          console.log("test - 4");
+          console.log(response.data);
+          setBookings(response.data);
+        }
+      } catch (e) {
+        console.log(e);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchBookingList();
+  }, [auth, user]);
+
+  if (loading) {
+    return <div>Loading...</div>;
   }
+  
+  /*if (!auth) {
+    return <Navigate to="/logIn" />;
+  }*/
 
-  const handleEdit = (field: keyof PersonalDetails) => {
-    console.log(`Editing ${field}`);
-    // Implement your edit logic here
-  };
+  const data_list: RoomOutAndBookRoomOut[] = bookings.map((booking) => {
+    return {
+      room: null,
+      booking: booking || null,
+    };
+  });
 
   return (
     <CommonLabel style={{ backgroundColor: "#FFFFFF" }}>
@@ -60,10 +104,12 @@ function PrivateAreaLabel() {
         <div className="col col-8">
           <Routes>
             <Route path="accountManaging" element={<AccountManaging />} />
-            <Route
-              path="roomList"
-              element={<RoomList rooms={roomsListMock} />}
-            />
+            {
+              <Route
+                path="roomListBooking"
+                element={<RoomList data_list={data_list} />}
+              />
+            }
             <Route
               path="reviewList"
               element={<ReviewList reviews={reviews} isPersonalArea={true} />}
@@ -74,6 +120,7 @@ function PrivateAreaLabel() {
                 <OtpVerifyCode isForgotPassword={true} fromAccount={true} />
               }
             />
+            <Route path="chatBot" element={<ChatBot />} />
           </Routes>
         </div>
       </div>

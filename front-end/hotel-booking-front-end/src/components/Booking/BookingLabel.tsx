@@ -10,16 +10,17 @@ import axios from "axios";
 function BookingLabel() {
   const navigate = useNavigate();
 
-  const location = useLocation();
-  const searchParams = new URLSearchParams(location.search);
   const [rooms, setRooms] = useState<RoomOut[]>([]);
 
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+
   const _city = searchParams.get("city") || "";
-  const _startDate = searchParams.get("startDate")
-    ? new Date(searchParams.get("startDate")!)
+  const _startDate = searchParams.get("date_from")
+    ? new Date(searchParams.get("date_from")!)
     : new Date();
-  const _endDate = searchParams.get("endDate")
-    ? new Date(searchParams.get("endDate")!)
+  const _endDate = searchParams.get("date_to")
+    ? new Date(searchParams.get("date_to")!)
     : new Date();
   const _childNumber = Number(searchParams.get("childNumber")) || 0;
   const _adultNumber = Number(searchParams.get("adultNumber")) || 0;
@@ -32,6 +33,8 @@ function BookingLabel() {
 
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(1);
+
+  const [pageRight, setPageRight] = useState(false)
 
   const fetchRooms = async () => {
     const isDateError = !startDate || !endDate || startDate > endDate;
@@ -54,11 +57,12 @@ function BookingLabel() {
       endDate.toISOString().split("T")[0]
     )}&total_guests=${encodeURIComponent(
       childNumber + adultNumber
-    )}&page_size=${encodeURIComponent(pageSize)}`;
+    )}&page=${encodeURIComponent(page)}&page_size=${encodeURIComponent(pageSize)}`;
 
     const res = await axios.get(url);
 
     if (res.data) {
+      setPageRight(res.data.length >= pageSize)
       setRooms(res.data);
     }
   };
@@ -79,10 +83,11 @@ function BookingLabel() {
       <div className="row">
         <div className="col-3 padding-td">
           <BookingFilterCard
-            city={_city}
-            adults={String(_childNumber)}
-            childrens={String(_adultNumber)}
-            reserve={false}
+            _city={_city}
+            _from={startDate.toISOString().split("T")[0]}
+            _to={endDate.toISOString().split("T")[0]}
+            _adults={String(_childNumber)}
+            _childrens={String(_adultNumber)}
           ></BookingFilterCard>
         </div>
         <div className="col-9">
@@ -108,7 +113,11 @@ function BookingLabel() {
         <div className="col"></div>
         <div className="col-3">
           <button
-            className="btn btn-outline-dark rounded-pill"
+            className={
+              page == 1
+                ? "btn btn-outline-dark rounded-pill disabled"
+                : "btn btn-outline-dark rounded-pill"
+            }
             onClick={() => {
               setPage(page + 1);
               fetchRooms();

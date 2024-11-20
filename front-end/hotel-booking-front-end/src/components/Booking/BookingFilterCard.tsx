@@ -1,30 +1,45 @@
+import { useLocation } from "react-router-dom";
 import ButtonLink from "../common/ButtonLink";
 import Datepicker from "../common/Datepicker";
 import SearchFromList from "../common/SearchFromList";
 import Selector from "../common/Selector";
 import "../common/common.css";
+import { useState } from "react";
 
 interface Props {
   title?: string;
-  city?: string;
-  from?: string;
-  to?: string;
-  adults?: string;
-  childrens?: string;
-  reserve?: boolean;
+  _city?: string;
+  _from?: string;
+  _to?: string;
+  _adults?: string;
+  _childrens?: string;
 }
 
 function BookingFilterCard({
   title = "Cerca",
-  city = "",
-  from = "",
-  to = "",
-  adults = "0",
-  childrens = "0",
-  reserve = false,
+  _city = "",
+  _from = "",
+  _to = "",
+  _adults = "0",
+  _childrens = "0",
 }: Props) {
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+
+  const reserve = searchParams.get("isReserved") === "true";
+
+  const [startDate, setStartDate] = useState<Date>(new Date(_from));
+  const [endDate, setEndDate] = useState<Date>(new Date(_to));
+  const [adultNumber, setAdultNumber] = useState(Number(_adults));
+  const [childNumber, setChildNumber] = useState(Number(_childrens));
+  const [city, setCity] = useState<string>(_city);
+
+  const handleSearchButton = () => {
+
+  }
+
   return (
-    <form>
+    <form onSubmit={handleSearchButton}>
       <div className="card input-outline-dark">
         <div className="card-body">
           <div className="row">
@@ -41,7 +56,7 @@ function BookingFilterCard({
               <Datepicker
                 id="dateFrom"
                 name="dateFrom"
-                value={from}
+                value={startDate.toISOString().split("T")[0]}
                 className="form-control input-outline-dark"
               ></Datepicker>
             </div>
@@ -49,21 +64,21 @@ function BookingFilterCard({
               <Datepicker
                 id="dateFrom"
                 name="dateFrom"
-                value={to}
+                value={endDate.toISOString().split("T")[0]}
                 className="form-control input-outline-dark"
               ></Datepicker>
             </div>
             <div className="row padding-td padding-lr">
               <Selector
                 values={["1", "2", "3", "4"]}
-                selectedOption={adults}
+                selectedOption={String(adultNumber)}
                 className="form-select input-outline-dark"
               />
             </div>
             <div className="row padding-td padding-lr">
               <Selector
                 values={["1", "2", "3", "4"]}
-                selectedOption={childrens}
+                selectedOption={String(childNumber)}
                 className="form-select input-outline-dark"
               />
             </div>
@@ -71,13 +86,13 @@ function BookingFilterCard({
           <div className="row padding-td padding-lr">
             {reserve ? (
               <ButtonLink
-                text="Reserve >"
+                text="Reserved"
                 className="btn btn-outline-dark rounded-pill"
               ></ButtonLink>
             ) : (
               <ButtonLink
                 className="btn btn-outline-dark rounded-pill"
-                text="Search"
+                text="Search >"
               ></ButtonLink>
             )}
           </div>

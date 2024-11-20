@@ -2,18 +2,13 @@ import { Fragment } from "react/jsx-runtime";
 import React, { useState } from "react";
 import "../common/common.css";
 
-function Carousel() {
+interface Props {
+  images?: string[];
+}
+
+function Carousel({ images = [import.meta.env.VITE_IMAGE_NOT_FOUND] }: Props) {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [startIndex, setStartIndex] = useState(0);
-
-  const images = [
-    "https://cf.bstatic.com/xdata/images/hotel/max1024x768/605712691.jpg?k=bc971490f6a561adab9898893f176636b24f1db1ef75d578bd5b24f95ba09619&o=",
-    "https://cf.bstatic.com/xdata/images/hotel/max500/605712577.jpg?k=64e13431e9729a670e3612a442939ccc0f34a1185eb041b1fbfaeba95b51cf59&o=",
-    "https://cf.bstatic.com/xdata/images/hotel/max500/605712668.jpg?k=31096d24536324d4328d93b895615bd5bde56d17bfebbf95f9b1413721c03852&o=",
-    "https://cf.bstatic.com/xdata/images/hotel/max300/605712610.jpg?k=44b2486558ae07dc59e3fbd451065f4f63e14e7694e0bae0589930e4df2cdd19&o=",
-    "https://cf.bstatic.com/xdata/images/hotel/max300/601095432.jpg?k=cb41d7b234512f86df5ae8a5a57480b9107c123b4f1db3f802c6083713884323&o=",
-    "https://cf.bstatic.com/xdata/images/hotel/max300/605712628.jpg?k=61a7a34bd9ee984b1344697f7339140eb48e5c8e4a2dbb61f838f7e7e9215f70&o=",
-  ];
 
   const THUMBNAIL_COUNT = 3; // Number of thumbnails to show at once
 

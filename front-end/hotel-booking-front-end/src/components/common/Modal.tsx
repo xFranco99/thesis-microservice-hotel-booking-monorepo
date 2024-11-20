@@ -24,7 +24,7 @@ function Modal() {
     e.preventDefault();
 
     // validate inputs
-    const isDateError = !startDate || !endDate || startDate > endDate;
+    const isDateError = !startDate || !endDate || startDate >= endDate;
     const isCityError = !city;
     const isGuestNumberError =
       (childNumber > 0 && adultNumber <= 0) ||

@@ -59,6 +59,7 @@ function AuthProvider({ children }: AuthProviderProps) {
       setUser(null); // Nessun utente autenticato
       setAuth(false); // Indica che l'utente non è autenticato
       localStorage.removeItem("jwtToken");
+      alert("Session expired");
     }
   };
 

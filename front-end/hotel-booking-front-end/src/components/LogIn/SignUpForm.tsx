@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { Fragment } from "react/jsx-runtime";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../state/AuthProvider";
@@ -6,7 +6,7 @@ import { useState } from "react";
 import axios from "axios";
 
 function SignUpForm() {
-  const { setAuth } = useAuth();
+  const { setAuth, auth } = useAuth();
   const navigate = useNavigate();
 
   const [signUpFormData, setSignInFormData] = useState<User>({

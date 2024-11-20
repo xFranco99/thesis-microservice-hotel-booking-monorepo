@@ -1,12 +1,12 @@
 import { SyntheticEvent, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { Fragment } from "react/jsx-runtime";
 import axios from "axios";
 import { useAuth } from "../../state/AuthProvider";
 import { useNavigate } from "react-router-dom";
 
 function SignInForm() {
-  const { setAuth } = useAuth();
+  const { setAuth, auth } = useAuth();
   const navigate = useNavigate();
 
   const [signInFormData, setSignInFormData] = useState<SignInInput>({

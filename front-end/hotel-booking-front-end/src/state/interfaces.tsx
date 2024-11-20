@@ -192,6 +192,7 @@ interface BookingOut extends BookingBase {
 interface BookingRoomOut extends BookingBase {
   room?: RoomOut | null;
   payment_amount?: number | null;
+  booking_id: number
 }
 
 // Associate Room with Services Output

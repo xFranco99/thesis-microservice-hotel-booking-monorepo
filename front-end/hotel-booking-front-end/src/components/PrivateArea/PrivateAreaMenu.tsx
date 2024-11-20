@@ -36,7 +36,7 @@ function PrivateAreaMenu() {
           <ButtonLink
             className="btn btn-outline-dark btn-delete-border"
             text=""
-            to="roomList"
+            to="roomListBooking"
           >
             <h2 className="h5 mb-0">Reservation</h2>
           </ButtonLink>
@@ -55,6 +55,14 @@ function PrivateAreaMenu() {
           >
             <h2 className="h5 mb-0">Log Out</h2>
           </button>
+          <br></br>
+          <ButtonLink
+            className="btn btn-outline-dark btn-delete-border"
+            text=""
+            to="chatBot"
+          >
+            <h2 className="h5 mb-0">AI FAQ Assistant Bot</h2>
+          </ButtonLink>
         </div>
       </div>
     </Fragment>
