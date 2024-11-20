@@ -12,7 +12,7 @@ function BookingLabel() {
 
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
-  const [rooms, setRooms] = useState<RoomOut[]>([])
+  const [rooms, setRooms] = useState<RoomOut[]>([]);
 
   const _city = searchParams.get("city") || "";
   const _startDate = searchParams.get("startDate")
@@ -29,6 +29,9 @@ function BookingLabel() {
   const [childNumber, setChildNumber] = useState(_childNumber);
   const [adultNumber, setAdultNumber] = useState(_adultNumber);
   const [city, setCity] = useState<string>(_city);
+
+  const [pageSize, setPageSize] = useState(10);
+  const [page, setPage] = useState(1);
 
   const fetchRooms = async () => {
     const isDateError = !startDate || !endDate || startDate > endDate;
@@ -49,19 +52,21 @@ function BookingLabel() {
       startDate.toISOString().split("T")[0]
     )}&date_to=${encodeURIComponent(
       endDate.toISOString().split("T")[0]
-    )}&total_guests=${encodeURIComponent(childNumber + adultNumber)}`;
+    )}&total_guests=${encodeURIComponent(
+      childNumber + adultNumber
+    )}&page_size=${encodeURIComponent(pageSize)}`;
 
-    const res = await axios.get(url)
+    const res = await axios.get(url);
 
-    if(res.data){
-      setRooms(res.data)
+    if (res.data) {
+      setRooms(res.data);
     }
   };
 
   useEffect(() => {
-    fetchRooms()
+    fetchRooms();
   }, []);
-  
+
   const data_list: RoomOutAndBookRoomOut[] = rooms.map((room) => {
     return {
       room: room || null,
@@ -85,12 +90,32 @@ function BookingLabel() {
         </div>
       </div>
       <div className="row padding-td">
-        <div className="col-3"></div>
-        <div className="col-9">
-          <ButtonLink
-            text="Load Other"
+        <div className="col-3">
+          <button
+            className={
+              page == 1
+                ? "btn btn-outline-dark rounded-pill disabled"
+                : "btn btn-outline-dark rounded-pill"
+            }
+            onClick={() => {
+              setPage(page - 1);
+              fetchRooms();
+            }}
+          >
+            &lt; Previus Page
+          </button>
+        </div>
+        <div className="col"></div>
+        <div className="col-3">
+          <button
             className="btn btn-outline-dark rounded-pill"
-          ></ButtonLink>
+            onClick={() => {
+              setPage(page + 1);
+              fetchRooms();
+            }}
+          >
+            Next Page &gt;
+          </button>
         </div>
       </div>
     </CommonLabel>

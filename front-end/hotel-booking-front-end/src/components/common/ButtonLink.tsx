@@ -9,6 +9,7 @@ interface Props {
   children?: ReactNode
   style?: object
   state?: object
+  onClick?: () => void
 }
 
 function ButtonLink({
@@ -18,10 +19,11 @@ function ButtonLink({
   to = "/",
   children,
   style,
-  state
+  state,
+  onClick
 }: Props) {
   return (
-    <Link to={to} state={state} className={className} id={id} style={style}>
+    <Link to={to} state={state} className={className} id={id} style={style} onClick={onClick}>
       {text}{children}
     </Link>
   );
