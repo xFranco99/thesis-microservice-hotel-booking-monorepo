@@ -33,15 +33,6 @@ function BookingFilterCard({
           <fieldset>
             <div className="position-relative row padding-td padding-lr">
               <SearchFromList
-                list={[
-                  "Roma",
-                  "Rimini",
-                  "Ravenna",
-                  "Genova",
-                  "Catanzaro",
-                  "Ginevra",
-                  "Torino",
-                ]}
                 value={city}
                 className="form-select input-outline-dark"
               ></SearchFromList>

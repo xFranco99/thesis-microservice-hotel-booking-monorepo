@@ -3,6 +3,8 @@ interface Props {
   selectedOption?: string;
   placeholderOption?: string;
   className?: string;
+  onChange?: (selectedOption: string) => void;
+  style?: object
 }
 
 function Selector({
@@ -10,6 +12,8 @@ function Selector({
   selectedOption,
   placeholderOption = "-",
   className = "form-select",
+  onChange,
+  style
 }: Props) {
   const options = values.map((val) =>
     selectedOption === val ? (
@@ -22,7 +26,14 @@ function Selector({
   );
 
   return (
-    <select className={className} aria-label="Default select example">
+    <select
+      className={className}
+      aria-label="Default select example"
+      onChange={(e) => {
+        if (onChange) onChange(e.target.value);
+      }}
+      style={style}
+    >
       <option selected>{placeholderOption}</option>
       {options}
     </select>

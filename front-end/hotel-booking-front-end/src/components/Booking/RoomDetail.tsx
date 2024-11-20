@@ -8,7 +8,7 @@ import CardWithImage from "../common/CardWithImage";
 import Datepicker from "../common/Datepicker";
 import SearchFromList from "../common/SearchFromList";
 
-const roomMock: Room = {
+/*const roomMock: Room = {
   roomId: 1001,
   hotelName: "Grand Plaza Hotel",
   hotelAddress: "123 Main Street, Downtown, New York, NY 10001",
@@ -25,7 +25,7 @@ const roomMock: Room = {
   services: ["Wi-Fi", "Room Service", "Mini Bar", "TV", "Air Conditioning"],
   description:
     "But I must explain to you how all this mistaken idea of denouncing pleasure and praising pain was born and I will give you a complete account of the system, and expound the actual teachings of the great explorer of the truth, the master-builder of human happiness. No one rejects, dislikes, or avoids pleasure itself, because it is pleasure, but because those who do not know how to pursue pleasure rationally encounter consequences that are extremely painful. Nor again is there anyone who loves or pursues or desires to obtain pain of itself, because it is pain, but because occasionally circumstances occur in which toil and pain can procure him some great pleasure. To take a trivial example, which of us ever undertakes laborious physical exercise, except to obtain some advantage from it? But who has any right to find fault with a man who chooses to enjoy a pleasure that has no annoying consequences, or one who avoids a pain that produces no resultant pleasure?",
-};
+};*/
 
 function drawStars(hotelStars: number): ReactNode[] {
   let result: ReactNode[] = [];
@@ -37,13 +37,26 @@ function drawStars(hotelStars: number): ReactNode[] {
   return result;
 }
 
-function RoomDetail() {
-  const stars = drawStars(roomMock.hotelStars);
+interface Props {
+  data: RoomOutAndBookRoomOut;
+}
+
+function RoomDetail({data}: Props) {
+
+  const booking = data.booking;
+  const room = data.booking != null ? data.booking.room : data.room;
+  const hotel = room?.hotel;
+  const photos = room?.photos;
+  const services = room?.room_services;
+
+  const reviewScore = Math.floor(Math.random() * 10) + 1;
+
+  const stars = drawStars(reviewScore);
   const maspLink =
     "http://maps.google.com/?q=1200 Pennsylvania Ave SE, Washington, District of Columbia, 20003" +
-    roomMock.hotelAddress;
+    hotel?.hotel_address;
 
-  const cardTitle = "€ " + roomMock.hotelPrice;
+  const cardTitle = "€ " + room?.price_per_night_adults + " per night";
 
   return (
     <div className="container card-detail-padding">
@@ -69,7 +82,7 @@ function RoomDetail() {
           <div className="row mb-3">
             <div className="col">
               <div className="d-flex align-items-center gap-2">
-                <h2 className="h5 text-primary mb-0">{roomMock.hotelName}</h2>
+                <h2 className="h5 text-primary mb-0">{hotel?.hotel_name}</h2>
               </div>
               <div className="d-flex align-items-center gap-2 padding-td">
                 {stars}
@@ -88,7 +101,7 @@ function RoomDetail() {
           <div className="row">
             <h2 className="h5 mb-0">Description</h2>
             <div className="col" style={{ paddingTop: "8px" }}>
-              {roomMock.description}
+              {room?.description}
             </div>
           </div>
           <Review></Review>

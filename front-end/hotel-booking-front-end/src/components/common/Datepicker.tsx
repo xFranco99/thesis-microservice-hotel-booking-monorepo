@@ -1,9 +1,12 @@
+import { ChangeEvent } from "react";
+
 interface Props {
   id: string;
   name: string;
   value?: string;
   style?: object;
   className?: string;
+  onChange?: (_date: Date) => void;
 }
 
 function Datepicker({
@@ -12,6 +15,7 @@ function Datepicker({
   value,
   style,
   className = "form-control",
+  onChange,
 }: Props) {
   return (
     <input
@@ -21,6 +25,14 @@ function Datepicker({
       name={name}
       defaultValue={value}
       style={style}
+      onChange={(event) => {
+        if (onChange) {
+          const dateValue = event.target.value
+            ? new Date(event.target.value)
+            : null;
+          if (dateValue) onChange(dateValue);
+        }
+      }}
     />
   );
 }

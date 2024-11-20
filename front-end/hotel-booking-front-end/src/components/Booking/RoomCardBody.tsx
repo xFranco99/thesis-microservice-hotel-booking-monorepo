@@ -39,23 +39,33 @@ function drawStars(hotelStars: number): ReactNode[] {
 }
 
 interface Props {
-  room: Room;
+  data: RoomOutAndBookRoomOut;
 }
 
-function RoomCardBoody({ room }: Props) {
+function RoomCardBoody({ data }: Props) {
+  const isReserved = data.booking != null;
+
+  const booking = data.booking;
+  const room = data.booking != null ? data.booking.room : data.room;
+  const hotel = room?.hotel;
+  const photos = room?.photos;
+  const services = room?.room_services;
+
+  const reviewScore = Math.floor(Math.random() * 10) + 1;
+
   const maspLink =
     "http://maps.google.com/?q=1200 Pennsylvania Ave SE, Washington, District of Columbia, 20003" +
-    room.hotelAddress;
+    hotel?.hotel_address;
 
-  const txtScore = reviewTextScore(room.hotelReviewScore);
-  const colorScore = reviewColorScore(room.hotelReviewScore);
-  const stars = drawStars(room.hotelStars);
+  const txtScore = reviewTextScore(reviewScore); //room.hotelReviewScore
+  const colorScore = reviewColorScore(reviewScore); //room.hotelReviewScore
+  const stars = drawStars(hotel?.hotel_stars ?? 0);
 
-  const roomLeftAlert = room.roomLeft < 11 && (
+  /*const roomLeftAlert = room.roomLeft < 11 && (
     <div className="small text-danger mt-2 text-center text-md-start">
       Only {room.roomLeft} rooms left at this price on our site
     </div>
-  );
+  );*/
 
   const reservedAlert = (
     <Fragment>
@@ -63,7 +73,7 @@ function RoomCardBoody({ room }: Props) {
         Reserved
       </div>
       <div className="small mt-2 text-center text-md-start">
-        {room.reservedFrom} / {room.reservedTo}
+        {booking?.booked_from} / {booking?.booked_to}
       </div>
       <div className="small mt-2 text-center text-md-end">
         <ButtonLink
@@ -75,14 +85,12 @@ function RoomCardBoody({ room }: Props) {
     </Fragment>
   );
 
-  const isReserved = room.reservedFrom;
-
   return (
     <Fragment>
       <div className="row mb-3">
         <div className="col">
           <div className="d-flex align-items-center gap-2">
-            <h2 className="h5 text-primary mb-0">{room.hotelName}</h2>
+            <h2 className="h5 text-primary mb-0">{hotel?.hotel_name}</h2>
           </div>
           <div className="d-flex align-items-center gap-2 padding-td">
             {stars}
@@ -102,11 +110,10 @@ function RoomCardBoody({ room }: Props) {
           <div className="d-flex align-items-center gap-2">
             <div className="small">
               <div>{txtScore}</div>
-              <div>{room.hotelReviewNumber} reviews</div>
+              {/* review number */}
+              <div>{reviewScore} reviews</div>
             </div>
-            <div className={colorScore}>
-              {room.hotelReviewScore}
-            </div>
+            <div className={colorScore}>{reviewScore}</div>
           </div>
         </div>
       </div>
@@ -114,25 +121,27 @@ function RoomCardBoody({ room }: Props) {
       <div className="row">
         <div className="col mt-auto">
           <h3 className="h6 fw-bold mb-2 text-center text-md-start">
-            {room.roomType}
+            {room?.room_type}
           </h3>
           <div className="small text-secondary text-center text-md-start">
-            {room.bedNumber} Bed
+            {room?.bed_number} Bed
           </div>
           <div className="small mt-2 text-center text-md-start">
             8 notti, 2 adulti
           </div>
-          {!isReserved && roomLeftAlert}
+          {/*!isReserved && roomLeftAlert*/}
         </div>
         <div className="col-auto text-end">
           {isReserved ? (
             reservedAlert
           ) : (
             <Fragment>
-              <div className="text-secondary text-decoration-line-through">
-                € 4320
+              <div className="text-secondary">
+                Price per night children € {room?.price_per_night_children}
               </div>
-              <div className="fs-4 fw-bold">€ {room.hotelPrice}</div>
+              <div className="fs-4 fw-bold">
+                Price per night adults € {room?.price_per_night_adults}
+              </div>
               <div className="small text-secondary">
                 You may have additional costs
               </div>
