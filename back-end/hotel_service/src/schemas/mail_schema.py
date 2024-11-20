@@ -17,3 +17,14 @@ class MailInput(BaseModel):
 class RefundMailInput(MailInput):
     refund_amount: Optional[Decimal] = None
     booking_id: Optional[int] = None
+
+class ReservationMailInfo(MailInput):
+    guest_name: Optional[str] = None
+    hotel_name: Optional[str] = None
+    check_in: Optional[str] = None
+    check_out: Optional[str] = None
+    adults_no: Optional[str] = None
+    childs_no: Optional[str] = None
+    room_type: Optional[str] = None
+    booking_id: Optional[int] = None
+    hotel_address: Optional[str] = None

@@ -2,6 +2,7 @@ from datetime import datetime
 from decimal import Decimal
 
 from sqlalchemy import and_
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
 from models.hotel_model import Booking
@@ -13,14 +14,18 @@ class BookingRepository:
         self.session= session
 
     def create_booking(self, data: BookingCreate, total_price: Decimal):
-        booking = Booking(**data.model_dump(exclude_none=True))
+        try:
+            booking = Booking(**data.model_dump(exclude_none=True))
 
-        booking.payment_amount = total_price
+            booking.payment_amount = total_price
 
-        self.session.add(booking)
-        self.session.commit()
-        self.session.refresh(booking)
-        return BookingOut(**booking.__dict__)
+            self.session.add(booking)
+            self.session.commit()
+            self.session.refresh(booking)
+            return BookingOut(**booking.__dict__)
+        except SQLAlchemyError as e:
+            self.session.rollback()
+            raise SQLAlchemyError(e)
 
     def find_bookings_not_expired_by_user_id(self, id_user: int):
         bookings = (
@@ -61,6 +66,14 @@ class BookingRepository:
         )
 
         self.session.commit()
+
+    def delete_booking_by_booking_id(self, booking_id: int):
+        try:
+            self.session.query(Booking).filter_by(booking_id=booking_id).delete()
+
+            self.session.commit()
+        except SQLAlchemyError:
+            self.session.rollback()
 
     def find_booking_by_id(self, booking_id: int):
         booking = self.session.query(Booking).filter(Booking.booking_id==booking_id).first()

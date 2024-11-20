@@ -42,7 +42,7 @@ class RoomRepository:
         rooms = (
             self.session.query(Room)
             .join(Hotel, Room.hotel_id == Hotel.hotel_id)
-            .outerjoin(Booking, Room.room_number == Booking.room_number)  # Outer join to include rooms without bookings
+            .outerjoin(Booking, Room.room_number == Booking.room_number)
             .filter(
                 and_(
                     # Match city and guest capacity
@@ -51,27 +51,12 @@ class RoomRepository:
 
                     or_(
                         # Not booked
-                        Room.room_number.notin_(
-                            self.session.query(Booking.room_number).subquery()
-                        ),
+                        Booking.booking_id.is_(None),
 
                         # Booked outside the given period
-                        Booking.booked_to < date_from,
-                        Booking.booked_from > date_to,
-
-                        # Booked but cancelled
-                        and_(
-                            or_(
-                                and_(
-                                    Booking.booked_from >= date_from,
-                                    Booking.booked_from <= date_to
-                                ),
-                                and_(
-                                    Booking.booked_to >= date_from,
-                                    Booking.booked_to <= date_to
-                                )
-                            ),
-                            Booking.cancelled.is_(True)
+                        or_(
+                            Booking.booked_to < date_from,
+                            Booking.booked_from > date_to
                         )
                     )
                 )

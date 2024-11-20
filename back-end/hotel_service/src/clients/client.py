@@ -4,7 +4,7 @@ import httpx
 from fastapi.encoders import jsonable_encoder
 
 from config.env_var import EnvVar
-from schemas.mail_schema import RefundMailInput
+from schemas.mail_schema import RefundMailInput, ReservationMailInfo
 from schemas.user_schema import UserOutput
 
 
@@ -22,3 +22,9 @@ def get_user_from_id(id_user: int):
     content = json.loads(response.content)
 
     return UserOutput(**content)
+
+def send_reservation_mail(mail_input: ReservationMailInfo):
+    callback_url = EnvVar.MAIL_SERVICE_BASE_URL + "/api/v1/mail/send-reservation-mail"
+    response = httpx.post(callback_url, json=jsonable_encoder(mail_input))
+
+    return response

@@ -6,11 +6,11 @@ from sqlalchemy.orm import Session
 from config.env_var import EnvVar
 from config.mail_config import conf
 from costants.costant import MAIL_OTP_TEMPLATE_NAME, MAIL_CONFIRMATION_TEMPLATE_NAME, URL_CONFIRM_MAIL, \
-    MAIL_CONFIRMED_REFUND
+    MAIL_CONFIRMED_REFUND, MAIL_CONFIRMED_RESERVATION
 from exceptions.mail_history_exception import CanNotStoreHistoryException
 from repositories.mail_hisory_repository import MailHistoryRepository
 from repositories.template_repository import TemplateRepository
-from schemas.mail_schema import TemplateInput, MailInput, RefundMailInput
+from schemas.mail_schema import TemplateInput, MailInput, RefundMailInput, ReservationMailInfo
 
 
 async def send_email_async(subject: str, email_to: str, body: dict):
@@ -94,6 +94,28 @@ class TemplateService:
         mail_info_fixed = MailInput(**mail_info.__dict__)
 
         self.send_background_email(background_tasks, mail_info_fixed, template_data, MAIL_CONFIRMED_REFUND)
+
+    def send_reservation_mail(
+            self,
+            background_tasks: BackgroundTasks,
+            mail_info: ReservationMailInfo
+    ):
+        template_data = {
+            'guest_name': mail_info.guest_name,
+            'hotel_name': mail_info.hotel_name,
+            'check_in': mail_info.check_in,
+            'check_out': mail_info.check_out,
+            'adults_no': mail_info.adults_no,
+            'childs_no': mail_info.childs_no,
+            'room_type': mail_info.room_type,
+            'booking_id': mail_info.booking_id,
+            'hotel_address': mail_info.hotel_address,
+            'url': EnvVar.FRONT_END_LOG_IN_URL
+        }
+
+        mail_info_fixed = MailInput(**mail_info.__dict__)
+
+        self.send_background_email(background_tasks, mail_info_fixed, template_data, MAIL_CONFIRMED_RESERVATION)
 
     def find_template_by_name(self, template_name: str) -> str:
         template = self.template_repository.find_by_template_name(template_name)

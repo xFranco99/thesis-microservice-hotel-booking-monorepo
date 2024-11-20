@@ -32,3 +32,16 @@ class RefundMailInput(MailInput):
     refund_amount: Optional[Decimal]
     booking_id: int
 
+class ReservationMailInfo(MailInput):
+    guest_name: Optional[str]
+    hotel_name: Optional[str]
+    check_in: Optional[str]
+    check_out: Optional[str]
+    adults_no: Optional[str]
+    childs_no: Optional[str]
+    room_type: Optional[str]
+    booking_id: Optional[int]
+    hotel_address: Optional[str]
+
+
+

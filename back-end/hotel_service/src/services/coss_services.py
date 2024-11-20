@@ -7,13 +7,15 @@ from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
 from schemas.hotel_schema import RoomOut, HotelOut, BookingCreate, BookingRoomOut
-from schemas.mail_schema import RefundMailInput
+from schemas.mail_schema import RefundMailInput, ReservationMailInfo
 from services.booking_service import BookingService
 from services.hotel_service import HotelService
 from services.photo_service import PhotoService
 from services.room_service import RoomServiceLogic
 from services.service_service import ServiceServiceLogic
-from clients.client import send_refund_mail, get_user_from_id
+from clients.client import send_refund_mail, get_user_from_id, send_reservation_mail
+from utils.mail_utility import generate_base_mail_info
+from utils.date_util import calculate_days_difference
 
 ''' This class was created to avoid import circulation'''
 class CrossServices:
@@ -27,13 +29,33 @@ class CrossServices:
     def create_booking(self, data: BookingCreate):
         try:
             room = self.room_service.find_room_by_room_number(data.room_number)
-            total_price = (
+            price_e_p = (
                     (room.price_per_night_children * data.children_no) +
                     (room.price_per_night_adults * data.adult_no)
             )
-            return self.booking_service.create_booking(data, total_price)
+            total_price = price_e_p * calculate_days_difference(data.booked_to, data.booked_from)
+            booking =  self.booking_service.create_booking(data, total_price)
+            hotel = self.hotel_service.get_hotel_from_room(booking.hotel_id)
         except SQLAlchemyError as e:
             raise HTTPException(HTTPStatus.INTERNAL_SERVER_ERROR, data=f"{e}")
+
+        user = get_user_from_id(data.user_id)
+
+        mail_info_base = generate_base_mail_info(user)
+        mail_info = ReservationMailInfo(**mail_info_base.__dict__)
+        mail_info.guest_name = user.first_name + " " + user.last_name
+        mail_info.hotel_name = hotel.hotel_name
+        mail_info.check_in = booking.booked_from
+        mail_info.check_out = booking.booked_to
+        mail_info.adults_no = str(booking.adult_no)
+        mail_info.childs_no = str(booking.children_no)
+        mail_info.room_type = room.room_type
+        mail_info.booking_id = booking.booking_id
+        mail_info.hotel_address = hotel.hotel_address
+
+        send_reservation_mail(mail_info)
+
+        return booking
 
     def find_room_by_room_number(self, room_number: int):
         room = self.room_service.find_room_by_room_number(room_number)
@@ -124,7 +146,6 @@ class CrossServices:
         return rooms
 
     def revoke_reservation(self, booking_id: int):
-
         try:
             booking = self.booking_service.find_booking_by_id(booking_id)
             if not booking.cancelled:
@@ -136,20 +157,14 @@ class CrossServices:
                     refund_amount = Decimal(
                         str(booking.payment_amount)) if booking.payment_amount is not None else Decimal('0.00')
 
-                    mail_object = {
-                        "subject": "Refund confirmed - Hotel",
-                        "mail_to": user_info.email,
-                        "username": user_info.username,
-                        "booking_id": booking_id,
-                        "refund_amount": refund_amount,
-                        "call_date": datetime.now(),
-                        "caller_service": "hotel_service"
-                    }
-                    mail_info = RefundMailInput(**mail_object)
+                    mail_info_base = generate_base_mail_info(user_info)
+                    mail_info = RefundMailInput(**mail_info_base.__dict__)
+                    mail_info.refund_amount = refund_amount
+                    mail_info.booking_id = booking_id
 
                     send_refund_mail(mail_info)
 
-                self.booking_service.mark_booking_as_cancelled(booking_id, refund)
+                self.booking_service.remove_booking(booking_id)
         except SQLAlchemyError as e:
             raise HTTPException(HTTPStatus.INTERNAL_SERVER_ERROR, detail=f"{e}")
 

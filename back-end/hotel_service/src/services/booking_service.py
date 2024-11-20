@@ -31,5 +31,8 @@ class BookingService:
     def find_bookings_expired_by_user_id(self, id_user: int):
         return self.repository.find_bookings_expired_by_user_id(id_user)
 
+    def remove_booking(self, booking_id: int):
+        return self.repository.delete_booking_by_booking_id(booking_id)
+
     def mark_booking_as_cancelled(self, booking_id: int, refund: bool):
         return self.repository.mark_booking_as_cancelled(booking_id, refund)
