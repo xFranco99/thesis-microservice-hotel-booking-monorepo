@@ -8,6 +8,7 @@ interface Props {
   to?: string;
   children?: ReactNode
   style?: object
+  state?: object
 }
 
 function ButtonLink({
@@ -16,10 +17,11 @@ function ButtonLink({
   id = "linkButton",
   to = "/",
   children,
-  style
+  style,
+  state
 }: Props) {
   return (
-    <Link to={to} className={className} id={id} style={style}>
+    <Link to={to} state={state} className={className} id={id} style={style}>
       {text}{children}
     </Link>
   );

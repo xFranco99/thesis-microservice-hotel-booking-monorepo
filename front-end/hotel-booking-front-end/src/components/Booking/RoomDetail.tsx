@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import Carousel from "../common/Carousel";
 import Review from "./Review";
 import { ReactNode } from "react";
@@ -37,11 +37,10 @@ function drawStars(hotelStars: number): ReactNode[] {
   return result;
 }
 
-interface Props {
-  data: RoomOutAndBookRoomOut;
-}
+function RoomDetail() {
 
-function RoomDetail({data}: Props) {
+  const location = useLocation();
+  const data = location.state?._data as RoomOutAndBookRoomOut 
 
   const booking = data.booking;
   const room = data.booking != null ? data.booking.room : data.room;

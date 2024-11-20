@@ -149,6 +149,7 @@ function RoomCardBoody({ data }: Props) {
                 className="btn btn-outline-primary mt-2"
                 text=" Details ›"
                 to="/roomDetail"
+                state={{_data: data}}
               ></ButtonLink>
             </Fragment>
           )}
