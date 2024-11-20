@@ -6,7 +6,7 @@ from fastapi import HTTPException
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
-from schemas.hotel_schema import RoomOut, HotelOut, BookingCreate
+from schemas.hotel_schema import RoomOut, HotelOut, BookingCreate, BookingRoomOut
 from schemas.mail_schema import RefundMailInput
 from services.booking_service import BookingService
 from services.hotel_service import HotelService
@@ -79,23 +79,27 @@ class CrossServices:
                 detail=f"Error: {e} while creating hotel"
             )
 
-    def find_active_booking_by_id_user(self, id_user: int):
-        bookings = self.booking_service.find_bookings_not_expired_by_user_id(id_user)
-
+    def get_associated_booking_room(self, bookings: [BookingRoomOut]):
         for booking in bookings:
             room = self.find_room_by_room_number(booking.room_number)
             booking.room = room
 
         return bookings
+
+    def find_active_booking_by_id_user(self, id_user: int):
+        bookings = self.booking_service.find_bookings_not_expired_by_user_id(id_user)
+
+        return self.get_associated_booking_room(bookings)
 
     def find_expired_booking_by_id_user(self, id_user: int):
         bookings = self.booking_service.find_bookings_expired_by_user_id(id_user)
 
-        for booking in bookings:
-            room = self.find_room_by_room_number(booking.room_number)
-            booking.room = room
+        return self.get_associated_booking_room(bookings)
 
-        return bookings
+    def find_booking_by_id(self, booking_id: int):
+        booking = self.booking_service.find_booking_by_id(booking_id)
+        booking_room_out = BookingRoomOut(**booking.__dict__)
+        return self.get_associated_booking_room([booking_room_out])[0]
 
     def search_a_room(
             self,

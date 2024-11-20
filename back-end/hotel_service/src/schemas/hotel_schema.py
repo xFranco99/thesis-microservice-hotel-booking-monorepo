@@ -126,6 +126,7 @@ class HotelOut(HotelBase):
         orm_mode = True
 
 class BookingOut(BookingBase):
+    booking_id: int
     hotel: Optional[HotelOut] = None
     payment_amount:  Optional[Decimal] = None
 
@@ -133,6 +134,7 @@ class BookingOut(BookingBase):
         orm_mode = True
 
 class BookingRoomOut(BookingBase):
+    booking_id: int
     room: Optional[RoomOut] = None
     payment_amount: Optional[Decimal] = None
 

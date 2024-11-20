@@ -6,7 +6,7 @@ from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
 
 from config.database import get_db
-from schemas.hotel_schema import BookingCreate
+from schemas.hotel_schema import BookingCreate, BookingRoomOut
 from services.booking_service import BookingService
 from services.coss_services import CrossServices
 
@@ -44,6 +44,18 @@ def get_expired_user_bookings(id_user: int, session: Session = Depends(get_db)) 
     _cross_service = CrossServices(session)
 
     bookings = _cross_service.find_expired_booking_by_id_user(id_user)
+
+    return Response(
+        content=json.dumps(jsonable_encoder(bookings)),
+        media_type="application/json",
+        status_code=HTTPStatus.OK
+    )
+
+@router.get("get-booking-by-id/{booking_id}")
+def get_booking_by_id(booking_id: int, session: Session = Depends(get_db)) -> Response:
+    _cross_service = CrossServices(session)
+
+    bookings = _cross_service.find_booking_by_id(booking_id)
 
     return Response(
         content=json.dumps(jsonable_encoder(bookings)),
