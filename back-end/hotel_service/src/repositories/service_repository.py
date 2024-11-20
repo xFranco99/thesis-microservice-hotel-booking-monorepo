@@ -41,9 +41,7 @@ class ServiceRepository:
             .all()
         )
 
-        result = ServiceListOut()
-        result.services = [ServiceBase(**service.__dict__) for service in services]
-        return result
+        return [ServiceBase(**service.__dict__) for service in services]
 
     def remove_service_from_room(self, room_number: int, service_id: int):
         self.session.query(RoomService).filter(
