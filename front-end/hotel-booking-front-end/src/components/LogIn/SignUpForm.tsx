@@ -3,11 +3,12 @@ import { Fragment } from "react/jsx-runtime";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../state/AuthProvider";
 import { useState } from "react";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 
 function SignUpForm() {
   const { setAuth, auth } = useAuth();
   const navigate = useNavigate();
+  const [errorMessage, setErrorMessage] = useState();
 
   const [signUpFormData, setSignInFormData] = useState<User>({
     username: "",
@@ -38,7 +39,12 @@ function SignUpForm() {
       setAuth(true);
       navigate("/");
     } catch (error) {
-      console.error(error);
+      if (axios.isAxiosError(error)) {
+        const e = error as AxiosError;
+        const errorDetail =
+          error.response?.data?.detail || "An unknown error occurred.";
+        setErrorMessage(errorDetail);
+      }
       setAuth(false);
     }
   };
@@ -48,6 +54,7 @@ function SignUpForm() {
       <h1>Sign Up</h1>
       <form onSubmit={handleSubmit} style={{ paddingTop: "20px" }}>
         <div className="row mb-4">
+          {errorMessage && <p>{errorMessage}</p>}
           <div className="col">
             <input
               type="text"
@@ -80,6 +87,8 @@ function SignUpForm() {
             placeholder="Phone Number"
             onChange={handleChange}
             name="phone_number"
+            pattern="^\+?[1-9]\d{1,14}$"
+            title="Please enter a valid international phone number, starting with a '+' followed by up to 15 digits."
           />
         </div>
         <div className="mb-3">
@@ -111,6 +120,8 @@ function SignUpForm() {
             placeholder="email@example.com"
             onChange={handleChange}
             name="email"
+            pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+            title="Please enter a valid email address in the format: example@domain.com"
           />
         </div>
         <div className="mb-3" style={{ display: "grid" }}>

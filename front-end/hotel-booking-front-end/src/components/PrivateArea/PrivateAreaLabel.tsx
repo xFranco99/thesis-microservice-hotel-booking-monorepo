@@ -50,6 +50,10 @@ function PrivateAreaLabel() {
   const [bookings, setBookings] = useState<BookingRoomOut[]>([]);
   const [loading, setLoading] = useState(true);
 
+  if(!auth){
+    navigate("/")
+  }
+
   useEffect(() => {
     async function fetchBookingList() {
       if (!auth || !user) {

@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import OtpCode from "../common/OtpCode";
 import { Fragment, useState } from "react";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { useAuth } from "../../state/AuthProvider";
 import { useNavigate } from "react-router-dom";
 
@@ -20,6 +20,7 @@ function OtpVerifyCode({
   const [showOtpInput, setShowOtpInput] = useState(false);
   const [showChangePassword, setShowChangePassword] = useState(false);
   const [otpCode, setOtpCode] = useState("");
+  const [authAlert, setAuthAlert] = useState(false);
 
   const [signInFormData, setSignInFormData] = useState<SignInInput>({
     username: "",
@@ -81,6 +82,13 @@ function OtpVerifyCode({
       }
     } catch (error) {
       console.error(error);
+      if (axios.isAxiosError(error)) {
+        const e = error as AxiosError;
+
+        setAuthAlert(true);
+        console.error(authAlert);
+      }
+      setAuth(false);
     }
   };
 
@@ -123,6 +131,7 @@ function OtpVerifyCode({
         >
           <div className="mb-3">
             <input
+              autoFocus
               type={showChangePassword ? "password" : "text"}
               className="form-control"
               placeholder={
@@ -149,7 +158,11 @@ function OtpVerifyCode({
           <form onSubmit={handleCheckCode}>
             <div className="mb-3">
               <p>Insert the code sended at</p>
-              <OtpCode length={6} onChange={(code) => setOtpCode(code)} />
+              <OtpCode
+                authAlert={authAlert}
+                length={6}
+                onChange={(code) => setOtpCode(code)}
+              />
             </div>
             <div className="mb-3" style={{ display: "grid" }}>
               <button
@@ -162,12 +175,16 @@ function OtpVerifyCode({
             </div>
           </form>
           <div className="mb-3">
-            <p style={{margin: 0}}>
-              You dont see your email code? 
-            </p>
+            <p style={{ margin: 0 }}>You dont see your email code?</p>
             <p>
               Check your spam folder or&nbsp;
-              <a className="text-white" onClick={() => window.location.reload()}>Retry</a>
+              <a
+                href=""
+                className="text-white"
+                onClick={() => window.location.reload()}
+              >
+                Retry
+              </a>
             </p>
           </div>
         </Fragment>

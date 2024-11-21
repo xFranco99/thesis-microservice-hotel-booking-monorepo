@@ -1,13 +1,14 @@
 import { SyntheticEvent, useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 import { Fragment } from "react/jsx-runtime";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { useAuth } from "../../state/AuthProvider";
 import { useNavigate } from "react-router-dom";
 
 function SignInForm() {
   const { setAuth, auth } = useAuth();
   const navigate = useNavigate();
+  const [authAlert, setAuthAlert] = useState(false);
 
   const [signInFormData, setSignInFormData] = useState<SignInInput>({
     username: "",
@@ -33,7 +34,11 @@ function SignInForm() {
       setAuth(true);
       navigate("/");
     } catch (error) {
-      console.error(error);
+      if (axios.isAxiosError(error)) {
+        const e = error as AxiosError;
+        console.error(e.status === 401);
+        setAuthAlert(true);
+      }
       setAuth(false);
     }
   };
@@ -41,9 +46,11 @@ function SignInForm() {
   return (
     <Fragment>
       <h1>Sign In</h1>
+
       <form onSubmit={handleSubmit} style={{ paddingTop: "20px" }}>
         <div className="mb-3">
           <input
+            autoFocus
             type="text"
             className="form-control"
             id="InputEmailUser"
@@ -64,6 +71,7 @@ function SignInForm() {
             onChange={handleChange}
             value={signInFormData.password}
           />
+          {authAlert && <p>Username or password is incorrect</p>}
         </div>
         <div className="mb-3" style={{ display: "grid" }}>
           <button type="submit" className="btn btn-danger" id="SignInButton">
@@ -92,7 +100,7 @@ function SignInForm() {
             </Link>
           </p>
         </div>
-        <div className="mb-3 form-check">
+        {/*<div className="mb-3 form-check">
           <input
             type="checkbox"
             className="form-check-input"
@@ -101,9 +109,9 @@ function SignInForm() {
           <label className="form-check-label" htmlFor="exampleCheck1">
             Remember me
           </label>
-        </div>
+        </div>*/}
         <div className="mb-3">
-          <p>
+          <p style={{ display: "flex", justifyContent: "center" }}>
             You don't have an account?&nbsp;
             <Link className="text-white" to="/signUp">
               Sign Up

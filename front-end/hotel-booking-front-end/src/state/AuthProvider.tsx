@@ -65,7 +65,7 @@ function AuthProvider({ children }: AuthProviderProps) {
 
   useEffect(() => {
     isAuth();
-  }, [auth]);
+  }, [auth, user]);
 
   const logout = () => {
     setUser(null);
