@@ -2,7 +2,7 @@ function Footer() {
   return (
     <footer
       className="d-flex flex-wrap justify-content-between align-items-center bg-dark"
-      style={{ height: "15vh" }}
+      style={{ maxHeight: "15vh" }}
     >
       <div className="container text-white">
         <footer
@@ -13,11 +13,25 @@ function Footer() {
             className="col-md-4 d-flex align-items-center"
             style={{ paddingLeft: "20px" }}
           >
-            <a
-              href="/"
-              className="mb-3 me-2 mb-md-0 text-muted text-decoration-none lh-1"
-            ></a>
-            <span className="mb-3 mb-md-0 text-muted">© 2024 Company, Inc</span>
+            <div>
+              <h5>Contact Us</h5>
+              <p className="mb-1">Phone: (555) 123-4567</p>
+              <p className="mb-3">Email: contact@company.com</p>
+              <div className="d-flex gap-3 ">
+                <a href="#" className="text-white text-decoration-none">
+                  <i className="fab fa-facebook-f"></i> Facebook
+                </a>
+                <a href="#" className="text-white text-decoration-none">
+                  <i className="fab fa-twitter"></i> Twitter
+                </a>
+                <a href="#" className="text-white text-decoration-none">
+                  <i className="fab fa-linkedin"></i> LinkedIn
+                </a>
+              </div>
+              <div className="mt-3">
+                <span className="text-white">© 2024 Company, Inc</span>
+              </div>
+            </div>
           </div>
 
           <div
