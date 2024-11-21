@@ -5,7 +5,7 @@ interface Props {
   style?: object
 }
 
-function CommonLabel({ children, style = { backgroundColor: "#F0F0F0" } }: Props) {
+function CommonLabel({ children, style = { backgroundColor: "#F0F0F0", minHeight: "80vh" } }: Props) {
   return (
     <div
       className="container text-center"

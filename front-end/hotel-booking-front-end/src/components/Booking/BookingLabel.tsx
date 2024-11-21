@@ -34,7 +34,7 @@ function BookingLabel() {
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(1);
 
-  const [pageRight, setPageRight] = useState(false)
+  const [pageRight, setPageRight] = useState(false);
 
   const fetchRooms = async () => {
     const isDateError = !startDate || !endDate || startDate > endDate;
@@ -57,12 +57,14 @@ function BookingLabel() {
       endDate.toISOString().split("T")[0]
     )}&total_guests=${encodeURIComponent(
       childNumber + adultNumber
-    )}&page=${encodeURIComponent(page)}&page_size=${encodeURIComponent(pageSize)}`;
+    )}&page=${encodeURIComponent(page)}&page_size=${encodeURIComponent(
+      pageSize
+    )}`;
 
     const res = await axios.get(url);
 
     if (res.data) {
-      setPageRight(res.data.length >= pageSize)
+      setPageRight(res.data.length >= pageSize);
       setRooms(res.data);
     }
   };
@@ -79,7 +81,16 @@ function BookingLabel() {
   });
 
   return (
-    <CommonLabel>
+    <CommonLabel
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        height: "100%",
+        justifyContent: "space-between", 
+        backgroundColor: "#F0F0F0",
+        minHeight: "80vh",
+      }}
+    >
       <div className="row">
         <div className="col-3 padding-td">
           <BookingFilterCard
