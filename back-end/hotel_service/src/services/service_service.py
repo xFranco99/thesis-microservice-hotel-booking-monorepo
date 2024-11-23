@@ -1,8 +1,11 @@
+from http import HTTPStatus
+
+from fastapi import HTTPException
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
 from repositories.service_repository import ServiceRepository
-from schemas.hotel_schema import ServiceCreate, AssociateRoomWithServices
+from schemas.hotel_schema import ServiceCreate, AssociateRoomWithServices, ServiceBase
 
 
 class ServiceServiceLogic:
@@ -51,3 +54,21 @@ class ServiceServiceLogic:
 
     def remove_service_from_room(self, room_id: int, service_id: int):
         self.repository.remove_service_from_room(room_id, service_id)
+
+    def update_service(self, service_id: int, data: ServiceBase):
+        try:
+            self.repository.update_service(service_id, data)
+        except SQLAlchemyError as e:
+            raise HTTPException(
+                status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
+                detail=f"Error while updating service: {e}"
+            )
+
+    def delete_service(self, service_id: int):
+        try:
+            self.repository.delete_service(service_id)
+        except SQLAlchemyError as e:
+            raise HTTPException(
+                status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
+                detail=f"Error while deleting service: {e}"
+            )

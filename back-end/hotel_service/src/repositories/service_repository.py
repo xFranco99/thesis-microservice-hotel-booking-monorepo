@@ -1,8 +1,10 @@
 from sqlalchemy import and_
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session, joinedload
 
 from models.hotel_model import Service, RoomService
 from schemas.hotel_schema import ServiceBase, ServiceListOut, ServiceOut
+from utils.object_util import obj_to_dict_non_none
 
 
 class ServiceRepository:
@@ -52,3 +54,19 @@ class ServiceRepository:
         ).delete()
 
         self.session.commit()
+
+    def update_service(self, service_id: int, data: ServiceBase):
+        try:
+            self.session.query(Service).filter_by(service_id=service_id).update(obj_to_dict_non_none(data))
+            self.session.commit()
+        except SQLAlchemyError as e:
+            self.session.rollback()
+            raise SQLAlchemyError(e)
+
+    def delete_service(self, service_id: int):
+        try:
+            self.session.query(Service).filter_by(service_id=service_id).delete()
+            self.session.commit()
+        except SQLAlchemyError as e:
+            self.session.rollback()
+            raise SQLAlchemyError(e)

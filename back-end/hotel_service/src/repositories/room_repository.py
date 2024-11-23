@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 
 from models.hotel_model import Room, Booking, Hotel
 from schemas.hotel_schema import RoomCreate, RoomOut, RoomBase, RoomPatch
+from utils.object_util import obj_to_dict_non_none
 
 
 class RoomRepository:
@@ -23,14 +24,8 @@ class RoomRepository:
 
     def update_room(self, data: RoomPatch, room_id: int):
         room = Room(**data.model_dump(exclude_none=True))
-
-        update_data = {
-            key: value for key, value in room.__dict__.items() if
-            value not in (None, '') and key != '_sa_instance_state'
-        }
-
         try:
-            self.session.query(Room).filter_by(room_id=room_id).update(update_data)
+            self.session.query(Room).filter_by(room_id=room_id).update(obj_to_dict_non_none(room))
             self.session.commit()
         except SQLAlchemyError as e:
             self.session.rollback()

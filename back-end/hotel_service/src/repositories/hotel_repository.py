@@ -3,6 +3,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
 from models.hotel_model import Hotel
+from utils.object_util import obj_to_dict_non_none
 
 
 class HotelRepository:
@@ -21,9 +22,7 @@ class HotelRepository:
 
     def update_hotel(self, data: Hotel, hotel_id: int):
         try:
-            update_data = {key: value for key, value in data.__dict__.items() if
-                           value not in (None, '') and key != '_sa_instance_state'}
-            self.session.query(Hotel).filter_by(hotel_id=hotel_id).update(update_data)
+            self.session.query(Hotel).filter_by(hotel_id=hotel_id).update(obj_to_dict_non_none(data))
             self.session.commit()
         except SQLAlchemyError as e:
             self.session.rollback()
