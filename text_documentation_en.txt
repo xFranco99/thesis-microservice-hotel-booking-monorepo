@@ -1,0 +1,18 @@
+Hotel Booking Site Documentation
+
+NavBar:
+The NavBar is the dark strip on top of the web page.
+It is present in every page of the sites.
+Into the NavBar there are 2 components:
+	Hotel: that bring the user to the HomePage.
+	User: This component dinamically change according to user autentication.
+	If the user is not autenticated, i.e. user not performed SignIn or SignUp,
+	so this component show the "Sign-In" write, otherwise, show the username of current user logged in.
+	
+
+
+Home:
+The home page is the first page diplayed when entering into 
+Hotel Booking Site. 
+The home page is divided in 3 part:
+	on top we have the nav
