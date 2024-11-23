@@ -1,3 +1,4 @@
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
 from models.hotel_model import Photo
@@ -23,3 +24,23 @@ class PhotoRepository:
         photos = self.session.query(Photo).filter_by(room_id=room_id).all()
 
         return [PhotoBase(**photo.__dict__) for photo in photos]
+
+    def update_photo(self, photo_id: int, photo_url: str):
+        try:
+            update_dict = {"photo_url": photo_url}
+            self.session.query(Photo).filter_by(photo_id=photo_id).update(update_dict)
+            self.session.commit()
+        except SQLAlchemyError as e:
+            self.session.rollback()
+            raise SQLAlchemyError(e)
+
+    def delete_single_photo(self, photo_id: int):
+        try:
+            self.session.query(Photo).filter_by(photo_id=photo_id).delete()
+            self.session.commit()
+        except SQLAlchemyError as e:
+            self.session.rollback()
+            raise SQLAlchemyError(e)
+
+    def find_photo_id_from_room_id(self, room_id: int):
+        return self.session.query(Photo).filter_by(room_id=room_id).all()

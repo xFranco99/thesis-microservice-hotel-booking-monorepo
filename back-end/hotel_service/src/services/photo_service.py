@@ -1,9 +1,11 @@
-from pyexpat.errors import messages
+from http import HTTPStatus
+
+from fastapi import HTTPException
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
 from repositories.photo_repository import PhotoRepository
-from schemas.hotel_schema import PhotoCreate, PhotoBase, PhotoOut
+from schemas.hotel_schema import PhotoCreate, PhotoBase, PhotoOut, PhotoBaseOut
 
 
 class PhotoService:
@@ -47,6 +49,28 @@ class PhotoService:
 
         return response
 
+    def update_photos(self, photo_id: int, photo_url: str):
+        try:
+            self.repository.update_photo(photo_id, photo_url)
+        except SQLAlchemyError as e:
+            raise HTTPException(
+                status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
+                detail=f"Error while updating image {e}"
+            )
+
     def find_photos_by_room_id(self, room_id: int):
         photos = self.repository.find_photos_by_room_id(room_id)
         return [photo.photo_url for photo in photos]
+
+    def find_photo_id_from_room_id(self, room_id: int):
+        photos = self.repository.find_photo_id_from_room_id(room_id)
+        return [PhotoBaseOut(**photo.__dict__) for photo in photos]
+
+    def delete_single_photo(self, photo_id: int):
+        try:
+            self.repository.delete_single_photo(photo_id)
+        except SQLAlchemyError as e:
+            raise HTTPException(
+                status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
+                detail=f"Error while updating image {e}"
+            )
