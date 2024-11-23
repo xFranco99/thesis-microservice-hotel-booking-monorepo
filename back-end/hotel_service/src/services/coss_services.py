@@ -28,7 +28,7 @@ class CrossServices:
 
     def create_booking(self, data: BookingCreate):
         try:
-            room = self.room_service.find_room_by_room_number(data.room_number)
+            room = self.room_service.find_room_by_room_id(data.room_id)
             price_e_p = (
                     (room.price_per_night_children * data.children_no) +
                     (room.price_per_night_adults * data.adult_no)
@@ -57,10 +57,10 @@ class CrossServices:
 
         return booking
 
-    def find_room_by_room_number(self, room_number: int):
-        room = self.room_service.find_room_by_room_number(room_number)
-        services =  self.services_service.find_all_services_by_room_id(room_number)
-        photos = self.photos_service.find_photos_by_room_id(room_number)
+    def find_room_by_room_id(self, room_id: int):
+        room = self.room_service.find_room_by_room_id(room_id)
+        services =  self.services_service.find_all_services_by_room_id(room_id)
+        photos = self.photos_service.find_photos_by_room_id(room_id)
         hotel = self.hotel_service.get_hotel_from_room(room.hotel_id)
 
         room.room_services = services
@@ -75,8 +75,8 @@ class CrossServices:
         room_out_list = []
 
         for room in rooms:
-            services = self.services_service.find_all_services_by_room_id(room.room_number)
-            photos = self.photos_service.find_photos_by_room_id(room.room_number)
+            services = self.services_service.find_all_services_by_room_id(room.room_id)
+            photos = self.photos_service.find_photos_by_room_id(room.room_id)
 
             room_out = RoomOut(**room.__dict__)
             room_out.photos = photos
@@ -103,7 +103,7 @@ class CrossServices:
 
     def get_associated_booking_room(self, bookings: [BookingRoomOut]):
         for booking in bookings:
-            room = self.find_room_by_room_number(booking.room_number)
+            room = self.find_room_by_room_id(booking.room_id)
             booking.room = room
 
         return bookings
@@ -135,8 +135,8 @@ class CrossServices:
         rooms = self.room_service.search_room_not_booked(city, date_from, date_to, total_guests, page, page_size)
 
         for room in rooms:
-            services = self.services_service.find_all_services_by_room_id(room.room_number)
-            photos = self.photos_service.find_photos_by_room_id(room.room_number)
+            services = self.services_service.find_all_services_by_room_id(room.room_id)
+            photos = self.photos_service.find_photos_by_room_id(room.room_id)
             hotel = self.hotel_service.get_hotel_from_room(room.hotel_id)
 
             room.room_services = services

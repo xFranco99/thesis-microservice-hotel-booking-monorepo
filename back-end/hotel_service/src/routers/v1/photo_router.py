@@ -6,7 +6,7 @@ from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
 
 from config.database import get_db
-from schemas.hotel_schema import PhotoCreate, PhotoOut
+from schemas.hotel_schema import PhotoCreate
 from services.photo_service import PhotoService
 
 router = APIRouter(

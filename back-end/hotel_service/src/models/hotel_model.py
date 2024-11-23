@@ -23,7 +23,8 @@ class Hotel(Base):
 class Room(Base):
     __tablename__ = 'room'
 
-    room_number = Column(Integer, primary_key=True)
+    room_id = Column(Integer, primary_key=True)
+    room_number = Column(Integer)
     hotel_id = Column(Integer, ForeignKey('hotel.hotel_id'), nullable=True)
     bed_number = Column(Integer, nullable=True)
     room_type = Column(String(45), nullable=True)
@@ -41,7 +42,7 @@ class Booking(Base):
     __tablename__ = 'booking'
 
     booking_id = Column(Integer, primary_key=True)
-    room_number = Column(Integer, ForeignKey('room.room_number'), nullable=True)
+    room_id = Column(Integer, ForeignKey('room.room_id'), nullable=True)
     user_id = Column(Integer, nullable=True)
     hotel_id = Column(Integer, ForeignKey('hotel.hotel_id'), nullable=True)
     booked_from = Column(DateTime, nullable=True)
@@ -63,7 +64,7 @@ class Photo(Base):
 
     photo_id = Column(Integer, primary_key=True)
     photo_url = Column(String(128), nullable=True)
-    room_number = Column(Integer, ForeignKey('room.room_number'), nullable=True)
+    room_id = Column(Integer, ForeignKey('room.room_id'), nullable=True)
 
     room = relationship('Room', back_populates='photos')
 
@@ -81,7 +82,7 @@ class Service(Base):
 class RoomService(Base):
     __tablename__ = 'roomservice'
 
-    room_id = Column(Integer, ForeignKey('room.room_number'), primary_key=True)
+    room_id = Column(Integer, ForeignKey('room.room_id'), primary_key=True)
     service_id = Column(Integer, ForeignKey('service.service_id'), primary_key=True)
 
     room = relationship('Room', back_populates='roomservices')

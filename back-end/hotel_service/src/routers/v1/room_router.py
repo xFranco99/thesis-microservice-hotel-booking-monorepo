@@ -40,12 +40,12 @@ def create_room(data: RoomCreateList, session: Session = Depends(get_db)) -> Res
         status_code=HTTPStatus.OK
     )
 
-@router.get("/get-room-by-room-number/{room_number}")
-def get_room_by_room_number(room_number: int, session: Session = Depends(get_db)) -> Response:
+@router.get("/get-room-by-room-number/{room_id}")
+def get_room_by_room_number(room_id: int, session: Session = Depends(get_db)) -> Response:
 
     _cross_service = CrossServices(session)
 
-    room = _cross_service.find_room_by_room_number(room_number)
+    room = _cross_service.find_room_by_room_id(room_id)
 
     return Response(
         content=json.dumps(jsonable_encoder(room)),

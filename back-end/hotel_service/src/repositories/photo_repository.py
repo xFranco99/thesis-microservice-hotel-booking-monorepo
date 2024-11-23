@@ -17,9 +17,9 @@ class PhotoRepository:
         return photo.photo_url
 
     def count_photos(self, room_id: int):
-        return self.session.query(Photo).filter(Photo.room_number==room_id).count()
+        return self.session.query(Photo).filter_by(room_id=room_id).count()
 
     def find_photos_by_room_id(self, room_id: int):
-        photos = self.session.query(Photo).filter(Photo.room_number==room_id).all()
+        photos = self.session.query(Photo).filter_by(room_id=room_id).all()
 
         return [PhotoBase(**photo.__dict__) for photo in photos]

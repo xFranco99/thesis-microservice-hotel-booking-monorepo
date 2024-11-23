@@ -43,10 +43,10 @@ class ServiceRepository:
 
         return [ServiceBase(**service.__dict__) for service in services]
 
-    def remove_service_from_room(self, room_number: int, service_id: int):
+    def remove_service_from_room(self, room_id: int, service_id: int):
         self.session.query(RoomService).filter(
             and_(
-                RoomService.room_id==room_number,
+                RoomService.room_id==room_id,
                 RoomService.service_id==service_id
             )
         ).delete()

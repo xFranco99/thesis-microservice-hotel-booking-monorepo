@@ -5,6 +5,7 @@ from typing import List, Optional
 from pydantic import BaseModel
 
 class RoomBase(BaseModel):
+    room_id: Optional[int] = None
     room_number: int
     hotel_id: Optional[int] = None
     bed_number: Optional[int] = None
@@ -35,7 +36,7 @@ class HotelCreate(HotelBase):
     pass
 
 class BookingBase(BaseModel):
-    room_number: int
+    room_id: int
     user_id: Optional[int] = None
     hotel_id: Optional[int] = None
     booked_from: Optional[datetime] = None
@@ -52,10 +53,10 @@ class BookingCreate(BookingBase):
 
 class PhotoBase(BaseModel):
     photo_url: Optional[str] = None
-    room_number: Optional[int] = None
+    room_id: Optional[int] = None
 
 class PhotoCreate(BaseModel):
-    room_number: int
+    room_id: int
     photos: List[str]
     class Config:
         orm_mode = True
@@ -101,7 +102,7 @@ class RoomServiceCreate(RoomServiceBase):
 
 class RoomServiceOut(RoomServiceBase):
     service_name: str
-    room_number: int
+    room_id: int
 
     class Config:
         orm_mode = True
@@ -151,3 +152,9 @@ class BookingRoomOut(BookingBase):
 class AssociateRoomWithServicesOut(BaseModel):
     associated_services: List[int] = []
     not_associated_services: List[int] = []
+
+class ServiceRoom(BaseModel):
+    services: List[AssociateRoomWithServices]
+
+    class Config:
+        orm_mode = True

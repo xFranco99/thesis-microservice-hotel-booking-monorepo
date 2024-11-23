@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 
 from config.database import get_db
 from schemas.hotel_schema import ServiceCreate, ServiceCreationOut, AssociateRoomWithServices, \
-    AssociateRoomWithServicesOut
+    AssociateRoomWithServicesOut, ServiceRoom
 from services.service_service import ServiceServiceLogic
 
 router = APIRouter(
@@ -53,15 +53,15 @@ def associate_room_to_service(
         status_code=HTTPStatus.OK
     )
 
-@router.delete("/remove-service-from-room/{room_number}/{service_id}")
+@router.delete("/remove-service-from-room/{room_id}/{service_id}")
 def remove_service_from_room(
-        room_number: int,
+        room_id: int,
         service_id: int,
         session: Session = Depends(get_db)
 ) -> Response:
     _service_service_logic = ServiceServiceLogic(session)
 
-    _service_service_logic.remove_service_from_room(room_number, service_id)
+    _service_service_logic.remove_service_from_room(room_id, service_id)
 
     return Response(
         status_code=HTTPStatus.OK
@@ -90,3 +90,12 @@ def get_all_services_from_room(room_id: int, session: Session = Depends(get_db))
         media_type="application/json",
         status_code=HTTPStatus.OK
     )
+
+@router.post("/associate-room-to-service2")
+def associate_room_to_service2(
+        datas: ServiceRoom,
+        session: Session = Depends(get_db)
+):
+    _service_service_logic = ServiceServiceLogic(session)
+
+    [_service_service_logic.associate_room_with_services(data) for data in datas.services]

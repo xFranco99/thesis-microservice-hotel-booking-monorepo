@@ -20,8 +20,8 @@ class RoomRepository:
 
         return RoomOut(**room.__dict__)
 
-    def find_room_by_room_number(self, room_number: int):
-        room = self.session.query(Room).filter(Room.room_number == room_number).first()
+    def find_room_by_room_id(self, room_id: int):
+        room = self.session.query(Room).filter(Room.room_id == room_id).first()
         return RoomOut(**room.__dict__)
 
     def find_room_by_hotel_id(self, hotel_id: int):
@@ -42,7 +42,7 @@ class RoomRepository:
         rooms = (
             self.session.query(Room)
             .join(Hotel, Room.hotel_id == Hotel.hotel_id)
-            .outerjoin(Booking, Room.room_number == Booking.room_number)
+            .outerjoin(Booking, Room.room_id == Booking.room_id)
             .filter(
                 and_(
                     # Match city and guest capacity

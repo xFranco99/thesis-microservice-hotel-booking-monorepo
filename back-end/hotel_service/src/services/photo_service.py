@@ -11,7 +11,7 @@ class PhotoService:
         self.repository = PhotoRepository(session)
 
     def associate_photo(self, data: PhotoCreate) -> PhotoOut:
-        room_id = data.room_number
+        room_id = data.room_id
         photo_list = data.photos
 
         photo_saved_list = []
@@ -28,7 +28,7 @@ class PhotoService:
             try:
                 photo_base = PhotoBase()
                 photo_base.photo_url = photo
-                photo_base.room_number = room_id
+                photo_base.room_id = room_id
 
 
                 if self.repository.count_photos(room_id) > 9:
