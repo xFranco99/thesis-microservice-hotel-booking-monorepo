@@ -1,20 +1,40 @@
+from sqlalchemy import and_, or_
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
 from models.hotel_model import Hotel
-from schemas.hotel_schema import HotelCreate, HotelOut
 
 
 class HotelRepository:
     def __init__(self, session: Session):
         self.session = session
 
-    def create_hotel(self, data: HotelCreate):
-        hotel = Hotel(**data.model_dump(exclude_none=True))
+    def create_hotel(self, data: Hotel):
+        try:
+            self.session.add(data)
+            self.session.commit()
+            self.session.refresh(data)
+            return data
+        except SQLAlchemyError as e:
+            self.session.rollback()
+            raise SQLAlchemyError(e)
 
-        self.session.add(hotel)
-        self.session.commit()
-        self.session.refresh(hotel)
-        return HotelOut(**hotel.__dict__)
+    def update_hotel(self, data: Hotel, hotel_id: int):
+        try:
+            update_data = {key: value for key, value in data.__dict__.items() if
+                           value not in (None, '') and key != '_sa_instance_state'}
+            self.session.query(Hotel).filter_by(hotel_id=hotel_id).update(update_data)
+            self.session.commit()
+        except SQLAlchemyError as e:
+            self.session.rollback()
+            raise SQLAlchemyError(e)
+
+    def delete_hotel(self, hotel_id: int):
+        try:
+            self.session.query(Hotel).filter_by(hotel_id=hotel_id).delete()
+        except SQLAlchemyError as e:
+            self.session.rollback()
+            raise SQLAlchemyError(e)
 
     def find_hotel_by_id(self, hotel_id: int) -> Hotel:
         return self.session.query(Hotel).filter(Hotel.hotel_id==hotel_id).first()
@@ -26,3 +46,30 @@ class HotelRepository:
             .limit(limit).all()
         )
         return [hotel.hotel_city for hotel in hotels]
+
+    def find_hotel_by_name_or_city_or_address(
+            self,
+            hotel_name: str,
+            hotel_city: str,
+            hotel_address: str,
+            page: int,
+            page_size: int
+    ):
+        offset_value = (page - 1) * page_size
+        hotels = (
+            self.session.query(Hotel)
+            .filter(
+                and_(
+                    or_(hotel_name is None, Hotel.hotel_name.ilike(f"%{hotel_name}%")),
+                    or_(hotel_address is None, Hotel.hotel_address.ilike(f"%{hotel_address}%")),
+                    or_(hotel_city is None, Hotel.hotel_city == hotel_city)
+                )
+            )
+            .offset(offset_value)
+            .limit(page_size)
+            .all()
+        )
+
+        hotels_total_number = self.session.query(Hotel).count()
+
+        return hotels, hotels_total_number

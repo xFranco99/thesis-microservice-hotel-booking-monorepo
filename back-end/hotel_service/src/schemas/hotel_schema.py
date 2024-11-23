@@ -29,7 +29,7 @@ class HotelBase(BaseModel):
     hotel_stars: Optional[int] = None
     total_rooms: Optional[int] = None
     hotel_city: Optional[str] = None
-    refundable: Optional[bool] = 0
+    refundable: Optional[bool] = None
 
 class HotelCreate(HotelBase):
     pass
@@ -121,6 +121,13 @@ class RoomOut(RoomBase):
 class HotelOut(HotelBase):
     hotel_id: int
     rooms: List[RoomOut] = []
+
+    class Config:
+        orm_mode = True
+
+class HotelOutPaginated(BaseModel):
+    hotel_out: List[HotelOut] = []
+    total_pages: int = None
 
     class Config:
         orm_mode = True
