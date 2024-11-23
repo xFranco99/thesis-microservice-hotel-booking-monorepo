@@ -83,7 +83,7 @@ function RoomCardBoody({ data }: Props) {
   const photos = room?.photos;
   const services = room?.room_services;
 
-  const idObject = isReserved ? booking?.booking_id : room?.room_number;
+  const idObject = isReserved ? booking?.booking_id : room?.room_id;
 
   const reviewScore = Math.floor(Math.random() * 10) + 1;
 

@@ -49,6 +49,7 @@ interface Token {
 // Base Interface for Room
 interface RoomBase {
   room_number: number;
+  room_id: number | null;
   hotel_id?: number | null;
   bed_number?: number | null;
   room_type?: string | null;
@@ -86,7 +87,7 @@ interface HotelCreate extends HotelBase {}
 
 // Base Interface for Booking
 interface BookingBase {
-  room_number: number;
+  room_id: number;
   user_id?: number | null;
   hotel_id?: number | null;
   booked_from?: string | null; // Use `string` for `datetime` fields
@@ -105,12 +106,12 @@ interface BookingCreate extends BookingBase {}
 // Base Interface for Photo
 interface PhotoBase {
   photo_url?: string | null;
-  room_number?: number | null;
+  room_id?: number | null;
 }
 
 // Create Photo Interface
 interface PhotoCreate {
-  room_number: number;
+  room_id: number;
   photos: string[];
 }
 
@@ -160,7 +161,7 @@ interface RoomServiceCreate extends RoomServiceBase {}
 // Output for Room Service
 interface RoomServiceOut extends RoomServiceBase {
   service_name: string;
-  room_number: number;
+  room_id: number;
 }
 
 // Associate Room with Services Interface
