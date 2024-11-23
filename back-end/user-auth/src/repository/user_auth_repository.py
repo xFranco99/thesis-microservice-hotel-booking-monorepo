@@ -43,7 +43,7 @@ class UserAuthRepository:
         if row_updated == 1:
             self.session.commit()
         else:
-            self.session.close()
+            self.session.rollback()
 
         return row_updated
 
@@ -61,7 +61,7 @@ class UserAuthRepository:
         if row_updated == 1:
             self.session.commit()
         else:
-            self.session.close()
+            self.session.rollback()
 
         return row_updated
 
@@ -79,7 +79,7 @@ class UserAuthRepository:
         if row_updated == 1:
             self.session.commit()
         else:
-            self.session.close()
+            self.session.rollback()
 
         return row_updated
 
@@ -89,7 +89,7 @@ class UserAuthRepository:
         if row_updated == 1:
             self.session.commit()
         else:
-            self.session.close()
+            self.session.rollback()
 
         return row_updated
 
