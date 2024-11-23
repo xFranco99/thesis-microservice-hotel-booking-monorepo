@@ -2,12 +2,12 @@ import json
 from datetime import datetime
 from http import HTTPStatus
 
-from fastapi import APIRouter, Depends, Response, Query
+from fastapi import APIRouter, Depends, Response, Query, HTTPException
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
 
 from config.database import get_db
-from schemas.hotel_schema import RoomCreate, RoomCreateList
+from schemas.hotel_schema import RoomCreate, RoomCreateList, RoomPatch
 from services.coss_services import CrossServices
 from services.room_service import RoomServiceLogic
 
@@ -69,6 +69,26 @@ def search_a_room(
 
     return Response(
         content=json.dumps(jsonable_encoder(response)),
+        media_type="application/json",
+        status_code=HTTPStatus.OK
+    )
+
+@router.patch("/edit-room/{room_id}")
+def edit_room(data: RoomPatch, room_id: int, session: Session = Depends(get_db)) -> Response:
+    _room_service = RoomServiceLogic(session)
+    _room_service.update_room(data, room_id)
+
+    return Response(
+        media_type="application/json",
+        status_code=HTTPStatus.OK
+    )
+
+@router.delete("/delete-room/{room_id}")
+def delete_room(room_id: int, session: Session = Depends(get_db)) -> Response:
+    _room_service = RoomServiceLogic(session)
+    _room_service.delete_room(room_id)
+
+    return Response(
         media_type="application/json",
         status_code=HTTPStatus.OK
     )

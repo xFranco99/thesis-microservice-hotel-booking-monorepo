@@ -1,10 +1,11 @@
 from datetime import datetime
 
 from sqlalchemy import and_, or_
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
 from models.hotel_model import Room, Booking, Hotel
-from schemas.hotel_schema import RoomCreate, RoomOut, RoomBase
+from schemas.hotel_schema import RoomCreate, RoomOut, RoomBase, RoomPatch
 
 
 class RoomRepository:
@@ -19,6 +20,21 @@ class RoomRepository:
         self.session.refresh(room)
 
         return RoomOut(**room.__dict__)
+
+    def update_room(self, data: RoomPatch, room_id: int):
+        room = Room(**data.model_dump(exclude_none=True))
+
+        update_data = {
+            key: value for key, value in room.__dict__.items() if
+            value not in (None, '') and key != '_sa_instance_state'
+        }
+
+        try:
+            self.session.query(Room).filter_by(room_id=room_id).update(update_data)
+            self.session.commit()
+        except SQLAlchemyError as e:
+            self.session.rollback()
+            raise SQLAlchemyError(e)
 
     def find_room_by_room_id(self, room_id: int):
         room = self.session.query(Room).filter(Room.room_id == room_id).first()
@@ -67,3 +83,11 @@ class RoomRepository:
         )
 
         return [RoomOut(**room.__dict__) for room in rooms]
+
+    def delete_room(self, room_id: int):
+        try:
+            self.session.query(Room).filter_by(room_id=room_id).delete()
+            self.session.commit()
+        except SQLAlchemyError as e:
+            self.session.rollback()
+            raise SQLAlchemyError(e)

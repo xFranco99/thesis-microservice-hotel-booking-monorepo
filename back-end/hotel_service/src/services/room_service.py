@@ -6,7 +6,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
 from repositories.room_repository import RoomRepository
-from schemas.hotel_schema import RoomCreate, RoomCreateList, RoomCreateListOut, RoomBase
+from schemas.hotel_schema import RoomCreate, RoomCreateList, RoomCreateListOut, RoomBase, RoomPatch
 
 
 class RoomServiceLogic:
@@ -20,6 +20,24 @@ class RoomServiceLogic:
             raise HTTPException(
                 status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
                 detail=f"Error: {e} while creating hotel"
+            )
+
+    def update_room(self, data: RoomPatch, room_id: int):
+        try:
+            self.repository.update_room(data, room_id)
+        except SQLAlchemyError as e:
+            raise HTTPException(
+                status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
+                detail=f"Error: {e} while updating hotel"
+            )
+
+    def delete_room(self, room_id: int):
+        try:
+            self.repository.delete_room(room_id)
+        except SQLAlchemyError as e:
+            raise HTTPException(
+                status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
+                detail=f"Error: {e} while deleting hotel"
             )
 
     def create_room_list(self, data: RoomCreateList):

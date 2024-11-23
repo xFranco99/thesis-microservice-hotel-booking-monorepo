@@ -17,6 +17,14 @@ class RoomBase(BaseModel):
 class RoomCreate(RoomBase):
     pass
 
+class RoomPatch(BaseModel):
+    hotel_id: Optional[int] = None
+    bed_number: Optional[int] = None
+    room_type: Optional[str] = None
+    price_per_night_adults: Optional[Decimal] = None
+    price_per_night_children: Optional[Decimal] = None
+    description: Optional[str] = None
+
 class RoomCreateList(BaseModel):
     room_list: List[RoomCreate]
 
