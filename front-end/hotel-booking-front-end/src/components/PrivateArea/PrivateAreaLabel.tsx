@@ -62,7 +62,6 @@ function PrivateAreaLabel() {
       }
 
       try {
-        console.log(user);
         const apiBaseUrl = import.meta.env.VITE_HOTEL_SERVICE_BASE_URL;
         const url =
           apiBaseUrl +
@@ -70,10 +69,7 @@ function PrivateAreaLabel() {
           user?.id_user;
         const response = await axios.get(url);
 
-        console.log("test - 2");
         if (response.data) {
-          console.log("test - 4");
-          console.log(response.data);
           setBookings(response.data);
         }
       } catch (e) {
