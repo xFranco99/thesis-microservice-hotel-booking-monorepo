@@ -180,3 +180,13 @@ class CrossServices:
             )
 
         return self.room_service.create_room(data)
+
+    def find_room_by_room_no(self, hotel_id: int, room_no: int):
+
+        rooms = self.room_service.find_room_by_room_no(hotel_id, room_no)
+
+        for room in rooms:
+            room.room_services = self.services_service.find_all_services_by_room_id(room.room_id)
+            room.photos = self.photos_service.find_photos_by_room_id(room.room_id)
+
+        return rooms

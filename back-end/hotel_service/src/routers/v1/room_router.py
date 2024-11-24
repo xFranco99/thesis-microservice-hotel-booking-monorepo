@@ -1,8 +1,9 @@
 import json
 from datetime import datetime
 from http import HTTPStatus
+from typing import Optional
 
-from fastapi import APIRouter, Depends, Response, Query, HTTPException
+from fastapi import APIRouter, Depends, Response, Query
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
 
@@ -92,10 +93,14 @@ def delete_room(room_id: int, session: Session = Depends(get_db)) -> Response:
         status_code=HTTPStatus.OK
     )
 
-@router.get("/find-by-room-number/{hotel_id}/{room_no}")
-def find_by_room_number(hotel_id: int, room_id: int, session: Session = Depends(get_db)) -> Response:
-    _room_service = RoomServiceLogic(session)
-    room = _room_service.find_room_by_room_no(hotel_id, room_id)
+@router.get("/find-by-room-number/{hotel_id}")
+def find_by_room_number(
+        hotel_id: int,
+        room_no: Optional[int] = None,
+        session: Session = Depends(get_db)
+) -> Response:
+    _cross_service = CrossServices(session)
+    room = _cross_service.find_room_by_room_no(hotel_id, room_no)
 
     return Response(
         content=json.dumps(jsonable_encoder(room)),
