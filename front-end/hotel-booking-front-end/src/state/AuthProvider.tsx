@@ -13,6 +13,7 @@ interface AuthContextType {
   user: User | null;
   logout: () => void;
   isAuth: () => void;
+  isAdmin: boolean;
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -21,6 +22,7 @@ const AuthContext = createContext<AuthContextType>({
   logout: () => {},
   isAuth: () => {},
   user: null,
+  isAdmin: false,
 });
 
 export const useAuth = () => useContext(AuthContext);
@@ -32,6 +34,7 @@ interface AuthProviderProps {
 function AuthProvider({ children }: AuthProviderProps) {
   const [auth, setAuth] = useState<boolean | null>(null);
   const [user, setUser] = useState<User | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   const isAuth = async () => {
     try {
@@ -55,9 +58,11 @@ function AuthProvider({ children }: AuthProviderProps) {
 
       setUser(res.data); // Aggiorna i dati dell'utente
       setAuth(true); // Indica che l'utente è autenticato
+      setIsAdmin(user?.role == "ADMIN");
     } catch (error) {
       setUser(null); // Nessun utente autenticato
       setAuth(false); // Indica che l'utente non è autenticato
+      setIsAdmin(false);
       localStorage.removeItem("jwtToken");
       alert("Session expired");
     }
@@ -65,16 +70,19 @@ function AuthProvider({ children }: AuthProviderProps) {
 
   useEffect(() => {
     isAuth();
-  }, [auth, user]);
+  }, [auth, user, isAdmin]);
 
   const logout = () => {
     setUser(null);
     setAuth(false);
+    setIsAdmin(false);
     localStorage.removeItem("jwtToken");
   };
 
   return (
-    <AuthContext.Provider value={{ auth, setAuth, user, logout, isAuth }}>
+    <AuthContext.Provider
+      value={{ auth, setAuth, user, logout, isAuth, isAdmin }}
+    >
       {children}
     </AuthContext.Provider>
   );

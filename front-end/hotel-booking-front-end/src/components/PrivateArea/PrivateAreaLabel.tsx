@@ -44,19 +44,21 @@ const reviews: Review[] = [
 ];*/
 
 function PrivateAreaLabel() {
-  const { auth, user } = useAuth();
+  const { auth, user, isAdmin } = useAuth();
   const navigate = useNavigate();
 
   const [bookings, setBookings] = useState<BookingRoomOut[]>([]);
   const [loading, setLoading] = useState(true);
 
-  if(!auth){
-    navigate("/")
-  }
-
   useEffect(() => {
+    if (!auth) {
+      navigate("/");
+    }
+
+    console.log(bookings)
+
     async function fetchBookingList() {
-      if (!auth || !user) {
+      if (!user || isAdmin) {
         setLoading(false); // Ensure loading ends even if auth fails
         return;
       }
@@ -80,12 +82,12 @@ function PrivateAreaLabel() {
     }
 
     fetchBookingList();
-  }, [auth, user]);
+  }, []);
 
   if (loading) {
     return <div>Loading...</div>;
   }
-  
+
   /*if (!auth) {
     return <Navigate to="/logIn" />;
   }*/
@@ -104,12 +106,10 @@ function PrivateAreaLabel() {
         <div className="col col-8">
           <Routes>
             <Route path="accountManaging" element={<AccountManaging />} />
-            {
-              <Route
-                path="roomListBooking"
-                element={<RoomList data_list={data_list} />}
-              />
-            }
+            <Route
+              path="roomListBooking"
+              element={<RoomList data_list={data_list} />}
+            />
             <Route
               path="reviewList"
               element={<ReviewList reviews={reviews} isPersonalArea={true} />}

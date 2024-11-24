@@ -1,8 +1,10 @@
-import Modal from "./common/Modal";
-import OtpCode from "./common/OtpCode";
-import SendCode from "./LogIn/OtpVerifyCode";
+import { ReactNode } from "react";
 
-function Home() {
+interface Props {
+  children: ReactNode;
+}
+
+function Home({ children }: Props) {
   const logInDivClass = {
     display: "flex",
     justifyContent: "center",
@@ -14,11 +16,7 @@ function Home() {
     backgroundPosition: "center",
   };
 
-  return (
-    <div style={logInDivClass}>
-      <Modal></Modal>
-    </div>
-  );
+  return <div style={logInDivClass}>{children}</div>;
 }
 
 export default Home;

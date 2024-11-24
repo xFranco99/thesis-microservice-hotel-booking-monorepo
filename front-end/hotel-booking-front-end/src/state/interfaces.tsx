@@ -206,3 +206,29 @@ interface RoomOutAndBookRoomOut {
   room: RoomOut | null
   booking: BookingRoomOut | null
 }
+
+interface ServiceRoom {
+  services: AssociateRoomWithServices[]
+}
+
+interface RoomPatch {
+  hotel_id?: number | null
+  bed_number?: number | null
+  room_type?: string | null
+  price_per_night_adults?: number | null
+  price_per_night_children?: number | null
+  description?: string | null
+}
+
+interface PhotoBaseOut extends PhotoBase {
+  photo_id: number
+}
+
+interface SinglePhotoOutList {
+  photos: PhotoBaseOut[]
+}
+
+interface HotelOutPaginated {
+  hotel_out: HotelOut[]
+  total_pages: number
+}
