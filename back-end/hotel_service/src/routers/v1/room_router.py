@@ -18,9 +18,8 @@ router = APIRouter(
 
 @router.post("/create-room")
 def create_room(data: RoomCreate, session: Session = Depends(get_db)) -> Response:
-
-    _room_service = RoomServiceLogic(session)
-    room = _room_service.create_room(data)
+    _cross_service = CrossServices(session)
+    room = _cross_service.create_room(data)
 
     return Response(
         content=json.dumps(jsonable_encoder(room)),

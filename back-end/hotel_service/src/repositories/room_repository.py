@@ -39,6 +39,9 @@ class RoomRepository:
         rooms = self.session.query(Room).filter(Room.hotel_id == hotel_id).all()
         return [RoomBase(**room.__dict__) for room in rooms]
 
+    def count_associated_rooms(self, hotel_id: int):
+        return self.session.query(Room).filter_by(hotel_id = hotel_id).count()
+
     def search_room_not_booked(
             self,
             city: str,

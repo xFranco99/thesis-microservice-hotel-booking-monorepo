@@ -6,7 +6,7 @@ from fastapi import HTTPException
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
-from schemas.hotel_schema import RoomOut, HotelOut, BookingCreate, BookingRoomOut
+from schemas.hotel_schema import RoomOut, HotelOut, BookingCreate, BookingRoomOut, RoomCreate
 from schemas.mail_schema import RefundMailInput, ReservationMailInfo
 from services.booking_service import BookingService
 from services.hotel_service import HotelService
@@ -168,3 +168,15 @@ class CrossServices:
         except SQLAlchemyError as e:
             raise HTTPException(HTTPStatus.INTERNAL_SERVER_ERROR, detail=f"{e}")
 
+
+    def create_room(self, data: RoomCreate):
+        hotel = self.hotel_service.find_hotel_by_id(data.hotel_id)
+        hotel_rooms_associated = self.room_service.count_associated_rooms(data.hotel_id)
+
+        if hotel.total_rooms == hotel_rooms_associated:
+            raise HTTPException(
+                status_code=HTTPStatus.FORBIDDEN,
+                detail="Can't add more rooms to this hotel"
+            )
+
+        return self.room_service.create_room(data)

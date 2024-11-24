@@ -77,3 +77,6 @@ class RoomServiceLogic:
     ):
 
         return self.repository.search_room_not_booked(city, date_from, date_to, total_guests, page, page_size)
+
+    def count_associated_rooms(self, hotel_id: int):
+        return self.repository.count_associated_rooms(hotel_id)
