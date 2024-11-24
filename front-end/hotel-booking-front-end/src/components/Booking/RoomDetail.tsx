@@ -161,7 +161,7 @@ function RoomDetail() {
     }
 
     const data = {
-      room_number: _id,
+      room_id: _id,
       user_id: user?.id_user,
       hotel_id: room?.hotel_id,
       booked_from: startDate,
