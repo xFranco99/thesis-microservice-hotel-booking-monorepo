@@ -31,6 +31,7 @@ class HotelRepository:
     def delete_hotel(self, hotel_id: int):
         try:
             self.session.query(Hotel).filter_by(hotel_id=hotel_id).delete()
+            self.session.commit()
         except SQLAlchemyError as e:
             self.session.rollback()
             raise SQLAlchemyError(e)

@@ -33,7 +33,7 @@ def generate_booking_pdf(booking: BookingRoomOut) -> BytesIO:
     p.drawString(100, 630, f"Check-out Date: {booking.booked_to.strftime('%Y-%m-%d') if booking.booked_to else 'N/A'}")
     p.drawString(100, 610, f"Number of Adults: {booking.adult_no}")
     p.drawString(100, 590, f"Number of Children: {booking.children_no}")
-    p.drawString(100, 570, f"Credit Card No: {'*****' if booking.credit_card_no else 'N/A'}")
+    p.drawString(100, 570, f"Credit Card No: {booking.credit_card_no if booking.credit_card_no else 'N/A'}")
 
     # Payment Information
     p.drawString(100, 550, f"Payment Amount: ${booking.payment_amount if booking.payment_amount else 0.00:.2f}")

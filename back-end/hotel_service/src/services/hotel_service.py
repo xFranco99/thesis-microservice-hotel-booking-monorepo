@@ -1,3 +1,4 @@
+import math
 from http import HTTPStatus
 
 from fastapi import HTTPException
@@ -74,7 +75,7 @@ class HotelService:
             )
         )
 
-        return [HotelOut(**hotel.__dict__) for hotel in hotels], (page_size % hotels_total_number) + 1
+        return [HotelOut(**hotel.__dict__) for hotel in hotels], math.ceil(hotels_total_number / page_size)
 
 
     def find_city_by_name(self, city_name: str, limit: int):

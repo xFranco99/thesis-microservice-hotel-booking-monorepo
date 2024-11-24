@@ -20,7 +20,7 @@ import clients.client as _client
 SECRET_KEY = EnvVar.SECRET_KEY
 ALGORITHM = EnvVar.ALGORITHM
 
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
+ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
 def create_access_token(data: dict, expires_delta: timedelta | None = None):
     to_encode = convert_datetime_to_timestamp(data.copy())
