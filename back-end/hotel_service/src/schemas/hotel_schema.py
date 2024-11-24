@@ -172,3 +172,17 @@ class PhotoBaseOut(PhotoBase):
 
 class SinglePhotoOutList(BaseModel):
     photos: List[PhotoBaseOut] = []
+
+class RoomOutFromHotel(RoomBase):
+    photos: List[str] = []
+    room_services: List[ServiceBase] = []
+
+    class Config:
+        orm_mode = True
+
+class RoomOutFromHotelPaginated(BaseModel):
+    rooms: List[RoomOutFromHotel] = []
+    total_pages: int = 1
+
+    class Config:
+        orm_mode = True

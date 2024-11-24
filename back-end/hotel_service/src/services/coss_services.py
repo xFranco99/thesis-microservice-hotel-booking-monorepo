@@ -1,12 +1,12 @@
+import math
 from datetime import datetime
 from decimal import Decimal
 from http import HTTPStatus
-
 from fastapi import HTTPException
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
-from schemas.hotel_schema import RoomOut, HotelOut, BookingCreate, BookingRoomOut, RoomCreate
+from schemas.hotel_schema import RoomOut, HotelOut, BookingCreate, BookingRoomOut, RoomCreate, RoomOutFromHotelPaginated
 from schemas.mail_schema import RefundMailInput, ReservationMailInfo
 from services.booking_service import BookingService
 from services.hotel_service import HotelService
@@ -181,12 +181,18 @@ class CrossServices:
 
         return self.room_service.create_room(data)
 
-    def find_room_by_room_no(self, hotel_id: int, room_no: int):
+    def find_room_by_room_no(self, hotel_id: int, room_no: int, page: int, page_size: int):
 
-        rooms = self.room_service.find_room_by_room_no(hotel_id, room_no)
+        rooms = self.room_service.find_room_by_room_no(hotel_id, room_no, page, page_size)
+
+        rooms_total = len(rooms)
 
         for room in rooms:
             room.room_services = self.services_service.find_all_services_by_room_id(room.room_id)
             room.photos = self.photos_service.find_photos_by_room_id(room.room_id)
 
-        return rooms
+        response = RoomOutFromHotelPaginated()
+        response.rooms = rooms
+        response.total_pages = math.ceil(rooms_total / page_size)
+
+        return response

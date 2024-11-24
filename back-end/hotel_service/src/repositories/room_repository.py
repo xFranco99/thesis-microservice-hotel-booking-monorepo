@@ -5,7 +5,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
 from models.hotel_model import Room, Booking, Hotel
-from schemas.hotel_schema import RoomCreate, RoomOut, RoomBase, RoomPatch
+from schemas.hotel_schema import RoomCreate, RoomOut, RoomBase, RoomPatch, RoomOutFromHotel
 from utils.object_util import obj_to_dict_non_none
 
 
@@ -35,14 +35,21 @@ class RoomRepository:
         room = self.session.query(Room).filter(Room.room_id == room_id).first()
         return RoomOut(**room.__dict__)
 
-    def find_room_by_room_number(self, hotel_id: int, room_number: int):
-        rooms = self.session.query(Room).filter(
-            and_(
-                Room.hotel_id == hotel_id,
-                or_(room_number is None, Room.room_number==room_number)
+    def find_room_by_room_number(self, hotel_id: int, room_number: int, page: int, page_size: int):
+        offset_value = (page - 1) * page_size
+
+        rooms = (
+            self.session.query(Room).filter(
+                and_(
+                    Room.hotel_id == hotel_id,
+                    or_(room_number is None, Room.room_number==room_number)
+                )
             )
-        ).all()
-        return [RoomOut(**room.__dict__) for room in rooms]
+            .offset(offset_value)
+            .limit(page_size)
+            .all()
+        )
+        return [RoomOutFromHotel(**room.__dict__) for room in rooms]
 
     def find_room_by_hotel_id(self, hotel_id: int):
         rooms = self.session.query(Room).filter(Room.hotel_id == hotel_id).all()

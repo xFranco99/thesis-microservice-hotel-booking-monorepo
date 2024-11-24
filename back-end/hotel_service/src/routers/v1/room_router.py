@@ -97,10 +97,12 @@ def delete_room(room_id: int, session: Session = Depends(get_db)) -> Response:
 def find_by_room_number(
         hotel_id: int,
         room_no: Optional[int] = None,
+        page: int = Query(1, ge=1),
+        page_size: int = Query(10, ge=1, le=100),
         session: Session = Depends(get_db)
 ) -> Response:
     _cross_service = CrossServices(session)
-    room = _cross_service.find_room_by_room_no(hotel_id, room_no)
+    room = _cross_service.find_room_by_room_no(hotel_id, room_no, page, page_size)
 
     return Response(
         content=json.dumps(jsonable_encoder(room)),
