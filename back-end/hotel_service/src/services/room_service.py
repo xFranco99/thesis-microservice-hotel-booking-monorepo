@@ -63,6 +63,9 @@ class RoomServiceLogic:
     def find_room_by_room_id(self, room_id: int):
         return self.repository.find_room_by_room_id(room_id)
 
+    def find_room_by_room_no(self, hotel_id: int, room_no: int):
+        return self.repository.find_room_by_room_number(hotel_id, room_no)
+
     def find_room_by_hotel_id(self, hotel_id: int):
         return self.repository.find_room_by_hotel_id(hotel_id)
 

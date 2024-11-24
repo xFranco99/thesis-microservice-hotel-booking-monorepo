@@ -91,3 +91,14 @@ def delete_room(room_id: int, session: Session = Depends(get_db)) -> Response:
         media_type="application/json",
         status_code=HTTPStatus.OK
     )
+
+@router.get("/find-by-room-number/{hotel_id}/{room_no}")
+def find_by_room_number(hotel_id: int, room_id: int, session: Session = Depends(get_db)) -> Response:
+    _room_service = RoomServiceLogic(session)
+    room = _room_service.find_room_by_room_no(hotel_id, room_id)
+
+    return Response(
+        content=json.dumps(jsonable_encoder(room)),
+        media_type="application/json",
+        status_code=HTTPStatus.OK
+    )

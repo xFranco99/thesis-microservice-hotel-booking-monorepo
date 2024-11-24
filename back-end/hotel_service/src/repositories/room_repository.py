@@ -35,6 +35,10 @@ class RoomRepository:
         room = self.session.query(Room).filter(Room.room_id == room_id).first()
         return RoomOut(**room.__dict__)
 
+    def find_room_by_room_number(self, hotel_id: int, room_number: int):
+        rooms = self.session.query(Room).filter_by(room_number=room_number, hotel_id=hotel_id).all()
+        return [RoomOut(**room.__dict__) for room in rooms]
+
     def find_room_by_hotel_id(self, hotel_id: int):
         rooms = self.session.query(Room).filter(Room.hotel_id == hotel_id).all()
         return [RoomBase(**room.__dict__) for room in rooms]
