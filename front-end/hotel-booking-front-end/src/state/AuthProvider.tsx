@@ -43,6 +43,7 @@ function AuthProvider({ children }: AuthProviderProps) {
       if (!token) {
         setUser(null);
         setAuth(false);
+        setIsAdmin(false);
         return;
       }
 
@@ -58,7 +59,7 @@ function AuthProvider({ children }: AuthProviderProps) {
 
       setUser(res.data); // Aggiorna i dati dell'utente
       setAuth(true); // Indica che l'utente è autenticato
-      setIsAdmin(user?.role == "ADMIN");
+      setIsAdmin(true);
     } catch (error) {
       setUser(null); // Nessun utente autenticato
       setAuth(false); // Indica che l'utente non è autenticato
@@ -70,7 +71,7 @@ function AuthProvider({ children }: AuthProviderProps) {
 
   useEffect(() => {
     isAuth();
-  }, [auth, user, isAdmin]);
+  }, [auth, isAdmin]);
 
   const logout = () => {
     setUser(null);

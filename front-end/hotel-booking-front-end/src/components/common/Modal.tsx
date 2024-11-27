@@ -1,14 +1,17 @@
 import { useState } from "react";
 import Datepicker from "./Datepicker";
 import Selector from "./Selector";
-import ButtonLink from "./ButtonLink";
-import InputText from "./InputText";
 import SearchFromList from "./SearchFromList";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../state/AuthProvider";
 
 function Modal() {
+  const { isAdmin } = useAuth();
   const navigate = useNavigate();
+
+  if (isAdmin) {
+    navigate("/console");
+  }
 
   const [startDate, setStartDate] = useState<Date>();
   const [endDate, setEndDate] = useState<Date>();

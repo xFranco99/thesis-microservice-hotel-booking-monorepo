@@ -4,11 +4,15 @@ import { Fragment } from "react/jsx-runtime";
 import axios, { AxiosError } from "axios";
 import { useAuth } from "../../state/AuthProvider";
 import { useNavigate } from "react-router-dom";
+import { set } from "react-datepicker/dist/date_utils";
 
 function SignInForm() {
   const { setAuth, auth } = useAuth();
   const navigate = useNavigate();
   const [authAlert, setAuthAlert] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(
+    "Username or password is incorrect"
+  );
 
   const [signInFormData, setSignInFormData] = useState<SignInInput>({
     username: "",
@@ -36,7 +40,11 @@ function SignInForm() {
     } catch (error) {
       if (axios.isAxiosError(error)) {
         const e = error as AxiosError;
-        console.error(e.status === 401);
+        if (e.status === 401) {
+          setErrorMessage("Username or password is incorrect");
+        } else {
+          setErrorMessage("We have a problem, please try later");
+        }
         setAuthAlert(true);
       }
       setAuth(false);
@@ -71,7 +79,7 @@ function SignInForm() {
             onChange={handleChange}
             value={signInFormData.password}
           />
-          {authAlert && <p>Username or password is incorrect</p>}
+          {authAlert && <p>{errorMessage}</p>}
         </div>
         <div className="mb-3" style={{ display: "grid" }}>
           <button type="submit" className="btn btn-danger" id="SignInButton">
@@ -100,16 +108,6 @@ function SignInForm() {
             </Link>
           </p>
         </div>
-        {/*<div className="mb-3 form-check">
-          <input
-            type="checkbox"
-            className="form-check-input"
-            id="exampleCheck1"
-          />
-          <label className="form-check-label" htmlFor="exampleCheck1">
-            Remember me
-          </label>
-        </div>*/}
         <div className="mb-3">
           <p style={{ display: "flex", justifyContent: "center" }}>
             You don't have an account?&nbsp;

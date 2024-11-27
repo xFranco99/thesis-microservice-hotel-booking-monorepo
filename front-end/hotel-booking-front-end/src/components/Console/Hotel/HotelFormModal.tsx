@@ -1,13 +1,21 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 interface Props {
   onClose: (close: boolean) => void;
+  editMode?: boolean;
+  initialData?: HotelUpdate;
+  hotel_id?: number;
 }
 
-function HotelFormModal({ onClose }: Props) {
+function HotelFormModal({
+  onClose,
+  editMode = false,
+  initialData,
+  hotel_id,
+}: Props) {
   const [showModal, setShowModal] = useState(false);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<HotelUpdate>({
     hotel_name: "",
     hotel_address: "",
     hotel_stars: 0,
@@ -37,9 +45,13 @@ function HotelFormModal({ onClose }: Props) {
     e.preventDefault();
     try {
       const apiBaseUrl = import.meta.env.VITE_HOTEL_SERVICE_BASE_URL;
-      const url = apiBaseUrl + "/api/v1/hotel/create-hotel";
+      const url = !editMode
+        ? `${apiBaseUrl}/api/v1/hotel/create-hotel`
+        : `${apiBaseUrl}/api/v1/hotel/edit-hotel/${hotel_id}`;
 
-      const response = await axios.post(url, formData);
+      const response = editMode
+        ? await axios.patch(url, formData)
+        : await axios.post(url, formData);
 
       if (response) {
         alert("Hotel created successfully!");
@@ -62,6 +74,16 @@ function HotelFormModal({ onClose }: Props) {
     }
   };
 
+  useEffect(() => {
+    if (editMode && initialData) {
+      setFormData(initialData);
+    }
+  }, []);
+
+  const openButtonClass = editMode
+    ? "btn btn-outline-primary rounded-pill"
+    : "btn btn-outline-success rounded-pill";
+
   return (
     <div>
       <button
@@ -69,9 +91,9 @@ function HotelFormModal({ onClose }: Props) {
           setShowModal(true);
           onClose(false);
         }}
-        className="btn btn-outline-success rounded-pill"
+        className={openButtonClass}
       >
-        Add New
+        {editMode ? "Edit" : "Add New"}
       </button>
 
       {showModal && (
@@ -82,7 +104,9 @@ function HotelFormModal({ onClose }: Props) {
           <div className="modal-dialog modal-dialog-centered">
             <div className="modal-content">
               <div className="modal-header">
-                <h5 className="modal-title">Create Hotel</h5>
+                <h5 className="modal-title">
+                  {editMode ? "Edit Hotel" : "Create Hotel"}
+                </h5>
                 <button
                   onClick={() => {
                     setShowModal(false);

@@ -1,13 +1,25 @@
-import { Fragment, useEffect, useState } from "react";
 import CommonLabel from "../common/CommonLabel";
-import SearchFromList from "../common/SearchFromList";
-import axios from "axios";
 import HotelTable from "./Hotel/HotelTable";
+import { useAuth } from "../../state/AuthProvider";
+import { Route, Routes, useNavigate } from "react-router-dom";
+import RoomsTable from "./Rooms/RoomsTable";
+import ConsoleRoomDetail from "./Rooms/ConsoleRoomDetail";
 
 function ConsoleModal() {
+  const { isAdmin } = useAuth();
+  const navigate = useNavigate();
+
+  if (!isAdmin) {
+    navigate("/");
+  }
+
   return (
     <CommonLabel style={{ backgroundColor: "rgba(255, 255, 255, 0)" }}>
-      <HotelTable></HotelTable>
+      <Routes>
+        <Route path="*" element={<HotelTable />} />
+        <Route path="rooms" element={<RoomsTable />} />
+        <Route path="rooms/detail" element={<ConsoleRoomDetail />} />
+      </Routes>
     </CommonLabel>
   );
 }

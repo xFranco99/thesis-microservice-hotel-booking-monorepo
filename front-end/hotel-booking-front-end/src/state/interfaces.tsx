@@ -53,7 +53,7 @@ interface RoomBase {
   hotel_id?: number | null;
   bed_number?: number | null;
   room_type?: string | null;
-  price_per_night_adults?: number | null; // Use `number` for Decimal fields
+  price_per_night_adults?: number | null; 
   price_per_night_children?: number | null;
   description?: string | null;
 }
@@ -81,6 +81,15 @@ interface HotelBase {
   hotel_city?: string | null;
   refundable?: boolean | 0;
 }
+
+type HotelUpdate = {
+  hotel_name: string;
+  hotel_address: string;
+  hotel_stars: number;
+  total_rooms: number;
+  hotel_city: string;
+  refundable: boolean;
+};
 
 // Create Hotel Interface
 interface HotelCreate extends HotelBase {}
@@ -230,5 +239,15 @@ interface SinglePhotoOutList {
 
 interface HotelOutPaginated {
   hotel_out: HotelOut[]
+  total_pages: number
+}
+
+interface RoomOutFromHotel extends RoomBase {
+  photos: string[]
+  room_services: ServiceBase[]
+}
+
+interface RoomOutFromHotelPaginated {
+  rooms: RoomOutFromHotel[]
   total_pages: number
 }

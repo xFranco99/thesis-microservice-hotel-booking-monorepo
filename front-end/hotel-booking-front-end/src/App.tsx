@@ -1,4 +1,3 @@
-import { Fragment, useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./App.css";
 import NavBar from "./components/NavBar";
@@ -11,46 +10,30 @@ import SignInCodeForm from "./components/LogIn/SignInCodeForm";
 import BookingLabel from "./components/Booking/BookingLabel";
 import RoomDetail from "./components/Booking/RoomDetail";
 import PrivateAreaLabel from "./components/PrivateArea/PrivateAreaLabel";
-import { useAuth } from "./state/AuthProvider";
 import ConsoleModal from "./components/Console/ConsoleModal";
-import { Modal } from "react-bootstrap";
+import Modal from "./components/common/Modal";
 
 function App() {
-  const { isAdmin } = useAuth();
-
   return (
     <Router>
       <NavBar name="Hotel" account="Sign-In"></NavBar>
       <Routes>
-        {isAdmin ? (
-          <Fragment>
-            <Route
-              path="/"
-              element={
-                <Home>
-                  <ConsoleModal />
-                </Home>
-              }
-            />
-            <Route
-              path="/console/*"
-              element={
-                <Home>
-                  <ConsoleModal />
-                </Home>
-              }
-            />
-          </Fragment>
-        ) : (
-          <Route
-            path="/"
-            element={
-              <Home>
-                <Modal></Modal>
-              </Home>
-            }
-          />
-        )}
+        <Route
+          path="/"
+          element={
+            <Home>
+              <Modal></Modal>
+            </Home>
+          }
+        />
+        <Route
+          path="/console/*"
+          element={
+            <Home>
+              <ConsoleModal />
+            </Home>
+          }
+        />
         <Route
           path="/logIn"
           element={
