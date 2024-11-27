@@ -19,7 +19,7 @@ class RoomServiceLogic:
         except SQLAlchemyError as e:
             raise HTTPException(
                 status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
-                detail=f"Error: {e} while creating hotel"
+                detail=f"Error: {str(e.__dict__['orig'])} while creating hotel"
             )
 
     def update_room(self, data: RoomPatch, room_id: int):
@@ -28,7 +28,7 @@ class RoomServiceLogic:
         except SQLAlchemyError as e:
             raise HTTPException(
                 status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
-                detail=f"Error: {e} while updating hotel"
+                detail=f"Error: {str(e.__dict__['orig'])} while updating hotel"
             )
 
     def delete_room(self, room_id: int):
@@ -37,7 +37,7 @@ class RoomServiceLogic:
         except SQLAlchemyError as e:
             raise HTTPException(
                 status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
-                detail=f"Error: {e} while deleting hotel"
+                detail=f"Error: {str(e.__dict__['orig'])} while deleting hotel"
             )
 
     def create_room_list(self, data: RoomCreateList):

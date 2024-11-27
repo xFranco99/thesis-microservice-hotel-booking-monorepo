@@ -37,7 +37,7 @@ class CrossServices:
             booking =  self.booking_service.create_booking(data, total_price)
             hotel = self.hotel_service.get_hotel_from_room(booking.hotel_id)
         except SQLAlchemyError as e:
-            raise HTTPException(HTTPStatus.INTERNAL_SERVER_ERROR, data=f"{e}")
+            raise HTTPException(HTTPStatus.INTERNAL_SERVER_ERROR, data=f"{str(e.__dict__['orig'])}")
 
         user = get_user_from_id(data.user_id)
 
@@ -98,7 +98,7 @@ class CrossServices:
         except SQLAlchemyError as e:
             raise HTTPException(
                 status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
-                detail=f"Error: {e} while creating hotel"
+                detail=f"Error: {str(e.__dict__['orig'])} while creating hotel"
             )
 
     def get_associated_booking_room(self, bookings: [BookingRoomOut]):
@@ -166,7 +166,7 @@ class CrossServices:
 
                 self.booking_service.remove_booking(booking_id)
         except SQLAlchemyError as e:
-            raise HTTPException(HTTPStatus.INTERNAL_SERVER_ERROR, detail=f"{e}")
+            raise HTTPException(HTTPStatus.INTERNAL_SERVER_ERROR, detail=f"{str(e.__dict__['orig'])}")
 
 
     def create_room(self, data: RoomCreate):

@@ -61,7 +61,7 @@ class ServiceServiceLogic:
         except SQLAlchemyError as e:
             raise HTTPException(
                 status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
-                detail=f"Error while updating service: {e}"
+                detail=f"Error while updating service: {str(e.__dict__['orig'])}"
             )
 
     def delete_service(self, service_id: int):
@@ -70,5 +70,5 @@ class ServiceServiceLogic:
         except SQLAlchemyError as e:
             raise HTTPException(
                 status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
-                detail=f"Error while deleting service: {e}"
+                detail=f"Error while deleting service: {str(e.__dict__['orig'])}"
             )

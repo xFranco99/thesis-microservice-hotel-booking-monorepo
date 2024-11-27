@@ -19,7 +19,7 @@ class BookingService:
         except SQLAlchemyError as e:
             raise HTTPException(
                 HTTPStatus.INTERNAL_SERVER_ERROR,
-                detail=f"Error: {e} while creating hotel"
+                detail=f"Error: {str(e.__dict__['orig'])} while creating hotel"
             )
 
     def find_booking_by_id(self, booking_id: int):

@@ -31,9 +31,7 @@ class ServiceRepository:
 
     def find_all_services(self):
         services = self.session.query(Service).all()
-        result = ServiceListOut()
-        result.services = [ServiceOut(**service.__dict__) for service in services]
-        return result
+        return [ServiceOut(**service.__dict__) for service in services]
 
     def find_all_services_by_room_id(self, room_id: int):
         services = (

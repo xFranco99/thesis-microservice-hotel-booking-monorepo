@@ -55,7 +55,7 @@ class PhotoService:
         except SQLAlchemyError as e:
             raise HTTPException(
                 status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
-                detail=f"Error while updating image {e}"
+                detail=f"Error while updating image {str(e.__dict__['orig'])}"
             )
 
     def find_photos_by_room_id(self, room_id: int):
@@ -72,5 +72,5 @@ class PhotoService:
         except SQLAlchemyError as e:
             raise HTTPException(
                 status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
-                detail=f"Error while updating image {e}"
+                detail=f"Error while updating image {str(e.__dict__['orig'])}"
             )
