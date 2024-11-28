@@ -39,7 +39,7 @@ function PrivateAreaMenu() {
               <ButtonLink
                 className="btn btn-outline-dark btn-delete-border"
                 text=""
-                to=""
+                to="newAdmin"
               >
                 <h2 className="h5 mb-0">Create New Console Account</h2>
               </ButtonLink>

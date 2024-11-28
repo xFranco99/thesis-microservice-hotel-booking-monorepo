@@ -10,6 +10,7 @@ import OtpVerifyCode from "../LogIn/OtpVerifyCode";
 import ChatBot from "./ChatBot";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import SignUpForm from "../LogIn/SignUpForm";
 
 const reviews: Review[] = [
   {
@@ -121,6 +122,7 @@ function PrivateAreaLabel() {
               }
             />
             <Route path="chatBot" element={<ChatBot />} />
+            <Route path="newAdmin" element={<SignUpForm _isNewAdmin={true} />} />
           </Routes>
         </div>
       </div>

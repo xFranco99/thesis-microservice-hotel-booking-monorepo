@@ -5,10 +5,16 @@ import { useAuth } from "../../state/AuthProvider";
 import { useState } from "react";
 import axios, { AxiosError } from "axios";
 
-function SignUpForm() {
+interface Props {
+  _isNewAdmin?: boolean;
+}
+
+function SignUpForm({ _isNewAdmin = false }: Props) {
   const { setAuth, auth } = useAuth();
   const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState();
+
+  const _role = _isNewAdmin ? "USER" : "ADMIN";
 
   const [signUpFormData, setSignInFormData] = useState<User>({
     username: "",
@@ -17,7 +23,7 @@ function SignUpForm() {
     last_name: "",
     phone_number: "",
     email: "",
-    role: "USER",
+    role: _role,
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -32,6 +38,13 @@ function SignUpForm() {
       const url = apiBaseUrl + "/api/v1/auth/sign-up";
 
       const response = await axios.post(url, signUpFormData);
+
+      if (_isNewAdmin) {
+        alert("New Admin Created");
+        navigate("/console");
+        return;
+      }
+
       const token: Token = response.data;
 
       localStorage.setItem("jwtToken", token.access_token);
@@ -129,14 +142,16 @@ function SignUpForm() {
             Sign Up
           </button>
         </div>
-        <div className="mb-3">
-          <p>
-            Already have an account?&nbsp;
-            <Link className="text-white" to="/logIn">
-              Sign In
-            </Link>
-          </p>
-        </div>
+        {!_isNewAdmin && (
+          <div className="mb-3">
+            <p>
+              Already have an account?&nbsp;
+              <Link className="text-white" to="/logIn">
+                Sign In
+              </Link>
+            </p>
+          </div>
+        )}
       </form>
     </Fragment>
   );
