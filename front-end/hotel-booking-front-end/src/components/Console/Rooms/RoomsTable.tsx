@@ -126,8 +126,8 @@ function RoomsTable() {
         <table
           className="table table-group-divider"
           style={{
-            width: "100%", // Full width of parent
-            height: "100%", // Full height of parent
+            width: "100%", 
+            height: "100%", 
             margin: 0,
             borderCollapse: "collapse",
           }}

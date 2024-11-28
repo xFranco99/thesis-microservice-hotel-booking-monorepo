@@ -4,6 +4,7 @@ import { useAuth } from "../../state/AuthProvider";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import RoomsTable from "./Rooms/RoomsTable";
 import ConsoleRoomDetail from "./Rooms/ConsoleRoomDetail";
+import ServiceTable from "./Services/ServicesTable";
 
 function ConsoleModal() {
   const { isAdmin } = useAuth();
@@ -19,6 +20,7 @@ function ConsoleModal() {
         <Route path="*" element={<HotelTable />} />
         <Route path="rooms" element={<RoomsTable />} />
         <Route path="rooms/detail" element={<ConsoleRoomDetail />} />
+        <Route path="services" element={<ServiceTable />} />
       </Routes>
     </CommonLabel>
   );

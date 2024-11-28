@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../state/AuthProvider";
 
@@ -12,14 +12,32 @@ function NavBar(props: Props) {
     padding: "12px",
   };
 
-  const { auth, user } = useAuth();
+  const { auth, user, isAdmin } = useAuth();
 
   return (
     <nav className="navbar navbar-dark bg-dark">
       <div className="container">
-        <Link className="navbar-brand mb-0 h1" to="/" style={myStyle}>
-          {props.name}
-        </Link>
+        {isAdmin ? (
+          <div>
+            <Link
+              className="navbar-brand mb-0 h1"
+              to="/console"
+              style={myStyle}
+            >
+              Hotel
+            </Link>
+            <Link className="navbar-brand mb-0 h1" to="/console/services" style={myStyle}>
+              Services
+            </Link>
+            <Link className="navbar-brand mb-0 h1" to="/console/mail" style={myStyle}>
+              Mail
+            </Link>
+          </div>
+        ) : (
+          <Link className="navbar-brand mb-0 h1" to="/" style={myStyle}>
+            {props.name}
+          </Link>
+        )}
 
         {auth ? (
           <Link
