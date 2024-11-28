@@ -7,6 +7,11 @@ from exceptions.template_exception import TemplateAlreadyExistException
 from models.mail_model import Template
 from schemas.mail_schema import TemplateInput, TemplateComplete
 
+def obj_to_dict_non_none(data):
+    return {
+        key: value for key, value in data.__dict__.items()
+        if value not in (None, '') and key != '_sa_instance_state'
+    }
 
 class TemplateRepository:
     def __init__(self, session: Session):
@@ -38,3 +43,17 @@ class TemplateRepository:
     def find_by_template_name(self, name: str) -> Optional[TemplateComplete]:
         template = self.session.query(Template).filter_by(template_name=name).first()
         return TemplateComplete(**template.__dict__) if template else None
+
+    def delete_template_by_id(self, template_id):
+        self.session.query(Template).filter_by(id=template_id).delete()
+        self.session.commit()
+
+    def get_all_template(self):
+        return self.session.query(Template).all()
+
+    def update_template_by_id(self, template_id: int, data: Template):
+
+        obj_full = obj_to_dict_non_none(data)
+
+        self.session.query(Template).filter_by(id=template_id).update(obj_full)
+        self.session.commit()

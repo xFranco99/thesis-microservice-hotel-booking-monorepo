@@ -19,6 +19,11 @@ class TemplateInput(BaseModel):
     template_name: str
     template: str
 
+class TemplatePatchInput(BaseModel):
+    description: Optional[str] = None
+    template_name: Optional[str] = None
+    template: Optional[str] = None
+
 class TemplateComplete(BaseModel):
     id: int
     description: str

@@ -1,16 +1,23 @@
+from http import HTTPStatus
+from tempfile import template
+
 import jinja2
-from fastapi import BackgroundTasks
+from fastapi import BackgroundTasks, HTTPException
 from fastapi_mail import FastMail, MessageSchema
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
+from win32ctypes.pywin32.pywintypes import datetime
 
 from config.env_var import EnvVar
 from config.mail_config import conf
 from costants.costant import MAIL_OTP_TEMPLATE_NAME, MAIL_CONFIRMATION_TEMPLATE_NAME, URL_CONFIRM_MAIL, \
     MAIL_CONFIRMED_REFUND, MAIL_CONFIRMED_RESERVATION
 from exceptions.mail_history_exception import CanNotStoreHistoryException
+from models.mail_model import Template
 from repositories.mail_hisory_repository import MailHistoryRepository
 from repositories.template_repository import TemplateRepository
-from schemas.mail_schema import TemplateInput, MailInput, RefundMailInput, ReservationMailInfo
+from schemas.mail_schema import TemplateInput, MailInput, RefundMailInput, ReservationMailInfo, TemplateComplete, \
+    TemplatePatchInput
 
 
 async def send_email_async(subject: str, email_to: str, body: dict):
@@ -126,3 +133,42 @@ class TemplateService:
         email_body = html_body.render(**template_data)
 
         return email_body
+
+    def delete_template_by_id(self, template_id: int):
+        try:
+            self.template_repository.delete_template_by_id(template_id)
+        except SQLAlchemyError as e:
+            raise HTTPException(
+                status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
+                detail=f"Error: {str(e.__dict__['orig'])} while deleting template"
+            )
+
+    def update_template_by_id(self, template_id: int, data: TemplatePatchInput):
+        try:
+            model_data = Template(**data.model_dump(exclude_none=True))
+
+            if data.template is not None and data.template != "":
+                template_html = data.template.encode('utf-8')
+                model_data.template = template_html
+            else:
+                model_data.template = None
+
+            model_data.update_date = datetime.now()
+
+            self.template_repository.update_template_by_id(template_id, model_data)
+        except SQLAlchemyError as e:
+            raise HTTPException(
+                status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
+                detail=f"Error: {str(e.__dict__['orig'])} while deleting template"
+            )
+
+    def get_all_template(self):
+        try:
+            templates = self.template_repository.get_all_template()
+
+            return [TemplateComplete(**template.__dict__) for template in templates]
+        except SQLAlchemyError as e:
+            raise HTTPException(
+                status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
+                detail=f"Error: {str(e.__dict__['orig'])} while deleting template"
+            )

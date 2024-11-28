@@ -251,3 +251,27 @@ interface RoomOutFromHotelPaginated {
   rooms: RoomOutFromHotel[]
   total_pages: number
 }
+
+/*--------------------------------------------- MAIL -----------------------------------------*/
+
+interface TemplateInput {
+  description: string;
+  template_name: string;
+  template: string;
+}
+
+interface TemplatePatchInput {
+  description?: string;
+  template_name?: string;
+  template?: string;
+}
+
+interface TemplateComplete {
+  id: number;
+  description: string;
+  template_name: string;
+  template: string;
+  insert_date: string; 
+  update_date: string;
+}
+
