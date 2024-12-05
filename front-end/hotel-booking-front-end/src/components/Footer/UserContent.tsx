@@ -28,26 +28,14 @@ function UserContent() {
         </div>
       </div>
 
-      <div
+      {<div
         className="col-md-5 offset-md-1 mb-3"
         style={{ display: "contents" }}
       >
         <form style={{ paddingRight: "20px" }}>
-          <h5>Subscribe to our newsletter</h5>
-          <p>Monthly digest of what's new and exciting from us.</p>
-          <div className="d-flex flex-column flex-sm-row w-100 gap-2">
-            <input
-              id="newsletter1"
-              type="text"
-              className="form-control"
-              placeholder="Email address"
-            />
-            <button className="btn btn-outline-light" type="button">
-              Subscribe
-            </button>
-          </div>
+          <img src="logo.png" style={{maxHeight: "12vh"}}/>
         </form>
-      </div>
+      </div>}
     </Fragment>
   );
 }
