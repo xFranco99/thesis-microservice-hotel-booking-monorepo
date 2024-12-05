@@ -59,7 +59,7 @@ function AuthProvider({ children }: AuthProviderProps) {
 
       setUser(res.data); // Aggiorna i dati dell'utente
       setAuth(true); // Indica che l'utente è autenticato
-      setIsAdmin(true);
+      setIsAdmin(user?.role == 'ADMIN');
     } catch (error) {
       setUser(null); // Nessun utente autenticato
       setAuth(false); // Indica che l'utente non è autenticato
