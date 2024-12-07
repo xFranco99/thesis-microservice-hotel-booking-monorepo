@@ -269,9 +269,13 @@ function RoomDetail() {
                 {services && <RoomServices services={services} />}
               </div>
             </div>
-            {room?.hotel?.refundable && (
+            {room?.hotel?.refundable ? (
               <div className="row" style={{ paddingTop: "8px" }}>
                 <h2 className="h5 mb-0">This Hotel is Refundable</h2>
+              </div>
+            ) : (
+              <div className="row" style={{ paddingTop: "8px" }}>
+                <h2 className="h5 mb-0">This Hotel is not Refundable</h2>
               </div>
             )}
             <Review></Review>
