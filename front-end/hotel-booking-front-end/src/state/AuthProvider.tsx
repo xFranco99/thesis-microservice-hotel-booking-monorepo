@@ -32,6 +32,7 @@ interface AuthProviderProps {
 }
 
 function AuthProvider({ children }: AuthProviderProps) {
+  const [firstAccess, setFirstAccess] = useState(true);
   const [auth, setAuth] = useState<boolean | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -59,13 +60,14 @@ function AuthProvider({ children }: AuthProviderProps) {
 
       setUser(res.data); // Aggiorna i dati dell'utente
       setAuth(true); // Indica che l'utente è autenticato
-      setIsAdmin(user?.role == 'ADMIN');
+      setIsAdmin(user?.role == "ADMIN");
+      setFirstAccess(false);
     } catch (error) {
       setUser(null); // Nessun utente autenticato
       setAuth(false); // Indica che l'utente non è autenticato
       setIsAdmin(false);
       localStorage.removeItem("jwtToken");
-      alert("Session expired");
+      !firstAccess && alert("Session expired");
     }
   };
 
