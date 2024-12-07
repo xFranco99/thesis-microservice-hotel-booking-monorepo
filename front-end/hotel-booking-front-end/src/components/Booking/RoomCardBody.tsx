@@ -199,7 +199,10 @@ function RoomCardBoody({ data }: Props) {
             {room?.bed_number} Bed
           </div>
           <div className="small mt-2 text-center text-md-start">
-            8 notti, 2 adulti
+            {getDateDifferenceInDays(_startDate, _endDate) +
+              " nights, " +
+              (_childNumber + _adultNumber) +
+              " guests"}
           </div>
           {/*!isReserved && roomLeftAlert*/}
         </div>
