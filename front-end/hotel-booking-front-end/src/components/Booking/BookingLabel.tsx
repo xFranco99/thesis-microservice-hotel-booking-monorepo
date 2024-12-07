@@ -11,6 +11,7 @@ function BookingLabel() {
   const navigate = useNavigate();
 
   const [rooms, setRooms] = useState<RoomOut[]>([]);
+  const [trigger, setTrigger] = useState(false);
 
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
@@ -25,23 +26,18 @@ function BookingLabel() {
   const _childNumber = Number(searchParams.get("childNumber")) || 0;
   const _adultNumber = Number(searchParams.get("adultNumber")) || 0;
 
-  const [startDate, setStartDate] = useState(_startDate);
-  const [endDate, setEndDate] = useState(_endDate);
-  const [childNumber, setChildNumber] = useState(_childNumber);
-  const [adultNumber, setAdultNumber] = useState(_adultNumber);
-  const [city, setCity] = useState<string>(_city);
-
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(1);
 
   const [pageRight, setPageRight] = useState(false);
 
   const fetchRooms = async () => {
-    const isDateError = !startDate || !endDate || startDate > endDate;
-    const isCityError = !city;
+
+    const isDateError = !_startDate || !_endDate || _startDate > _endDate;
+    const isCityError = !_city;
     const isGuestNumberError =
-      (childNumber > 0 && adultNumber <= 0) ||
-      (adultNumber <= 0 && childNumber <= 0);
+      (_childNumber > 0 && _adultNumber <= 0) ||
+      (_adultNumber <= 0 && _childNumber <= 0);
 
     if (isDateError || isCityError || isGuestNumberError) {
       return;
@@ -50,28 +46,41 @@ function BookingLabel() {
     const apiBaseUrl = import.meta.env.VITE_HOTEL_SERVICE_BASE_URL;
 
     const url = `${apiBaseUrl}/api/v1/room/search-room?city=${encodeURIComponent(
-      city
+      _city
     )}&date_from=${encodeURIComponent(
-      startDate.toISOString().split("T")[0]
+      _startDate.toISOString().split("T")[0]
     )}&date_to=${encodeURIComponent(
-      endDate.toISOString().split("T")[0]
+      _endDate.toISOString().split("T")[0]
     )}&total_guests=${encodeURIComponent(
-      childNumber + adultNumber
+      _childNumber + _adultNumber
     )}&page=${encodeURIComponent(page)}&page_size=${encodeURIComponent(
       pageSize
     )}`;
 
+    console.log(url);
     const res = await axios.get(url);
 
     if (res.data) {
+      console.log(res.data);
       setPageRight(res.data.length >= pageSize);
       setRooms(res.data);
     }
   };
 
   useEffect(() => {
+
+    const _city = searchParams.get("city") || "";
+    const _startDate = searchParams.get("date_from")
+      ? new Date(searchParams.get("date_from")!)
+      : new Date();
+    const _endDate = searchParams.get("date_to")
+      ? new Date(searchParams.get("date_to")!)
+      : new Date();
+    const _childNumber = Number(searchParams.get("childNumber")) || 0;
+    const _adultNumber = Number(searchParams.get("adultNumber")) || 0;
+
     fetchRooms();
-  }, []);
+  }, [trigger]);
 
   const data_list: RoomOutAndBookRoomOut[] = rooms.map((room) => {
     return {
@@ -86,7 +95,7 @@ function BookingLabel() {
         display: "flex",
         flexDirection: "column",
         height: "100%",
-        justifyContent: "space-between", 
+        justifyContent: "space-between",
         backgroundColor: "#F0F0F0",
         minHeight: "80vh",
       }}
@@ -95,10 +104,13 @@ function BookingLabel() {
         <div className="col-3 padding-td">
           <BookingFilterCard
             _city={_city}
-            _from={startDate.toISOString().split("T")[0]}
-            _to={endDate.toISOString().split("T")[0]}
-            _adults={String(_childNumber)}
-            _childrens={String(_adultNumber)}
+            _from={_startDate.toISOString().split("T")[0]}
+            _to={_endDate.toISOString().split("T")[0]}
+            _adults={String(_adultNumber)}
+            _childrens={String(_childNumber)}
+            onSearch={() => {
+              setTrigger(!trigger);
+            }}
           ></BookingFilterCard>
         </div>
         <div className="col-9">

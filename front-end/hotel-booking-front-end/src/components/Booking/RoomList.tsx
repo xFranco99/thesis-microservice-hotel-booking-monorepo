@@ -10,7 +10,7 @@ interface Props {
 function RoomList({ data_list }: Props) {
   return (
     <ul className="list-group list-group-flush">
-      {data_list ? data_list.map((data) => (
+      {data_list && data_list.length > 0 ? data_list.map((data) => (
         <li className="list-group padding-td">
           <CardWithImage
             image={
@@ -22,7 +22,7 @@ function RoomList({ data_list }: Props) {
             <RoomCardBoody data={data}></RoomCardBoody>
           </CardWithImage>
         </li>
-      )) : <h1>Empty</h1>}
+      )) : <h1>Sorry... There are no rooms available</h1>}
     </ul>
   );
 }
