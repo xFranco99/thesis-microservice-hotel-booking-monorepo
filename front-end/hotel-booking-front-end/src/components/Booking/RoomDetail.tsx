@@ -131,6 +131,8 @@ function RoomDetail() {
   const photos = room?.photos;
   const services = room?.room_services;
 
+  console.log(room?.hotel);
+
   const stars = drawStars(hotel?.hotel_stars || 1);
   const maspLink = "http://maps.google.com/?q=" + hotel?.hotel_address;
 
@@ -181,7 +183,7 @@ function RoomDetail() {
 
       setIsSuccess(true);
       setOpenModal(true);
-      searchParams.set("isReserved", "false")
+      searchParams.set("isReserved", "false");
     } catch (error) {
       console.log(error);
     }
@@ -212,6 +214,7 @@ function RoomDetail() {
                   }
                   _adults={String(adultNumber)}
                   _childrens={String(childNumber)}
+                  onSearch={() => true}
                 ></BookingFilterCard>
               </div>
             </div>
@@ -266,6 +269,11 @@ function RoomDetail() {
                 {services && <RoomServices services={services} />}
               </div>
             </div>
+            {room?.hotel?.refundable && (
+              <div className="row" style={{ paddingTop: "8px" }}>
+                <h2 className="h5 mb-0">This Hotel is Refundable</h2>
+              </div>
+            )}
             <Review></Review>
           </div>
         </div>
