@@ -1,0 +1,2 @@
+https://python.langchain.com/docs/concepts/rag/
+https://youtu.be/yF9kGESAi3M?si=59Mu039j8Jwmk6xP&t=4578
