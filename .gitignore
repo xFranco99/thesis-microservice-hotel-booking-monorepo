@@ -10,3 +10,5 @@ mail-template
 *.docx
 *.docx#
 *.pdf
+back-end/AI_service/src/vector_database/db
+back-end/AI_service/src/vector_database/data

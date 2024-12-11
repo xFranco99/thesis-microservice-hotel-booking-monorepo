@@ -13,4 +13,8 @@ pip install fastapi-mail
 pip install httpx
 pip install canvas
 pip install reportlab
-pip install llama-index-core llama-index-readers-file llama-index-llms-ollama llama-index-embeddings-huggingface
+pip install langchain
+pip install langchain-community
+pip install langchain_chroma
+pip install chromadb
+pip install langchain-ollama
