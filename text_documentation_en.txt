@@ -1,69 +1,126 @@
-Hotel Booking Site Documentation
+# Hotel Booking Site Documentation
 
-NavBar:
-The NavBar is the dark strip on top of the web page.
-It is present in every page of the sites.
-Into the NavBar there are 2 components:
-	Hotel: that bring the user to the HomePage.
-	User: This component dinamically change according to user autentication.
-	If the user is not autenticated, i.e. user not performed SignIn or SignUp,
-	so this component show the "Sign-In" write, otherwise, show the username of current user logged in.
-	
-Footer:
-The footer is alwasis at the bottom of the page. As the NavBar, the footer is present in each page of the website.
-In the footer are reported the contact infos of Hotel web site. If you have some trouble or you need support, you can contact us with that infos.
+## NavBar
+The **NavBar** is a dark strip located at the top of every webpage.  
+It consists of two key components:
+1. **Hotel**: Redirects the user to the homepage.
+2. **User**: This component dynamically updates based on user authentication:
+   - If the user is not signed in, it displays "Sign In."
+   - If the user is signed in, it shows the username of the logged-in user.
 
+---
 
-Home:
-The home page is the first page diplayed when entering into 
-Hotel Booking Site. 
-The home page is divided in 3 part:
-	on top we have the NavBar
-	on Bottom we have the Footer
-	at center of the page there is a reservation form.
-The reservation form is so composed:
-	on the end left we have the city input text. It' s used to search a city where to reserve an hotel. Attention: when a letter is typed under the city field will appear a list of cities that start with the typed letters, if none is showed it's because there are not hotels in that city.
-	next to the left of city field, there are 2 fields: Check-in date and check-out date. This two fields are used to indicate the arriving date and the departure date in the hotel. 
-	the last two fields (last two on left or first two on the right) are used to specify the guest numbers. for guest that are over 12 years old you have to use the "Adults" field, for every person under 12 years old you have to use the "Children" field.
-After the "Search" button is clicked, you will be moved to "BookingLabel" page.
+## Footer
+The **Footer** is always located at the bottom of every webpage.  
+It contains the **contact information** for the Hotel Booking Site, like the phone number, the email, facebook, twitter and linkedin.  
+For assistance or support, users can refer to this section to contact us.
 
-SignIn:
-If you're not logged in, you can login clicking in the SignIn word on the right of the NavBar.
-You can Sign-In in 2 different ways: 
-	the first one is by entering your username or email (is totally indifferent if you use email or username, but should be correct) and password.
-	the second way is to click on "Use a Sign-In Code" button.
-If you forgot your password, you can click on "Forgot password?", it will open an "Use a Sign-In Code" form but at the end of it, instead of login directly, will ask you to reset the password.
-If you still do not have an account, you can create one by click Sign Up in "You don't have an account? Sign Up" phrase under "Forgot Password?".
+---
 
-Use a Sign-In Code:
-If you want to access by Sign-In Code, you can press this button in Sign-in form.
-To LogIn simply put your username or email (is totally indifferent if you use email or username, but should be correct), then click on the Send Code red button. You will recive an email with a code that will expire in 5 minutes. Insert your email code and click on red button Verify, and then you will be logged in. If you cant see the email, search in your email spam folder. If you still did not see the email with code, press on "Retry" word under the "Verify" red button, if this don't work please contact us using the infos on Footer.
+## Home Page
+The **Home Page** is the first page displayed when visiting the site.  
+It consists of three sections:
+1. **NavBar**: At the top.
+2. **Footer**: At the bottom.
+3. **Reservation Form**: Located at the center of the page.  
 
-Sign Up:
-If you don' t have an account yet, you can create one using the sign up form.
-You can access to this form by click Sign Up in "You don't have an account? Sign Up" phrase under "Forgot Password?" in the SignIn form.
-You have to provide your First Name, Last Name, your phone number, an username (you can choice one by yourself), a password (you can choice one by yourself) and your email.
-Then you can click the Sign Up red button. It will create an account and will automatically log in into the app.
+---
 
-BookingLabel:
-In the Booking Label Page you can choice the rooms availabe for the before setted filter.
-At the left there are a form to change the search filers. At the right you can see the rooms available or a write that say: "Sorry... There are no rooms available" that means that tere aren' t any rooms available for those search params, so try to change them.
-If there are room availables you will see a list of hotels with many inforamtions about the hotel, like the name, the stars, the location, the type of the room (Suite, Single, Double, etc..), the number of beds, the amount of nights choosen and the total amount of guests, the reviews of that hotel, the cost per night for adults and under 12yo, the total cost and a button "Details" to will bring to RoomDetail that give better informations about the room and hotel and for reserve the room.
+### Reservation Form
+- **City Input Field**: Allows users to search for a city to reserve a hotel.  
+  As letters are typed, a list of matching cities is displayed. If no matches appear, it means there are no hotels in that city.
+- **Check-In and Check-Out Dates**:  
+  Specify the arrival and departure dates for the booking.
+- **Guest Numbers**:  
+  - **Adults Field**: For guests aged 12 and older.  
+  - **Children Field**: For guests under 12 years old.  
 
-RoomDetail:
-In the room detail page you can still change the search params, the hotel name, stars and location. 
-You will also see a Description of the room, the availables services and if the hotel is refundable or not.
-In this page you can also book a reservation. For do that you have to click on Book Now button and you have to be logged in first.
-For book a reservation you have to put in the form that appear after clicking on Book Now Button your card number, the expiration of the card number and your cvv. If the payment go well amodal will notify it an you will recieve a mail with all needed infos.
+After clicking the **Search** button, users are directed to the **Booking Label** page.
 
-Private Area:
-if you are logged in, in the NavBar you will see your username.
-By clicking it you will mooved to private Area that allow you to manage your account, reservation and reviews or log out.
-In the Private area there are a menu on left with six options:
-	1. Account: It's the user account informations manager. click that if you want to change some personal information.
-	2. Reset Password: Here is possible to change your password. The form is the same of "Forgot Password?" form.
-	3. Reservation: Here is possible to see the not expired reservations.
-	4. My Reviews: Here is possible to see all you reviews.
-	5. Log Out: Here is possible to log out.
-	6. AI FAQ Assistant Bot: Hey that's me! :) I'm here to help you with all your question about this site!
+---
 
+## Sign In(Log In)
+To log the user in, users can click **Sign In** in the NavBar. There are two ways to sign in:
+1. Enter your username/email and password.
+2. Use a **Sign-In Code**.
+
+---
+
+### Forgot Password
+Click **Forgot Password?** to open a form that sends a Sign-In Code for resetting your password.
+
+---
+
+### Sign Up
+If users do not have an account, they can create one by clicking **Sign Up** under the "Forgot Password?" section.  
+Users need to provide:
+- First Name
+- Last Name
+- Phone Number
+- Username
+- Password
+- Email Address  
+
+After completing the form and clicking the **Sign Up** button, the system will create the account.
+
+---
+
+## Use a Sign-In Code
+To log in with a **Sign-In Code**:
+1. Enter your username or email.
+2. Click the **Send Code** button.  
+   An email with the code will be sent (valid for 5 minutes).  
+   If you don’t receive the email, check your spam folder or click **Retry**.  
+3. Enter the code and click **Verify** to log in.  
+
+If issues persist, contact us using the **Footer** information.
+
+---
+
+## Booking Label
+The **Booking Label** page displays available rooms based on the search filters.
+### Features:
+- **Filters Form**: Located on the left for modifying search parameters.
+- **Rooms Display**: Shows a list of available rooms or a message ("No rooms available") if none match the criteria.  
+
+For available rooms, details include:
+- Hotel name, star rating, and location.
+- Room type (e.g., Suite, Single, Double).
+- Number of beds and guests.
+- Cost per night (for adults and children under 12).
+- Total cost and user reviews.  
+
+A **Details** button redirects to the **Room Detail** page for more information.
+
+---
+
+## Room Detail
+The **Room Detail** page provides:
+- Hotel name, star rating, and location.
+- Room description and services offered.
+- Refundability status.  
+
+---
+
+### Booking a Room
+Click **Book Now** to proceed with the reservation.  
+The booking form requires:
+- Card number
+- Expiration date
+- CVV  
+
+Upon successful payment, a confirmation modal appears, and a confirmation email is sent.
+
+---
+
+## Private Area
+The **Private Area** is accessible via the username in the NavBar (for logged-in users).  
+### Features:
+1. **Account**: Manage personal information.
+2. **Reset Password**: Update your password using a form similar to the "Forgot Password?" section.
+3. **Reservations**: View active reservations.
+4. **My Reviews**: View submitted reviews.
+5. **Log Out**: Sign out of your account.
+6. **AI FAQ Assistant Bot**: Provides answers to questions about the site.
+
+---

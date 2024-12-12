@@ -12,3 +12,4 @@ mail-template
 *.pdf
 back-end/AI_service/src/vector_database/db/vectorized_db
 back-end/AI_service/src/vector_database/data/text_polished_documentation_en.txt
+back-end/AI_service/src/vector_database/data/rag_file.txt
