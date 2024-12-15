@@ -1,5 +1,4 @@
 from http import HTTPStatus
-from tempfile import template
 
 import jinja2
 from fastapi import BackgroundTasks, HTTPException
