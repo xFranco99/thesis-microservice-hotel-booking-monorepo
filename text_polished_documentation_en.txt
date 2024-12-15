@@ -24,6 +24,8 @@ It consists of three sections:
 2. **Footer**: At the bottom.
 3. **Reservation Form**: Located at the center of the page.  
 
+---
+
 ### Reservation Form
 - **City Input Field**: Allows users to search for a city to reserve a hotel.  
   As letters are typed, a list of matching cities is displayed. If no matches appear, it means there are no hotels in that city.
@@ -42,8 +44,12 @@ To log in, users can click **Sign In** in the NavBar. There are two ways to sign
 1. Enter a username/email and password.
 2. Use a **Sign-In Code**.
 
+---
+
 ### Forgot Password
 Click **Forgot Password?** to open a form that sends a Sign-In Code for resetting your password.
+
+---
 
 ### Sign Up
 If users do not have an account, they can create one by clicking **Sign Up** under the "Forgot Password?" section.  
@@ -93,6 +99,8 @@ The **Room Detail** page provides:
 - Hotel name, star rating, and location.
 - Room description and services offered.
 - Refundability status.  
+
+---
 
 ### Booking a Room
 Click **Book Now** to proceed with the reservation.  
