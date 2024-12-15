@@ -275,3 +275,12 @@ interface TemplateComplete {
   update_date: string;
 }
 
+/* --------------------------------------------- AI ------------------------------------------- */
+
+interface AiChatInput {
+  input: string;
+}
+
+interface AiChatOutput extends AiChatInput {
+  output: string;
+}

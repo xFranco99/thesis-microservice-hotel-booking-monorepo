@@ -28,14 +28,14 @@ function UserContent() {
         </div>
       </div>
 
-      {<div
+      <div
         className="col-md-5 offset-md-1 mb-3"
         style={{ display: "contents" }}
       >
         <form style={{ paddingRight: "20px" }}>
           <img src="logo.png" style={{maxHeight: "12vh"}}/>
         </form>
-      </div>}
+      </div>
     </Fragment>
   );
 }
