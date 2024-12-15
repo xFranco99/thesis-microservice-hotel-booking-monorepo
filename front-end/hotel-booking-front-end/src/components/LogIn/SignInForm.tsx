@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { set } from "react-datepicker/dist/date_utils";
 
 function SignInForm() {
-  const { setAuth, auth } = useAuth();
+  const { setAuth, isAdmin } = useAuth();
   const navigate = useNavigate();
   const [authAlert, setAuthAlert] = useState(false);
   const [errorMessage, setErrorMessage] = useState(

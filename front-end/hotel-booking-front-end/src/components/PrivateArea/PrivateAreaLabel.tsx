@@ -23,27 +23,6 @@ const reviews: Review[] = [
   },
 ];
 
-/*const roomsListMock: Room[] = [
-  {
-    roomId: 1001,
-    hotelName: "Grand Plaza Hotel",
-    hotelAddress: "123 Main Street, Downtown, New York, NY 10001",
-    hotelStars: 4,
-    hotelReviewScore: 8.9,
-    hotelReviewNumber: 150,
-    hotelPrice: 299,
-    bedNumber: 2,
-    roomType: "Double Room",
-    roomLeft: 5,
-    photo: [
-      "https://cf.bstatic.com/xdata/images/hotel/square240/34977484.webp?k=9f5132e9575512002b0d4de003143c77e7c827e0656f64b8edaa9de80a6b8a12&o=",
-    ],
-    services: ["Wi-Fi", "Room Service", "Mini Bar", "TV", "Air Conditioning"],
-    reservedFrom: "2024-11-27",
-    reservedTo: "2024-12-05",
-  },
-];*/
-
 function PrivateAreaLabel() {
   const { auth, user, isAdmin } = useAuth();
   const navigate = useNavigate();

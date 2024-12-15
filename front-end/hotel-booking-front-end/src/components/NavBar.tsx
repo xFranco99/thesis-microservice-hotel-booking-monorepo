@@ -32,6 +32,9 @@ function NavBar(props: Props) {
             <Link className="navbar-brand mb-0 h1" to="/console/mail" style={myStyle}>
               Mail
             </Link>
+            <Link className="navbar-brand mb-0 h1" to="/console/aiRag" style={myStyle}>
+              AI-RAG
+            </Link>
           </div>
         ) : (
           <Link className="navbar-brand mb-0 h1" to="/" style={myStyle}>

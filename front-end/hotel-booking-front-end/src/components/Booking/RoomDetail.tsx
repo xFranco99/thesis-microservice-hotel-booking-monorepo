@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import Carousel from "../common/Carousel";
 import Review from "./Review";
 import { Fragment, ReactNode, useEffect, useState } from "react";
@@ -43,6 +43,7 @@ function drawStars(hotelStars: number): ReactNode[] {
 }
 
 function RoomDetail() {
+  const navigate = useNavigate();
   const { user, auth, isAuth } = useAuth();
 
   const location = useLocation();
@@ -193,7 +194,12 @@ function RoomDetail() {
     <Fragment>
       <PaymentModal
         isOpen={openModal}
-        onClose={() => setOpenModal(false)}
+        onClose={() => {
+          setOpenModal(false);
+          if (isSuccess) {
+            navigate("/");
+          }
+        }}
         onSubmit={handleModalSubmit}
         isSuccess={isSuccess}
       ></PaymentModal>
