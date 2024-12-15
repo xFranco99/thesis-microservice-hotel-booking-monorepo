@@ -1,6 +1,5 @@
 import os
 from http import HTTPStatus
-import sqlite3
 
 from fastapi import HTTPException
 from langchain.chains.combine_documents import create_stuff_documents_chain
