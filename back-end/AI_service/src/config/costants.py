@@ -8,4 +8,4 @@ VECTOR_DB_FOLDER_PATH = os.path.abspath("./vector_database/db")
 
 # ollama
 OLLAMA_EMBEDDER = "nomic-embed-text"
-OLLAMA_CHAT_MODEL = "llama3.2"
+OLLAMA_CHAT_MODEL = "llama3.1:8b"
