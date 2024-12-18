@@ -18,7 +18,7 @@ const reviews: Review[] = [
     date: "31 luglio 2024",
     rating: 4,
     content:
-      "Modifico di nuovo dopo aver ricevuto aiuto: Sono stati gentilissimi! Purtroppo non è stato possibile recuperare ciò che ho perso, ma hanno cercato comunque di aiutarmi a tornare al livello che avevo raggiunto. Le missioni devo comunque rifarle tutte e al momento mi manca la voglia, ma il gioco è bellissimo! Un consiglio: se scaricate il gioco, dopo il tutorial andate nelle impostazioni e collegate il vostro account di Google Play, inoltre, per sicurezza, salvate ogni volta che potete.",
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent euismod, quam in tempus suscipit, sapien lorem vehicula purus, non commodo lorem elit at risus. Sed malesuada lectus non nulla tincidunt, ut molestie neque ultrices. Proin auctor, nulla vel tempus elementum, urna tortor vestibulum metus, id fermentum ex sapien vel metus. Fusce vitae ligula vel velit sodales efficitur. Nullam posuere suscipit mi, id laoreet nunc varius non. Vestibulum ornare, odio at fermentum volutpat, eros odio vehicula augue, nec tincidunt orci augue et lorem. Sed dictum est id arcu fermentum tristique. Ut sed turpis non arcu blandit tempus. Proin varius justo non dictum scelerisque. Vivamus eleifend arcu ac gravida suscipit. Nunc ac lorem nec lacus interdum posuere sit amet quis odio. Aliquam efficitur viverra velit, id malesuada lorem ornare id.",
     helpfulCount: 4,
   },
 ];
@@ -35,7 +35,7 @@ function PrivateAreaLabel() {
       navigate("/");
     }
 
-    console.log(bookings)
+    console.log(bookings);
 
     async function fetchBookingList() {
       if (!user || isAdmin) {
@@ -101,7 +101,10 @@ function PrivateAreaLabel() {
               }
             />
             <Route path="chatBot" element={<ChatBot />} />
-            <Route path="newAdmin" element={<SignUpForm _isNewAdmin={true} />} />
+            <Route
+              path="newAdmin"
+              element={<SignUpForm _isNewAdmin={true} />}
+            />
           </Routes>
         </div>
       </div>
