@@ -24,7 +24,7 @@ def vectorized_db_exist():
 def initializer():
     if not os.path.exists(file_path):
         LOG.error(f"--- The file {file_path} does not exist, can't start the application. Please check the path.")
-        return False
+        return
 
     loader = TextLoader(file_path, encoding = 'UTF-8')
     documents = loader.load()
@@ -52,8 +52,6 @@ def initializer():
 
     del db
     LOG.info(f"--- Finished creating vector store {VECTOR_DB_NAME}")
-
-    return True
 
 def save_rag_file(file: UploadFile):
     #clear_vectorized_db()
