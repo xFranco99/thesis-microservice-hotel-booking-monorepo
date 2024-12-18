@@ -10,7 +10,7 @@ from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_ollama import OllamaEmbeddings, ChatOllama
 
-from config.costants import VECTOR_DB_FOLDER_PATH, VECTOR_DB_NAME
+from config.costants import VECTOR_DB_FOLDER_PATH, VECTOR_DB_NAME, OLLAMA_CHAT_MODEL, OLLAMA_EMBEDDER
 from utils.util import LOG
 from vector_database.vectorized_db_manager import vectorized_db_exist
 
@@ -29,7 +29,7 @@ class RAGChatAssistant:
         self.persistent_directory = os.path.join(VECTOR_DB_FOLDER_PATH, VECTOR_DB_NAME)
 
         # Embeddings configuration
-        self.embeddings = OllamaEmbeddings(model="nomic-embed-text")
+        self.embeddings = OllamaEmbeddings(model=OLLAMA_EMBEDDER)
 
         # Initialize Chroma client for more robust database management
         self.db = None
@@ -88,7 +88,7 @@ class RAGChatAssistant:
 
             llm = ChatOllama(
                 temperature=0,
-                model="llama3.2"
+                model=OLLAMA_CHAT_MODEL
             )
 
             contextualize_q_prompt = ChatPromptTemplate.from_messages([
